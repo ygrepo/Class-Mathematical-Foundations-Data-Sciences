@@ -1,0 +1,156 @@
+\documentclass[10pt]{article}
+
+
+\usepackage{times}
+\usepackage{amsfonts}
+\usepackage{amsmath}
+\usepackage[psamsfonts]{amssymb}
+\usepackage{latexsym}
+\usepackage{color}
+\usepackage{graphics}
+\usepackage{enumerate}
+\usepackage{amstext}
+\usepackage{blkarray}
+\usepackage{url}
+\usepackage{epsfig}
+\usepackage{bm}
+\usepackage{hyperref}
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue,
+    filecolor=magenta,      
+    urlcolor=blue,
+}
+\usepackage{mathtools}
+ 
+\def\Kset{\mathbb{K}}
+\def\Nset{\mathbb{N}}
+\def\Qset{\mathbb{Q}}
+\def\Rset{\mathbb{R}}
+\def\Sset{\mathbb{S}}
+\def\Zset{\mathbb{Z}}
+\def\squareforqed{\hbox{\rlap{$\sqcap$}$\sqcup$}}
+\def\qed{\ifmmode\squareforqed\else{\unskip\nobreak\hfil
+\penalty50\hskip1em\null\nobreak\hfil\squareforqed
+\parfillskip=0pt\finalhyphendemerits=0\endgraf}\fi}
+
+\DeclareMathOperator*{\E}{\rm E}
+\DeclareMathOperator*{\argmax}{\rm argmax}
+\DeclareMathOperator*{\argmin}{\rm argmin}
+\DeclareMathOperator{\sgn}{sign}
+\DeclareMathOperator{\supp}{supp}
+\DeclareMathOperator{\last}{last}
+\DeclareMathOperator{\sign}{\sgn}
+\DeclareMathOperator{\diag}{diag}
+\providecommand{\abs}[1]{\lvert#1\rvert}
+\providecommand{\norm}[1]{\lVert#1\rVert}
+\def\vcdim{\textnormal{VCdim}}
+\DeclareMathOperator*{\B}{\textbf{B}}
+\DeclarePairedDelimiter\ceil{\lceil}{\rceil}
+\DeclarePairedDelimiter\floor{\lfloor}{\rfloor}
+
+\newcommand{\cX}{{\mathcal X}}
+\newcommand{\cY}{{\mathcal Y}}
+\newcommand{\cA}{{\mathcal A}}
+\newcommand{\ignore}[1]{}
+\newcommand{\bi}{\begin{itemize}}
+\newcommand{\ei}{\end{itemize}}
+\newcommand{\be}{\begin{enumerate}}
+\newcommand{\ee}{\end{enumerate}}
+\newcommand{\bd}{\begin{description}}
+\newcommand{\ed}{\end{description}}
+\newcommand{\h}{\widehat}
+\newcommand{\e}{\epsilon}
+\newcommand{\mat}[1]{{\mathbf #1}}
+\newcommand{\R}{\mat{R}}
+\newcommand{\0}{\mat{0}}
+\newcommand{\M}{\mat{M}}
+
+\newcommand{\D}{\mat{D}}
+\renewcommand{\r}{\mat{r}}
+\newcommand{\x}{\mat{x}}
+\renewcommand{\u}{\mat{u}}
+\renewcommand{\v}{\mat{v}}
+\newcommand{\w}{\mat{w}}
+\renewcommand{\H}{\text{0}}
+\newcommand{\T}{\text{1}}
+\newcommand{\set}[1]{\{#1\}}
+\newcommand{\xxi}{{\boldsymbol \xi}}
+\newcommand{\ssigma}{{\boldsymbol \sigma}}
+\newcommand{\Alpha}{{\boldsymbol \alpha}}
+\newcommand{\tts}{\tt \small}
+\newcommand{\hint}{\emph{hint}}
+\newcommand{\matr}[1]{\bm{#1}}     % ISO complying version
+\newcommand{\vect}[1]{\bm{#1}} % vectors
+
+\newcommand{\Var}{\mathrm{Var}}
+\newcommand{\Cov}{\mathrm{Cov}}
+
+% New commands
+\newcommand{\SP}{\mathbf{S}_{+}^n}
+\newcommand{\Proj}{\mathcal{P}_{\mathcal{S}}}
+
+%\renewcommand{\labelitemi}{$\bullet$}
+%\renewcommand{\labelitemii}{$\cdot$}
+%\renewcommand{\labelitemiii}{$\diamond$}
+%\renewcommand{\labelitemiv}{$\ast$}
+
+\newenvironment{solution}{\vspace{.25cm}\noindent{\it Solution:}}{}
+
+\begin{document}
+
+\noindent DS-GA.1013 Mathematical Tools for Data Science :\\
+Homework Assignment 0 \\
+Yves Greatti - yg390\\
+
+\begin{enumerate}
+\item Projections
+
+\be
+	\item False
+	Consider 
+	$\vect{b_1} = \begin{bmatrix} 0\\ 1\end{bmatrix}$ and $\vect{b_2} = \begin{bmatrix} 1\\ 2\end{bmatrix}$, they form a basis of $\mat{R}^2$.
+	When using the definition $\Proj x = \sum_{i=1}^n \langle x, b_i \rangle b_i$ we would expect that $\Proj b_1 = b_1$. However $\Proj b_1 = \begin{bmatrix} 2\\ 5\end{bmatrix} \neq b_1$.
+	\item True
+	Let $S^\bot = \{x |  \langle x,y  \rangle  = 0, \forall y \in S \}$ a subspace of an inner product space $X$, then $S^{\bot\bot} = \{x |  \langle x,y  \rangle  = 0, \forall y \in S^\bot \}$. The inner product being symmetric, $S \subseteq S^{\bot\bot}$.
+	Since for any vector $x \in X$, we have $x = y + z$ where $y \in S, z \in S^\bot$, using Gram-schmidt orthonormalization process, we can find a basis of $S$ and $S^\bot$ which express any vector of X as a linear combination
+	of these two basis and combining these two basis together forms a new basis for X so $\dim X = \dim S + \dim S^\bot$. If $\dim X = n$ and $\dim S = m$ then $\dim S^\bot = n - m$.
+	Similarly $\dim S^{\bot\bot} = n  - (n- m) = m$ so $\dim S^{\bot\bot} = \dim S$, so $S^{\bot\bot} \subseteq S$  and since the dimension of a space or subspace is the cardinality of its basis, thus $S = S^{\bot\bot}$.
+	\item True consider $\vect{v} = \begin{bmatrix} v_1\\ \vdots\\ v_n\end{bmatrix}$, we want $\vect{w} = \begin{bmatrix} \frac{\sum_{i=1,n} v_i}{n}\\ \vdots\\ \frac{\sum_{i=1,n} v_i}{n}\end{bmatrix}$. The orthogonal projection
+	of $\vect{v}$ onto the vector $\vect{b}$ is defined as $\frac{v . b} {\| b \|^2}$, take  $b= \begin{bmatrix} 1\\  \vdots\\1 \end{bmatrix}$.
+\ee
+
+\item Scalar linear approximation
+\be
+	\item First we write $\E[(a x + b - y)^2] = \E[((a x -y) - (-b))^2]$, we know that the best mean-squared error mimimizer of a random variable is its mean so $-b=\E[ax-y] = a \E[x] - \E[y]= a \mu_x - \mu_y$.
+	Substituting b in the expression we want to minimize gives us:
+	\begin{align*}
+		\E[(a x + b - y)^2] 	&= \E[ ( a x - y -  ( a \mu_x - \mu_y) )^2 ] \\
+						&= \E[ \{ a (\mu_x - x)  - (y-\mu_y)  \}^2 ] \\
+						&= a^2 \E[(x - \mu_x)^2]  + \E[ (y-\mu_y)^2]  -2 a \E[(x - \mu_x) (y-\mu_y)] \\
+						&= a^2 \sigma_x^2 + \sigma_y^2 -2\, a\, \Cov(x,y)
+	\end{align*}
+	Let $f(a) =  a^2 \sigma_x^2 + \sigma_y^2 -2\, a\, \Cov(x,y)$, then $f'(a) = 2 (\sigma_x^2 a - \Cov(x,y))$ and $f''(a) = 2 \sigma_x^2 $.
+	The function is strictly convex, and its second derivative is positive, thus its minimizer is $a = \frac{ \Cov(x,y)} {\sigma_x^2} = \rho_{x,y}\, \frac{\sigma_y}{\sigma_x}$.
+	 
+\ee
+
+\item Gradients
+\be
+	\item Compute the gradient of $f(x) = b^T x$ where $b \in \mathbf{R}^d$ and $f: \mathbf{R}^d \rightarrow \mathbf{R}$.
+	$\frac{\partial f(x)}{x_j} = \sum_i b_i \frac{\partial x_i} {\partial x_j} = b_i$, thus $\nabla f(x) = b$.
+	\item Compute the gradient of $f(x) = x^T A x$ where $A \in  \mathbf{R}^{d \times s}$ and $f: \mathbf{R}^d \rightarrow \mathbf{R}$.
+	$f(x)	=  x^T A x = \sum_{i=1}^d \sum_{j=1}^d a_{ij} x_i x_j$, then
+	\begin{align*}
+		\frac{\partial f} {\partial x_k}	&=	\sum_{i=1}^d \sum_{j=1}^d a_{ij} \frac {\partial x_i x_j} {x_k}\\
+								&=	\sum_{i=1}^d \sum_{j=1}^d a_{ij} (x_j \delta_{ik} + x_i \delta_{jk}) \\
+								&=	\sum_{i=1}^d \sum_{j=1}^d a_{ij} x_j \delta_{ik}  + \sum_{i=1}^d \sum_{j=1}^d a_{ij} x_i \delta_{jk} \\
+								&=	\sum_{j=1}^d  a_{kj} x_j +  \sum_{i=1}^d a_{ik}  x_i \\
+								&=	(A x)_k + (A x)_k^T
+	\end{align*}
+	thus $\nabla f(x) = (A + A^T) x$.
+\ee
+
+\end{enumerate}
+
+\end{document}
