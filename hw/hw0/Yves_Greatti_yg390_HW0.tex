@@ -197,6 +197,13 @@ thus $v_{n+1} = \alpha A^n w_1 + \beta A^n w_2 = \alpha \lambda_1^n w_1 + \beta 
 	\end{align*}
 	Let $f(a) =  a^2 \sigma_x^2 + \sigma_y^2 -2\, a\, \Cov(x,y)$, then $f'(a) = 2 (\sigma_x^2 a - \Cov(x,y))$ and $f''(a) = 2 \sigma_x^2 $.
 	The function is strictly convex, and its second derivative is positive, thus its minimizer is $a = \frac{ \Cov(x,y)} {\sigma_x^2} = \rho_{x,y}\, \frac{\sigma_y}{\sigma_x}$.
+	
+	\item Applying the result from the previous question, the best linear estimate of y given x is $y = \rho_{x,y}\, \frac{\sigma_y}{\sigma_x} (x - \mu_x)  + \mu_y$.
+	Notice that $\Var{(x)} = \Var{(y \; z)} = \E{[y^2 \; z^2]} - \E{[y \; z]}^2 = \E{[y^2]}  \E{[z^2]} - \E{[y]}^2  E{[z]}^2 = (\sigma_y^2 + \mu_y^2) \sigma_z^2$ where we have used that a and z are independent and z has zero-mean. And $\E{[x]} = \E[y \; z] = \E[y] \; . \; 0 = 0$. Thus the  best linear estimate of y given x is: $\rho_{x,y} \frac{\sigma_y} {\sigma_z \sqrt{\sigma_y^2 + \mu_y^2}} \; x + \mu_y$.
+	 
+	 \item If in the expression above of y given x, z is normally distributed with $\sigma_z =1$ then y is estimated perfectly from x.  
+	 %The mean squares error of the linear estimation above is: 
+	 %$\E[(a x + b - y)^2] =  a^2 \sigma_x^2 + \sigma_y^2 -2\, a\, \Cov(x,y) =  \sigma_y^2  + a^2 \sigma_x^2 -2 a^2  \sigma_x^2 =  \sigma_y^2 -a^2 \sigma_x^2  = (1 - \rho_{y z,y})   \sigma_y^2$.
 	 
 \ee
 
