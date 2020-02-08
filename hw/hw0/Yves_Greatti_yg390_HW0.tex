@@ -156,9 +156,11 @@ thus $v_{n+1} = \alpha A^n w_1 + \beta A^n w_2 = \alpha \lambda_1^n w_1 + \beta 
     $\mathcal{P}_{P2} f$is the orthogonal projection of $f(x)$ over the subspace of polynomials of degree 2: $\{ w_1, w_2, w_3 \}$, like the Taylor expansion $\mathcal{T}_2 f$. The difference is that the Taylor polynomial is a polynomial expansion of $f$ at 0. So in a neighborhood of $0$, there is almost no differences between $f$ and $\mathcal{T}_2 f$, but as we move away the approximation given by $\mathcal{T}_2 f$ is worst than  $\mathcal{P}_{P2} f$. 
 \ee	
 
-\item Scalar linear approximation
+\item (Scalar linear estimation) 
 \be
-	\item First we write $\E[(a x + b - y)^2] = \E[((a x -y) - (-b))^2]$, we know that the best mean-squared error mimimizer of a random variable is its mean so $-b=\E[ax-y] = a \E[x] - \E[y]= a \mu_x - \mu_y$.
+	\item Let $\tilde{x}$ be a random variable with mean $\mu_{\tilde{x}}$ and variance $\sigma_{\rx}^2$, and $\tilde{y}$ a random variable with mean $\mu_{\tilde{y}}$ and variance $\sigma_{\ry}^2$. The correlation coefficient between them is $\rho_{\rx,\ry}$. What values of $a$, $b \in \R$ minimize the mean square error $\E[\sbrac{a \tilde{x} + b - \tilde{y}}^2]$? Express your answer in terms of $\mu_{\tilde{x}}$, $\sigma_{\rx}$, $\mu_{\tilde{y}}$, $\sigma_{\ry}$, and $\rho_{\rx,\ry}$.
+
+	First we write $\E[(a x + b - y)^2] = \E[((a x -y) - (-b))^2]$, we know that the best mean-squared error mimimizer of a random variable is its mean so $-b=\E[ax-y] = a \E[x] - \E[y]= a \mu_x - \mu_y$.
 	Substituting b in the expression we want to minimize gives us:
 	\begin{align*}
 		\E[(a x + b - y)^2] 	&= \E[ ( a x - y -  ( a \mu_x - \mu_y) )^2 ] \\
@@ -169,18 +171,22 @@ thus $v_{n+1} = \alpha A^n w_1 + \beta A^n w_2 = \alpha \lambda_1^n w_1 + \beta 
 	Let $f(a) =  a^2 \sigma_x^2 + \sigma_y^2 -2\, a\, \Cov(x,y)$, then $f'(a) = 2 (\sigma_x^2 a - \Cov(x,y))$ and $f''(a) = 2 \sigma_x^2 $.
 	The function is strictly convex, and its second derivative is positive, thus its minimizer is $a = \frac{ \Cov(x,y)} {\sigma_x^2} = \rho_{x,y}\, \frac{\sigma_y}{\sigma_x}$.
 	
-	\item Applying the result from the previous question, the best linear estimate of y given x is $y = \rho_{x,y}\, \frac{\sigma_y}{\sigma_x} (x - \mu_x)  + \mu_y$.
+	\item Let $\tilde{x} = \tilde{y} \tilde{z}$, where $\tilde{y}$ has mean $\mu_{\tilde{y}}$ and variance $\sigma_{\ry}^2$, and $\tilde{z}$ has mean zero and variance $\sigma_{\rnd{z}}^2$. If $\tilde{y}$ and $\tilde{z}$ are independent, what is the best linear estimate of $\ry$ given $\rx$?
+	
+	Applying the result from the previous question, the best linear estimate of y given x is $y = \rho_{x,y}\, \frac{\sigma_y}{\sigma_x} (x - \mu_x)  + \mu_y$.
 	Notice that $\Var{(x)} = \Var{(y \; z)} = \E{[y^2 \; z^2]} - \E{[y \; z]}^2 = \E{[y^2]}  \E{[z^2]} - \E{[y]}^2  E{[z]}^2 = (\sigma_y^2 + \mu_y^2) \sigma_z^2$ where we have used that a and z are independent and z has zero-mean. And $\E{[x]} = \E[y \; z] = \E[y] \; . \; 0 = 0$. Thus the  best linear estimate of y given x is: $\rho_{x,y} \frac{\sigma_y} {\sigma_z \sqrt{\sigma_y^2 + \mu_y^2}} \; x + \mu_y$.
 	 
-	 \item If in the expression above of y given x, z is normally distributed with $\sigma_z =1$ then y is perfectly estimated from x.  
- 
+	 \item Assume $\ry$ is positive with probability one. Can you think of a zero-mean random variable $\rnd{z}$ such that $\ry$ can be estimated perfectly from $\rx$ in the previous question? If $\rnd{z}$ is a random variable taking the values -1, +1 with equal probability ($\frac{1}{2}$ each) then $\ry$ can be estimated perfectly from $\rx$. If $\rnd{z}$ has value -1, then since $\ry$ is positive with probability one, $\rx \le 0$  and $\ry$ has the opposite value of $\rx$, when  $\rnd{z}$ has value +1, $\ry$ has the same value as $\rx$. Also notice that $\E[\rnd{z}] = \frac{1}{2} \; (-1) + \frac{1}{2} \; (+1) = 0$.
+	 
 \ee
 
-\item Gradients
+\item (Gradients)
+Recall that the entries of the gradient of a function are equal to its partial derivatives. Use this fact to: 
+
 \be
-	\item Compute the gradient of $f(x) = b^T x$ where $b \in \mathbf{R}^d$ and $f: \mathbf{R}^d \rightarrow \mathbf{R}$.
+	\item Compute the gradient of $f(x) = b^T x$ where $b \in \R^{d}$ and $f: \R^{d} \rightarrow \R $.
 	$\frac{\partial f(x)}{x_j} = \sum_i b_i \frac{\partial x_i} {\partial x_j} = b_i$, thus $\nabla f(x) = b$.
-	\item Compute the gradient of $f(x) = x^T A x$ where $A \in  \mathbf{R}^{d \times s}$ and $f: \mathbf{R}^d \rightarrow \mathbf{R}$.
+	\item Compute the gradient of $f(x) = x^T A x$ where $A \in \R^{d\times d}$ and $f: \R^{d} \rightarrow \R $.
 	$f(x)	=  x^T A x = \sum_{i=1}^d \sum_{j=1}^d a_{ij} x_i x_j$, then
 	\begin{align*}
 		\frac{\partial f} {\partial x_k}	&=	\sum_{i=1}^d \sum_{j=1}^d a_{ij} \frac {\partial x_i x_j} {x_k}\\
