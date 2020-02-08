@@ -23,75 +23,8 @@
 }
 \usepackage{mathtools}
  
-\def\Kset{\mathbb{K}}
-\def\Nset{\mathbb{N}}
-\def\Qset{\mathbb{Q}}
-\def\Rset{\mathbb{R}}
-\def\Sset{\mathbb{S}}
-\def\Zset{\mathbb{Z}}
-\def\squareforqed{\hbox{\rlap{$\sqcap$}$\sqcup$}}
-\def\qed{\ifmmode\squareforqed\else{\unskip\nobreak\hfil
-\penalty50\hskip1em\null\nobreak\hfil\squareforqed
-\parfillskip=0pt\finalhyphendemerits=0\endgraf}\fi}
 
-\DeclareMathOperator*{\E}{\rm E}
-\DeclareMathOperator*{\argmax}{\rm argmax}
-\DeclareMathOperator*{\argmin}{\rm argmin}
-\DeclareMathOperator{\sgn}{sign}
-\DeclareMathOperator{\supp}{supp}
-\DeclareMathOperator{\last}{last}
-\DeclareMathOperator{\sign}{\sgn}
-\DeclareMathOperator{\diag}{diag}
-\providecommand{\abs}[1]{\lvert#1\rvert}
-\providecommand{\norm}[1]{\lVert#1\rVert}
-\def\vcdim{\textnormal{VCdim}}
-\DeclareMathOperator*{\B}{\textbf{B}}
-
-\DeclarePairedDelimiter\ceil{\lceil}{\rceil}
-\DeclarePairedDelimiter\floor{\lfloor}{\rfloor}
-
-\newcommand{\cX}{{\mathcal X}}
-\newcommand{\cY}{{\mathcal Y}}
-\newcommand{\cA}{{\mathcal A}}
-\newcommand{\ignore}[1]{}
-\newcommand{\bi}{\begin{itemize}}
-\newcommand{\ei}{\end{itemize}}
-\newcommand{\be}{\begin{enumerate}}
-\newcommand{\ee}{\end{enumerate}}
-\newcommand{\bd}{\begin{description}}
-\newcommand{\ed}{\end{description}}
-\newcommand{\h}{\widehat}
-\newcommand{\e}{\epsilon}
-\newcommand{\mat}[1]{{\mathbf #1}}
-\newcommand{\R}{\mat{R}}
-\newcommand{\0}{\mat{0}}
-\newcommand{\M}{\mat{M}}
-
-\newcommand{\D}{\mat{D}}
-\renewcommand{\r}{\mat{r}}
-\newcommand{\x}{\mat{x}}
-\renewcommand{\u}{\mat{u}}
-\renewcommand{\v}{\mat{v}}
-\newcommand{\w}{\mat{w}}
-\renewcommand{\H}{\text{0}}
-\newcommand{\T}{\text{1}}
-\newcommand{\set}[1]{\{#1\}}
-\newcommand{\xxi}{{\boldsymbol \xi}}
-\newcommand{\ssigma}{{\boldsymbol \sigma}}
-\newcommand{\Alpha}{{\boldsymbol \alpha}}
-\newcommand{\tts}{\tt \small}
-\newcommand{\hint}{\emph{hint}}
-\newcommand{\matr}[1]{\bm{#1}}     % ISO complying version
-\newcommand{\vect}[1]{\bm{#1}} % vectors
-
-\newcommand{\Var}{\mathrm{Var}}
-\newcommand{\Cov}{\mathrm{Cov}}
-
-% New commands
-\newcommand{\SP}{\mathbf{S}_{+}^n}
-\newcommand{\Proj}{\mathcal{P}_{\mathcal{S}}}
-\DeclarePairedDelimiterX{\inp}[2]{\langle}{\rangle}{#1, #2}
-
+\input{macros}
 
 \newenvironment{solution}{\vspace{.25cm}\noindent{\it Solution:}}{}
 
@@ -102,23 +35,37 @@ Homework Assignment 0 \\
 Yves Greatti - yg390\\
 
 \begin{enumerate}
-\item Projections
+\item (Projections )Are the following statements true or false? Prove that they are true or provide a counterexample. 
 
 \be
-	\item False
+	\item The projection of a vector on a subspace $\mathcal{S}$ is equal to 
+		\begin{align*}
+			\proj{\mathcal{S}} x = \sum_{i=1}^n \PROD{x}{b_i} b_i
+		\end{align*}
+		for any basis $b_1, \ldots, b_d$ of $\mathcal{S}$.
+	False
 	Consider 
 	$\vect{b_1} = \begin{bmatrix} 0\\ 1\end{bmatrix}$ and $\vect{b_2} = \begin{bmatrix} 1\\ 2\end{bmatrix}$, they form a basis of $\mat{R}^2$.
 	When using the definition $\Proj x = \sum_{i=1}^n \langle x, b_i \rangle b_i$ we would expect that $\Proj b_1 = b_1$. However $\Proj b_1 = \begin{bmatrix} 2\\ 5\end{bmatrix} \neq b_1$.
-	\item True
+	\item The orthogonal complement of the orthogonal complement of a subspace $\mathcal{S}\subseteq \R^n$ is $\mathcal{S}$.
+	True
 	Let $S^\bot = \{x |  \langle x,y  \rangle  = 0, \forall y \in S \}$ a subspace of an inner product space $X$, then $S^{\bot\bot} = \{x |  \langle x,y  \rangle  = 0, \forall y \in S^\bot \}$. The inner product being symmetric, $S \subseteq S^{\bot\bot}$.
 	Since for any vector $x \in X$, we have $x = y + z$ where $y \in S, z \in S^\bot$, using Gram-schmidt orthonormalization process, we can find a basis of $S$ and $S^\bot$ which express any vector of X as a linear combination
 	of these two basis and combining these two basis together forms a new basis for X so $\dim X = \dim S + \dim S^\bot$. If $\dim X = n$ and $\dim S = m$ then $\dim S^\bot = n - m$.
 	Similarly $\dim S^{\bot\bot} = n  - (n- m) = m$ so $\dim S^{\bot\bot} = \dim S$, so $S^{\bot\bot} \subseteq S$  and since the dimension of a space or subspace is the cardinality of its basis, thus $S = S^{\bot\bot}$.
-	\item True consider $\vect{v} = \begin{bmatrix} v_1\\ \vdots\\ v_n\end{bmatrix}$, we want $\vect{w} = \begin{bmatrix} \frac{\sum_{i=1,n} v_i}{n}\\ \vdots\\ \frac{\sum_{i=1,n} v_i}{n}\end{bmatrix}$. The orthogonal projection
+	\item Replacing each entry of a vector in $\R^n$ by the average of all its entries is equivalent to projecting the vector onto a subspace. 
+	True consider $\vect{v} = \begin{bmatrix} v_1\\ \vdots\\ v_n\end{bmatrix}$, we want $\vect{w} = \begin{bmatrix} \frac{\sum_{i=1,n} v_i}{n}\\ \vdots\\ \frac{\sum_{i=1,n} v_i}{n}\end{bmatrix}$. The orthogonal projection
 	of $\vect{v}$ onto the vector $\vect{b}$ is defined as $\frac{v . b} {\| b \|^2}$, take  $b= \begin{bmatrix} 1\\  \vdots\\1 \end{bmatrix}$.
 \ee
 
-\item Eigen decomposition
+\item (Eigen decomposition) The populations of deer and wolfs in Yellowstone are well approximated by   
+\begin{align}
+d_{n+1} & = \frac{5}{4}d_n - \frac{3}{4}w_n , \\
+w_{n+1} & = \frac{1}{4}d_n + \frac{1}{4}w_n, \qquad n=0,1,2,\ldots,
+\end{align}
+where $d_n$ and $w_n$ denote the number of deer and wolfs in year $n$. Assuming that there are more deer than wolfs to start with ($w_0 < d_0$), what is the proportion between the numbers of deer and wolfs as $n\rightarrow \infty$? 
+
+
 Rewriting the problem in a matrix form: 
 $$
 \begin{pmatrix}
@@ -149,10 +96,22 @@ $w_1=\begin{pmatrix} 1 \\ 1 \end{pmatrix}, w_2 = \begin{pmatrix} 3 \\ 1 \end{pma
 and we can express $v_0$ in this basis as $v_0 = \alpha w_1 + \beta w_2$ for some $\alpha,\beta \in \mathbf{R}$, 
 thus $v_{n+1} = \alpha A^n w_1 + \beta A^n w_2 = \alpha \lambda_1^n w_1 + \beta \lambda_2^n w_2 = \alpha (\frac{1}{2^n}) w_1 + \beta w_2$. Then taking the $n\to\infty$, the first term goes to zero and $v_{n+1} \sim \beta w_2$. So asymptotically $\frac{d_{n+1}} {w_{n+1}} \sim 3$ which verifies the initial condition: $w_0 < d_0$. 
  
-\item Function approximation
+\item Function approximation) In this problem we will work in the real inner product space
+  $L^2[-1,1]$ given by
+  $$L^2[-1,1] = \left\{f:[-1,1]\to\R\,\biggm|\, \int_{-1}^1 f(x)^2\,dx <
+  \infty\right\}.$$
+  On this space, the inner product is given by
+  $$\langle f,g\rangle = \int_{-1}^1 f(x)g(x)\,dx.$$
+  In the following exercises, you may use a computer to perform the integral calculations.
 
 \be
-	\item Using Gram-Schmidt orthonormalization process, we find
+	\item  The functions $\keys{1,x,x^2}$ form a basis for the 3-dimensional
+    subspace $P_2$
+    of $L^2[-1,1]$ consisting of the polynomials of degree at most $2$.
+    Give the orthonormal basis for $P_2$ obtained by applying
+    Gram-Schmidt to this set of functions.
+    
+    Using Gram-Schmidt orthonormalization process, we find
 	\begin{align*}
 		v_1 	&=	1 \\
 		v_2	&= 	x - \inp{x}{1} \frac{1}{\inp{1}{1}} \\
@@ -167,7 +126,9 @@ thus $v_{n+1} = \alpha A^n w_1 + \beta A^n w_2 = \alpha \lambda_1^n w_1 + \beta 
 		w_3	&=	\frac{v_3}{\|v_3\|}	= \sqrt{\frac{45}{8}} \; (x^2 - \frac{1}{3})
 	\end{align*}
 
-	\item The projection of $f(x) = \cos(\frac{\pi}{2} \; x )$ in the orthonormal basis $\{w_1, w_2, w_3 \}$ is: $\sum_{i=1,3} \inp{f}{w_i} w_i$, where:
+	\item Compute the orthogonal projection of $f(x)=\cos(\pi x/2)$ onto $P_2$.
+	
+	The projection of $f(x) = \cos(\frac{\pi}{2} \; x )$ in the orthonormal basis $\{w_1, w_2, w_3 \}$ is: $\sum_{i=1,3} \inp{f}{w_i} w_i$, where:
 	\begin{align*}
 		\inp{f}{w_1}	&=	\int_{-1}^1	\cos(\frac{\pi}{2} \; x)  \; \frac{\sqrt{2}}{2} \; dx \\
 					&= 	\frac{4}{\pi \sqrt{2}}	\sim 0.9 \\
@@ -177,12 +138,22 @@ thus $v_{n+1} = \alpha A^n w_1 + \beta A^n w_2 = \alpha \lambda_1^n w_1 + \beta 
 					&= 	2 \sqrt{10} \frac{\pi^2 -12}{\pi^3}		\sim -0.43 \\					
 	\end{align*}	
 	
-	\item
+	\item  Plot $f(x)=\cos(\pi x/2)$, $\ml{P}_{P_2}f$, and $T_2f$ on the same axis.  Here
+    $\ml{P}_{P_2}f$ is the projection computed in the previous part, and
+    $T_2f$ is the quadratic Taylor polynomial for $f$ centered at
+    $x=0$:
+    $$T_2f(x) = f(0) + f'(0)x + \frac{f''(0)}{2}x^2.$$ 
+    Include this plot in your submitted homework document.
+    
 	\begin{center}
 		\includegraphics[width=1\linewidth]{figures/problem_3_1.png} 
 	\end{center}
 	
-	\item $\mathcal{P}_{P2} f$is the orthogonal projection of $f(x)$ over the subspace of polynomials of degree 2: $\{ w_1, w_2, w_3 \}$, like the Taylor expansion $\mathcal{T}_2 f$, The difference is that the Taylor is a polynomial expansion of $f$ at 0. So in a neighborhood of $0$, there is almost no differences between $f$ and $\mathcal{T}_2 f$, but as we move away the approximation given  by $\mathcal{T}_2 f$ is worst than  $\mathcal{P}_{P2} f$. 
+	\item The plot from the previous part shows that 
+    $\ml{P}_{P_2}f$ is a better approximation than $T_2f$
+    over most of $[-1,1]$.  Explain why this is the case.
+    
+    $\mathcal{P}_{P2} f$is the orthogonal projection of $f(x)$ over the subspace of polynomials of degree 2: $\{ w_1, w_2, w_3 \}$, like the Taylor expansion $\mathcal{T}_2 f$. The difference is that the Taylor polynomial is a polynomial expansion of $f$ at 0. So in a neighborhood of $0$, there is almost no differences between $f$ and $\mathcal{T}_2 f$, but as we move away the approximation given by $\mathcal{T}_2 f$ is worst than  $\mathcal{P}_{P2} f$. 
 \ee	
 
 \item Scalar linear approximation

@@ -1,0 +1,88 @@
+\documentclass[12pt,twoside]{article}
+\usepackage[dvipsnames]{xcolor}
+\usepackage{tikz,graphicx,amsmath,amsfonts,amscd,amssymb,bm,cite,epsfig,epsf,url}
+\usepackage[hang,flushmargin]{footmisc}
+\usepackage[colorlinks=true,urlcolor=blue,citecolor=blue]{hyperref}
+\usepackage{amsthm,multirow,wasysym,appendix}
+\usepackage{array,subcaption} 
+% \usepackage[small,bf]{caption}
+\usepackage{bbm}
+\usepackage{pgfplots}
+\usetikzlibrary{spy}
+\usepgfplotslibrary{external}
+\usepgfplotslibrary{fillbetween}
+\usetikzlibrary{arrows,automata}
+\usepackage{thmtools}
+\usepackage{blkarray} 
+\usepackage{textcomp}
+\usepackage[left=0.8in,right=1.0in,top=1.0in,bottom=1.0in]{geometry}
+
+\input{macros}
+
+\begin{document}
+
+\begin{center}
+{\large{\textbf{Homework 0}} } \vspace{0.2cm}\\
+Due February 9 at 11 pm
+\end{center}
+
+\begin{enumerate}
+\item (Projections) Are the following statements true or false? Prove that they are true or provide a counterexample. 
+\begin{enumerate}
+\item The projection of a vector on a subspace $\mathcal{S}$ is equal to 
+\begin{align*}
+\proj{\mathcal{S}} x = \sum_{i=1}^n \PROD{x}{b_i} b_i
+\end{align*}
+for any basis $b_1, \ldots, b_d$ of $\mathcal{S}$.
+\item The orthogonal complement of the orthogonal complement of a subspace $\mathcal{S}\subseteq \R^n$ is $\mathcal{S}$.
+\item Replacing each entry of a vector in $\R^n$ by the average of all its entries is equivalent to projecting the vector onto a subspace. 
+\end{enumerate}
+\vspace{0.4cm}
+\item (Eigendecomposition) The populations of deer and wolfs in Yellowstone are well approximated by   
+\begin{align}
+d_{n+1} & = \frac{5}{4}d_n - \frac{3}{4}w_n , \\
+w_{n+1} & = \frac{1}{4}d_n + \frac{1}{4}w_n, \qquad n=0,1,2,\ldots,
+\end{align}
+where $d_n$ and $w_n$ denote the number of deer and wolfs in year $n$. Assuming that there are more deer than wolfs to start with ($w_0 < d_0$), what is the proportion between the numbers of deer and wolfs as $n\rightarrow \infty$? 
+
+\item (Function approximation) In this problem we will work in the real inner product space
+  $L^2[-1,1]$ given by
+  $$L^2[-1,1] = \left\{f:[-1,1]\to\R\,\biggm|\, \int_{-1}^1 f(x)^2\,dx <
+  \infty\right\}.$$
+  On this space, the inner product is given by
+  $$\langle f,g\rangle = \int_{-1}^1 f(x)g(x)\,dx.$$
+  In the following exercises, you may use a computer to perform the integral calculations.
+  \begin{enumerate}
+  \item The functions $\keys{1,x,x^2}$ form a basis for the 3-dimensional
+    subspace $P_2$
+    of $L^2[-1,1]$ consisting of the polynomials of degree at most $2$.
+    Give the orthonormal basis for $P_2$ obtained by applying
+    Gram-Schmidt to this set of functions.
+  \item Compute the orthogonal projection of $f(x)=\cos(\pi x/2)$ onto $P_2$.
+  \item Plot $f(x)=\cos(\pi x/2)$, $\ml{P}_{P_2}f$, and $T_2f$ on the same axis.  Here
+    $\ml{P}_{P_2}f$ is the projection computed in the previous part, and
+    $T_2f$ is the quadratic Taylor polynomial for $f$ centered at
+    $x=0$:
+    $$T_2f(x) = f(0) + f'(0)x + \frac{f''(0)}{2}x^2.$$ 
+    Include this plot in your submitted homework document.
+  \item The plot from the previous part shows that 
+    $\ml{P}_{P_2}f$ is a better approximation than $T_2f$
+    over most of $[-1,1]$.  Explain why this is the case.
+  \end{enumerate}
+  
+ \item (Scalar linear estimation) 
+ \begin{enumerate}
+ \item Let $\tilde{x}$ be a random variable with mean $\mu_{\tilde{x}}$ and variance $\sigma_{\rx}^2$, and $\tilde{y}$ a random variable with mean $\mu_{\tilde{y}}$ and variance $\sigma_{\ry}^2$. The correlation coefficient between them is $\rho_{\rx,\ry}$. What values of $a$, $b \in \R$ minimize the mean square error $\E[\sbrac{a \tilde{x} + b - \tilde{y}}^2]$? Express your answer in terms of $\mu_{\tilde{x}}$, $\sigma_{\rx}$, $\mu_{\tilde{y}}$, $\sigma_{\ry}$, and $\rho_{\rx,\ry}$.
+ \item Let $\tilde{x} = \tilde{y} \tilde{z}$, where $\tilde{y}$ has mean $\mu_{\tilde{y}}$ and variance $\sigma_{\ry}^2$, and $\tilde{z}$ has mean zero and variance $\sigma_{\rnd{z}}^2$. If $\tilde{y}$ and $\tilde{z}$ are independent, what is the best linear estimate of $\ry$ given $\rx$? 
+ \item Assume $\ry$ is positive with probability one. Can you think of a zero-mean random variable $\rnd{z}$ such that $\ry$ can be estimated perfectly from $ \rx$ in the previous question? 
+ \end{enumerate}
+ 
+\item (Gradients)
+Recall that the entries of the gradient of a function are equal to its partial derivatives. Use this fact to: 
+\begin{enumerate}
+\item Compute the gradient of $f(x) = b^T x$ where $b \in \R^{d}$ and $f: \R^{d} \rightarrow \R $.
+\item Compute the gradient of $f(x) = x^T A x$ where $A \in \R^{d\times d}$ and $f: \R^{d} \rightarrow \R $.
+\end{enumerate}
+  
+\end{enumerate}
+\end{document}
