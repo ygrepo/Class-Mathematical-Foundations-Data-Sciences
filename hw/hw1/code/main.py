@@ -51,8 +51,7 @@ def eigen_iteration(A, x0, alpha, max_iter=50, thresh=1e-3):
             print("True u1:{}, computed u1:{}, true_error:{}, alpha:{}"
                   .format(true_u1, x_next, rel_error, calc_true_error(x_cur, true_u1), alpha))
             break
-        #relative_error.append(rel_error)
-        relative_error.append(calc_true_error(x_cur, x_next))
+        relative_error.append(rel_error)
         true_error.append(calc_true_error(x_cur, true_u1))
         x_cur = x_next
 
