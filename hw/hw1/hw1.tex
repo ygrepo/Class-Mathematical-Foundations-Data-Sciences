@@ -51,8 +51,11 @@ Yves Greatti - yg390\\
 
 \begin{enumerate}
 \item (Rotation) For a symmetric matrix $A$, can there be a nonzero vector $x$ such that $Ax$ is nonzero and orthogonal to $x$? Either prove that this is impossible, or explain under what condition on the eigenvalues of $A$ such a vector exists.
+%Let $x \neq 0$ a vector such $Ax$ is non zero and orthogonal to $x$ then $x^T A x =0$, A being a symmetric matrix and by the spectral theorem implies that the smallest or the largest eigenvalues are zero and any eigenvalues between these two. The only eigenvalue of this matrix is zero, and $A$ is zero.
+ 
 Let $x \in V, x \neq 0$, an inner product space , by the spectral theorem there exists an orthonormal basis of  $V$, consisting of eigenvectors of $A$, let $u_1$, \ldots, $u_n$ be the eigenbasis of $A$, and $\lambda_1, \ldots, \lambda_n$ the eigenvalues for each of these eigenvectors.
 $x \in \text{span}\{u_1, \ldots, u_n \} \Rightarrow  x=\sum_{i=1,n} \alpha_i u_i, \alpha_i \neq 0$.  $x^T (Ax) = (\sum_{i=1,n} \alpha_i u_i) (\sum_{j=1,n} \alpha_j A u_j) =  (\sum_{i=1,n} \alpha_i u_i) (\sum_{j=1,n} \alpha_j \lambda_j u_j) = \sum_{i=1,n} \alpha_i^2 \lambda_i$ since $u_i^T u_j = 0$ for $i \neq j$ and $u_i^T u_i =1$. $Ax$ is orthogonal to $x$: $x^T (Ax) = 0 \Rightarrow  \sum_{i=1,n} \alpha_i^2 \lambda_i = 0$.
+\newpage
 
 \item (Matrix decomposition) The trace can be used to define an inner product between matrices:
 \begin{align}
@@ -86,6 +89,7 @@ Where we applied linearity of the inner product for equations 2 and 3 and reuse 
 From the previous question the orthogonal projection of A in $u_iu_i^T$ is $\lambda_i u_iu_i^T$ so $A' = \sum_i \lambda_i u_iu_i^T, i \neq 1$ has row or column subspaces contained in  $(u_1)^\bot$.
 
 \end{enumerate}
+\newpage
 
 \item (Quadratic forms) Let $A\in \R^{n \times n}$ be a symmetric matrix, and let $f(x):=x^TAx$ be the corresponding quadratic form. We consider the 1D function $g_{v}(t)=f(tv)$ obtained by restricting the quadratic form to lie in the direction of a vector $v$ with unit $\ell_2$ norm.
 \begin{enumerate}
@@ -101,6 +105,7 @@ $\lambda_1 = \max_{\|v\|_2 =1} v^T A v$ with eigenvector $u_1 = \arg \max_{\|v\|
 
 \end{enumerate}
 
+\newpage
 \item (Projected gradient ascent) Projected gradient descent is a method designed to find the maximum of a differentiable function $f:\R^n \rightarrow \R$ in a constraint set $\ml{S}$. Let $\ml{P}_{\ml{S}}$ denote the projection onto $\ml{S}$, i.e.
 \begin{align}
 \ml{P}_{\ml{S}}(x) := \arg \min_{y \in \ml{S}} \normTwo{x-y}^2.
@@ -140,7 +145,8 @@ We have $\nabla{f(x)} = 2 A x$, by assumption and using the previous result, the
 \end{align*}
 
 
-\item Let us express the iterations in the basis of eigenvectors of $A$: $x^{[k]} := \sum_{i=1}^{n}\beta_i^{[k]} u_i$. Compute the ratio between the coefficient corresponding to the largest eigenvalue and the rest $\frac{\beta_1^{[k]}}{\beta_i^{[k]}}$ as a function of $k$, $\alpha$, and $\beta_1^{[0]}$, \ldots, $\beta_n^{[0]}$. Under what conditions on $\alpha$ and the initial point does the algorithm converge to the eigenvector $u_1$ corresponding to the largest eigenvalue? What happens if $\alpha$ is extremely large (i.e. when $\alpha \rightarrow \infty$)?
+\item Let us express the iterations in the basis of eigenvectors of $A$: $x^{[k]} := \sum_{i=1}^{n}\beta_i^{[k]} u_i$. Compute the ratio between the coefficient corresponding to the largest eigenvalue and the rest $\frac{\beta_1^{[k]}}{\beta_i^{[k]}}$ as a function of $k$, $\alpha$, and $\beta_1^{[0]}$, \ldots, $\beta_n^{[0]}$  (and also the eigenvalues). Under what conditions on $\alpha$ and the initial point does the algorithm converge to the eigenvector $u_1$ corresponding to the largest eigenvalue? What happens if $\alpha$ is extremely large (i.e. when $\alpha \rightarrow \infty$)?
+
 
 Let $x^{[0]} = \sum_{i=1}^n \beta_i^{[0]} u_i$,  and $\lambda_1, \dots , \lambda_n$ the eigenvalues of $A$, from the previous question, we have:
 \begin{align*}
@@ -150,16 +156,18 @@ Let $x^{[0]} = \sum_{i=1}^n \beta_i^{[0]} u_i$,  and $\lambda_1, \dots , \lambda
 			&=	\frac{\sum_{i=1}^n \beta_i^{[0]} (1 - 2 \alpha \lambda_i)^k u_i} { \| \sum_{i=1}^n \beta_i^{[0]} (1 - 2 \alpha \lambda_i)^k u_i \|_2} \\
 			&= 	\frac{\sum_{i=1}^n \beta_i^{[0]} (1 - 2 \alpha \lambda_i)^k u_i} { (\sum_{i=1}^n (\beta_i^{[0]})^2 (1 - 2 \alpha \lambda_i)^{2k} )^{\frac{1}{2}} }
 \end{align*}
-if $u_j^T x^{[k]} \to 0$ then $x^{[k]} \to u_1,  j \neq 1$ and $u_1^T x^{[k]} \to 1, x^{[k]} \to u_1$, this give us:
+%if $u_j^T x^{[k]} \to 0$ then $x^{[k]} \to u_1,  j \neq 1$ and
+This give us:
 \begin{align*}
-	u_j^T x^{[k]}	&=	\frac{ \beta_j^{[0]} (1 - 2 \alpha \lambda_j)^k }  { (\sum_{i=1}^n (\beta_i^{[0]})^2 (1 - 2 \alpha \lambda_i)^{2k} )^{\frac{1}{2}} } \\
+	%u_j^T x^{[k]}	&=	\frac{ \beta_j^{[0]} (1 - 2 \alpha \lambda_j)^k }  { (\sum_{i=1}^n (\beta_i^{[0]})^2 (1 - 2 \alpha \lambda_i)^{2k} )^{\frac{1}{2}} } \\
 	u_1^T x^{[k]}	&=	\frac{ \beta_1^{[0]} (1 - 2 \alpha \lambda_1)^k }  { (\sum_{i=1}^n (\beta_i^{[0]})^2 (1 - 2 \alpha \lambda_i)^{2k} )^{\frac{1}{2}} } 
 \end{align*}
+,
 By the spectral theorem, $\lambda_n \le \dots \le \lambda_i \le \ldots \le \lambda_1 \Rightarrow (1-2 \alpha \lambda_n)^{2k} \ge \ldots \ge (1-2 \alpha \lambda_i)^{2k} \ldots \ge (1-2 \alpha \lambda_1)^{2k}$, so we have
 \begin{align*}
-	(\frac{1-2 \alpha \lambda_j}{1-2 \alpha \lambda_n})^k \frac{\beta_j^{[0]}} {(\sum_{i=1}^n (\beta_j^{[0]})^2)^{\frac{1}{2}}} 
-		&\le \frac{ \beta_j^{[0]} (1 - 2 \alpha \lambda_j)^k }  { (\sum_{i=1}^n (\beta_i^{[0]})^2 (1 - 2 \alpha \lambda_i)^{2k} )^{\frac{1}{2}} } 
-		\le (\frac{1-2 \alpha \lambda_j}{1-2 \alpha \lambda_1})^k \frac{\beta_j^{[0]}} {(\sum_{i=1}^n (\beta_j^{[0]})^2)^{\frac{1}{2}}} \\
+	%(\frac{1-2 \alpha \lambda_j}{1-2 \alpha \lambda_n})^k \frac{\beta_j^{[0]}} {(\sum_{i=1}^n (\beta_j^{[0]})^2)^{\frac{1}{2}}} 
+	%	&\le \frac{ \beta_j^{[0]} (1 - 2 \alpha \lambda_j)^k }  { (\sum_{i=1}^n (\beta_i^{[0]})^2 (1 - 2 \alpha \lambda_i)^{2k} )^{\frac{1}{2}} } 
+	%	\le (\frac{1-2 \alpha \lambda_j}{1-2 \alpha \lambda_1})^k \frac{\beta_j^{[0]}} {(\sum_{i=1}^n (\beta_j^{[0]})^2)^{\frac{1}{2}}} \\
 	(\frac{1-2 \alpha \lambda_1}{1-2 \alpha \lambda_n})^k \frac{\beta_1^{[0]}} {(\sum_{i=1}^n (\beta_j^{[0]})^2)^{\frac{1}{2}}} 
 		&\le \frac{ \beta_1^{[0]} (1 - 2 \alpha \lambda_j)^k }  { (\sum_{i=1}^n (\beta_i^{[0]})^2 (1 - 2 \alpha \lambda_i)^{2k} )^{\frac{1}{2}} } 
 		\le (\frac{1-2 \alpha \lambda_1}{1-2 \alpha \lambda_1})^k \frac{\beta_1^{[0]}} {(\sum_{i=1}^n (\beta_j^{[0]})^2)^{\frac{1}{2}}} \\
@@ -167,12 +175,8 @@ By the spectral theorem, $\lambda_n \le \dots \le \lambda_i \le \ldots \le \lamb
 		&\le \frac{ \beta_1^{[0]} (1 - 2 \alpha \lambda_j)^k }  { (\sum_{i=1}^n (\beta_i^{[0]})^2 (1 - 2 \alpha \lambda_i)^{2k} )^{\frac{1}{2}} } 
 		\le \frac{\beta_1^{[0]}} {(\sum_{i=1}^n (\beta_j^{[0]})^2)^{\frac{1}{2}}} \\
 \end{align*}
-The first inequality is always verified by the spectral theorem(and ordering between eigenvalues) and the squeeze limit theorem as taking the limit on both sides we have $u_j^T x^{[k]} = 0$.
-For the second inequality, if both sides of the inequality goes to 1 then by the squeeze limit theorem $u_1^T x^{[k]}  = 1$ which happens when:
-\begin{align*}
-	\beta_1^{[0]}										&= 	(\sum_{i=1}^n (\beta_j^{[0]})^2)^{\frac{1}{2}} \\
-	(\frac{1-2 \alpha \lambda_1}{1-2 \alpha \lambda_n})^k		&\to \frac{ (\sum_{i=1}^n (\beta_j^{[0]})^2)^{\frac{1}{2}} } {\beta_1^{[0]}}  
-\end{align*}
+if $u_1^T x^{[k]} \to 1$, then $x^{[k]} \to u_1$
+By the squeeze limit theorem as taking the limit on both sides for $\alpha \to \infty$, $u_1^T x^{[k]}  \to 1$ and $x^{[k]^T} A x^{[k]} \to \lambda_1$.
 
 \item Implement the algorithm derived in part (b). Support code is provided in {\tt main.py} within {\tt Q4.zip}. Observe what happens for different sizes of $\alpha$. Report the plots generated by the script.
 
@@ -183,111 +187,124 @@ import os
 import matplotlib.pyplot as plt
 import numpy as np
 
+def unit_vector(vector):
+    """ Returns the unit vector of the vector.  """
+    return vector / np.linalg.norm(vector)
+
+
+def angle_between(v1, v2):
+    """ Returns the angle in radians between vectors 'v1' and 'v2'::
+    """
+    v1_u = unit_vector(v1)
+    v2_u = unit_vector(v2)
+    return np.arccos(np.clip(np.dot(v1_u, v2_u), -1.0, 1.0))
 
 
 def calc_true_error(x1, x2):
     ''' eigenvecs could converge to u or -u - both are valid eigvecs.
-    The function should output the L2 norm of (|x1| - |x2|)
+    The function should output the L2 norm of (x1 - x2)
     If x1 = u and x2 = -u, we still want the function to output 0 error'''
-    return np.linalg.norm(np.abs(x1) - np.abs(x2))
-    
-def eigen_iteration(A, x0, alpha, max_iter=50, thresh=1e-3):
+    return 1 - abs(np.cos(angle_between(x1, x2)))
+    # return np.linalg.norm(np.abs(x1) - np.abs(x2))
+
+
+def eigen_iteration(A, x0, alpha, max_iter=50, thresh=1e-5):
     '''A - nxn symmetric matrix
        x0 - np.array of dimension n which is the starting point
        alpha - learning rate parameter
        max_iter - number of iterations to perform
        thresh - threshold for stopping iteration
-       
-       stopping criteria: can stop when ||x[k] - x[k-1]||_2 <= thresh or when it hits max_iter
-       
-       return: 
-       relative_error: array with ||x[k] - x[k-1]||_2  
-       true_error: array with || |x[k]| - |u_1| ||_2 where u_1 is first eigenvector
+
+       stopping criteria: can stop when |lambda[k] - lambda[k-1]| <= thresh or when it hits max_iter
+
+       return:
+       relative_error_eigvec: array with ||x[k] - x[k-1]||_2
+       true_error_eigvec: array with ||x[k] - u_1 ||_2 where u_1 is first eigenvector
+       relative_error_eigval: array with |lambda[k] - lambda[k-1] |
+       true_error_eigval: array with |lambda[k] - lambda_1|
+
+       x[k] is your estimated max eigenvec at iteration k and lambda[k] is your estimated max eigenvalue at iteration k.
+       lambda_1 is the max eigenvalue of A and u_1 is the corresponding eigvec.
        '''
 
     assert ((A.transpose() == A).all())  # asserting A is symmetric
     assert (A.shape[0] == len(x0))
 
     w, v = np.linalg.eigh(A)
-    true_u1 = v[:, 0]  # np array with the first eigenvector of A
-    relative_error = []
-    true_error = []
-    x_cur = x0.copy()
-    iteration = 0
+    true_lam = w[w.size - 1]  # fill in your code to find max eigenvalue of A
+    true_u1 = v[:, v.shape[1] - 1]  # np array with the first eigenvector of A
+    relative_errors_eigvec = list()
+    true_errors_eigvec = list()
+    relative_errors_eigval = list()
+    true_errors_eigval = list()
+    curr_eigvec = x0.copy()
+    iteration = 1
     while True:
-        x_next = x_cur + alpha * np.matmul(-2 * A, x_cur)
-        x_next = np.divide(x_next, np.linalg.norm(x_next))
+        next_eigv = curr_eigvec + alpha * np.matmul(-2 * A, curr_eigvec)
+        next_eigv = unit_vector(next_eigv)
 
-        rel_error = np.linalg.norm(x_cur - x_next)
-        if rel_error <= thresh:
+        rel_eigvec_error = np.linalg.norm(next_eigv - curr_eigvec)
+        relative_errors_eigvec.append(rel_eigvec_error)
+        true_eigvec_error = calc_true_error(true_u1, next_eigv)
+        true_errors_eigvec.append(true_eigvec_error)
+
+        eigval_prev = curr_eigvec.T.dot(np.matmul(A, curr_eigvec))
+        eigval_next = next_eigv.T.dot(np.matmul(A, next_eigv))
+        rel_eigval_error = abs(eigval_next - eigval_prev)
+        relative_errors_eigval.append(rel_eigval_error)
+        true_eigval_error = abs(true_lam - eigval_next)
+        true_errors_eigval.append(true_eigval_error)
+
+        if rel_eigval_error <= thresh:
             print("Convergence in {} iterations, alpha:{},\
              init_point_norm={}".format(iteration, alpha, np.linalg.norm(x0)))
             print("True u1:{}, computed u1:{}, rel_error:{}, true_error:{}"
-                  .format(true_u1, x_next, rel_error, calc_true_error(x_cur, true_u1)))
+                  .format(true_u1, next_eigv, rel_eigvec_error, true_eigvec_error))
+            print("True max.eigenval:{}, computed max_eigval:{}, rel_error:{}, true_error:{}"
+                  .format(true_lam, eigval_next, rel_eigval_error, true_eigval_error))
             break
         iteration += 1
         if iteration >= max_iter:
             print("Maximum iteration exceeded!")
-            print("True u1:{}, computed u1:{}, true_error:{}, alpha:{}"
-                  .format(true_u1, x_next, rel_error, calc_true_error(x_cur, true_u1), alpha))
+            print("True u1:{}, computed u1:{}, rel_error:{}, true_error:{}"
+                  .format(true_u1, next_eigv, rel_eigvec_error, true_eigvec_error))
+            print("True max.eigenval:{}, computed max_eigval:{}, rel_error:{}, true_error:{}"
+                  .format(true_lam, eigval_next, rel_eigval_error, true_eigval_error))
             break
-        relative_error.append(rel_error)
-        true_error.append(calc_true_error(x_cur, true_u1))
-        x_cur = x_next
+
+        curr_eigvec = next_eigv
 
     ## fill in code to do do your projected gradient ascent
     ## append both the list with the errors
 
-    return relative_error, true_error
+    return relative_errors_eigvec, true_errors_eigvec, relative_errors_eigval, true_errors_eigval
         
 \end{minted}
-
-For  $\alpha \ge 1$ the gradient steps are very similar, the relative errors do not change, the algorithm does not progress from one iteration to the other, the true error decreases
-for $\alpha < 1$ to zero, while it is constant and non zero for $\alpha \ge 1$: the algorithm does not converge to the first eigenvector when $\alpha \ge 1$:
+As we increase $\alpha$, the algorithm converges faster to the maximum eigenvalue and corresponding eigenvector, for $\alpha=0.1 < 1$, there is no convergence.
+The initial point has an impact on the relative errors of the eigenvalue, not on the relative error related to the corresponding eigenvector.
 
 \begin{figure}[H]
 	\centering
 	\includegraphics[width=200pt]{figures/random_init_2.pdf}
-	\caption{First matrix: relative and absolute errors  $\| x_k - x_{k+1}\|_2$} on the left,  $\| |x_k| - |u_1| \|_2$ on the right
-	\label{fig1}
+	\caption{First matrix: relative errors on the left,  absolute errors on the right for largest eigenvalue and corresponding eigenvector.
+}	\label{fig1}
 \end{figure}
 
 \begin{figure}[H]
 	\centering
 	\includegraphics[width=200pt]{figures/random_init_3.pdf}
-	\caption{Second matrix: relative and absolute errors  $\| x_k - x_{k+1}\|_2$} on the left,  $\| |x_k| - |u_1| \|_2$ on the right
+	\caption{Second matrix: relative errors on the left,  absolute errors on the right for largest eigenvalue and corresponding eigenvector.}
 	\label{fig1}
 \end{figure}
 
 \begin{figure}[H]
 	\centering
 	\includegraphics[width=200pt]{figures/random_init_4.pdf}
-	\caption{Third matrix: relative and absolute errors  $\| x_k - x_{k+1}\|_2$} on the left,  $\| |x_k| - |u_1| \|_2$ on the right
+	\caption{Third matrix: relative errors on the left,  absolute errors on the right for largest eigenvalue and corresponding eigenvector.}
 	\label{fig1}
 \end{figure}
 
 We also observe that the initial point plays a role on how fast there is convergence to a stable state from one iteration to the other:
-
-\begin{figure}[H]
-	\centering
-	\includegraphics[width=200pt]{figures/random_init_2_abs_error.pdf}
-	\caption{First matrix: relative and absolute errors  $\| |x_k| - |x_{k+1}| \|_2$} on the left,  $\| |x_k| - |u_1| \|_2$ on the right
-	\label{fig1}
-\end{figure}
-
-\begin{figure}[H]
-	\centering
-	\includegraphics[width=200pt]{figures/random_init_3_abs_error.pdf}
-	\caption{Second matrix: relative and absolute errors  $\| |x_k| - |x_{k+1}| \|_2$} on the left,  $\| |x_k| - |u_1| \|_2$ on the right
-	\label{fig1}
-\end{figure}
-
-\begin{figure}[H]
-	\centering
-	\includegraphics[width=200pt]{figures/random_init_4_abs_error.pdf}
-	\caption{Third matrix: relative and absolute errors  $\| |x_k| - |x_{k+1}| \|_2$} on the left,  $\| |x_k| - |u_1| \|_2$ on the right
-	\label{fig1}
-\end{figure}
 
 \end{enumerate}
 
