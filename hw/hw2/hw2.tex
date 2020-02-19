@@ -123,31 +123,34 @@ The sample variance of the second principal component is the smaller eigenvalue 
     	\bi
     		\item SPY - A security that roughly tracks the S\&P 500, a weighted average of the stock prices of 500 top US companies.
 		We have only 18 stocks and excluding the ETF (Exchange traded products), we are left with 13 stocks. 
-		Computing the  weighted average using the entries in the first principal direction, we obtain a weighted average price
-		in the range of the SPY price reported for the same day. It is less true using the entries of the second principal direction.
-		
+		We can notice that among these 13 stocks, SPY entry in the principal directions, has the same than the other 13 entries
+		for the same principal direction.
+		For a given day, computing a weighted average using the absolute values of entries in the first principal direction and the prices of these 13 stocks, 
+		we obtain a weighted average price in the range of the SPY price reported for the same day. It is less true using the entries of the second principal direction.
+
+		\begin{figure}[H]
+			\centering
+			\includegraphics[width=200pt]{figures/pb_3_b_principal_directions.png}
+			\caption{First two Principal Directions.}
+			\label{fig3}
+		\end{figure}
+
 		\begin{figure}[H]
 			\centering
 			\includegraphics[width=200pt]{figures/pb_3_b_1.png}
 			\caption{Weighted average of the 13 stock prices and SPY price using PD0.}
 			\label{fig2}
 		\end{figure}
-			
-		\begin{figure}[H]
-			\centering
-			\includegraphics[width=200pt]{figures/pb_3_b_2.png}
-			\caption{Weighted average of the 13 stock prices and SPY price using PD1.}
-			\label{fig3}
-		\end{figure}
-			
+					
 		\item  XLF -  A security that tracks a weighted average of top US financial companies.
-		We find the same weighting scheme but to a less extent as we have only 3 financial stocks among the 18 stocks.
+		Among the 18 stocks, there are only 3 financial stocks: c, gs and jpm. Entry for xlf has the same sign as the entries for these three stocks in the first two 
+		principal directions. To some extent the weighted average price of these 3 stocks is close to XLF price.
 		
 		\begin{figure}[H]
 			\centering
 			\includegraphics[width=200pt]{figures/pb_3_b_3.png}
 			\caption{Weighted average of the 3 financial stock prices and XLF price using PD0.}
-			\label{fig3}
+			\label{fig4}
 		\end{figure}
 	
 		\item SSO - ProShares levered ETF that roughly corresponds to twice the daily performance of the S\&P 500.
@@ -224,13 +227,33 @@ The sample variance of the second principal component is the smaller eigenvalue 
   invalid and can lead to inaccurate risk calculations in real
   financial situations. 
   
+  \newpage
   \item Faces
   	\bi
 		\item 
 		The data set consists in $400$ rows of a ravelled face image of original size 64 x 64 pixels . Each row represent a datapoint in $\R^{4096}$.
 		A label is associated to each face image which correspond to the Subject IDs.
-		%The \emph{nearest_neighbors} function we compute the distance between a test image and a set of reference image (train\_matrix).
-		
+		In the \emph{nearest\_neighbors} function we compute the distance between a test image and a set of reference image (train\_matrix).
+
+\begin{minted}{python}
+	def compute_nearest_neighbors(train_matrix, testImage):
+	   distances = np.sqrt(
+	   	np.sum((train_matrix - testImage) ** 2, 
+	   			axis=1))
+    	    idx_of_closest_point_in_train_matrix = 
+	    	np.argsort(distances)
+	    return idx_of_closest_point_in_train_matrix[0]
+\end{minted}
+
+
+	\begin{figure}[H]
+		\centering
+		\includegraphics[width=200pt]{figures/Image-NearestNeighbor}
+		\caption{Test images and image found by Nearest Neighbors.}
+		\label{fig5}
+	\end{figure}
+
+
 	\ei	
   
 \end{enumerate}

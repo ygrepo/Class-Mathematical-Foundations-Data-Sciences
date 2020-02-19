@@ -4,7 +4,8 @@ from sklearn.datasets import fetch_olivetti_faces
 
 
 def compute_nearest_neighbors(train_matrix, testImage):
-    distances = np.sqrt(np.sum((train_matrix - testImage) ** 2, axis=1))
+    distances = np.sqrt(np.sum((train_matrix - testImage) ** 2,
+                               axis=1))
     idx_of_closest_point_in_train_matrix = np.argsort(distances)
     return idx_of_closest_point_in_train_matrix[0]
 

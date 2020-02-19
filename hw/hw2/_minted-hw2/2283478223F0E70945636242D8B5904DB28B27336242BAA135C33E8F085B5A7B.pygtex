@@ -1,0 +1,9 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+	\PYG{k}{def} \PYG{n+nf}{compute\PYGZus{}nearest\PYGZus{}neighbors}\PYG{p}{(}\PYG{n}{train\PYGZus{}matrix}\PYG{p}{,} \PYG{n}{testImage}\PYG{p}{):}
+	   \PYG{n}{distances} \PYG{o}{=} \PYG{n}{np}\PYG{o}{.}\PYG{n}{sqrt}\PYG{p}{(}
+	   	\PYG{n}{np}\PYG{o}{.}\PYG{n}{sum}\PYG{p}{((}\PYG{n}{train\PYGZus{}matrix} \PYG{o}{\PYGZhy{}} \PYG{n}{testImage}\PYG{p}{)} \PYG{o}{**} \PYG{l+m+mi}{2}\PYG{p}{,}
+	   			\PYG{n}{axis}\PYG{o}{=}\PYG{l+m+mi}{1}\PYG{p}{))}
+    	    \PYG{n}{idx\PYGZus{}of\PYGZus{}closest\PYGZus{}point\PYGZus{}in\PYGZus{}train\PYGZus{}matrix} \PYG{o}{=}
+	    	\PYG{n}{np}\PYG{o}{.}\PYG{n}{argsort}\PYG{p}{(}\PYG{n}{distances}\PYG{p}{)}
+	    \PYG{k}{return} \PYG{n}{idx\PYGZus{}of\PYGZus{}closest\PYGZus{}point\PYGZus{}in\PYGZus{}train\PYGZus{}matrix}\PYG{p}{[}\PYG{l+m+mi}{0}\PYG{p}{]}
+\end{Verbatim}
