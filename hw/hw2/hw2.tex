@@ -1,0 +1,228 @@
+\documentclass[12pt,twoside]{article}
+\usepackage[dvipsnames]{xcolor}
+\usepackage{tikz,graphicx,amsmath,amsfonts,amscd,amssymb,bm,cite,epsfig,epsf,url}
+\usepackage[hang,flushmargin]{footmisc}
+\usepackage[colorlinks=true,urlcolor=blue,citecolor=blue]{hyperref}
+\usepackage{amsthm,multirow,wasysym,appendix}
+\usepackage{array,subcaption} 
+% \usepackage[small,bf]{caption}
+\usepackage{bbm}
+\usepackage{pgfplots}
+\usetikzlibrary{spy}
+\usepgfplotslibrary{external}
+\usepgfplotslibrary{fillbetween}
+\usetikzlibrary{arrows,automata}
+\usepackage{thmtools}
+\usepackage{blkarray} 
+\usepackage{textcomp}
+\usepackage[left=0.8in,right=1.0in,top=1.0in,bottom=1.0in]{geometry}
+
+\usepackage{times}
+\usepackage{amsfonts}
+\usepackage{amsmath}
+%\usepackage[psamsfonts]{amssymb}
+\usepackage{latexsym}
+\usepackage{color}
+\usepackage{graphics}
+\usepackage{enumerate}
+\usepackage{amstext}
+\usepackage{blkarray}
+\usepackage{url}
+\usepackage{epsfig}
+\usepackage{bm}
+\usepackage{hyperref}
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue,
+    filecolor=magenta,      
+    urlcolor=blue,
+}
+\usepackage{mathtools}
+\usepackage{minted}
+\input{macros}
+
+\begin{document}
+
+\noindent DS-GA.1013 Mathematical Tools for Data Science \\
+Homework 2 \\
+Yves Greatti - yg390\\
+
+\begin{enumerate}
+\item (Correlation coefficient) The entries of a two-dimensional random vector have a correlation coefficient equal to one. What is the variance of the second principal component? Provide both a proof and an intuitive justification. 
+
+Let X and Y the two components of a random vector. If $\rho_{X,Y} = \frac {\Cov(X,Y)}{\sigma_X \sigma_Y} = 1$ then $\Cov(X,Y) = \sigma_X \sigma_Y$
+The covariance matrix  is then  $ \Sigma = \begin{bmatrix} \sigma_X^2 & \Cov(X,Y) \\  \Cov(X,Y) & \sigma_Y^2  \end{bmatrix}  = \begin{bmatrix}  \sigma_X^2 &  \sigma_X \sigma_Y \\ \sigma_X \sigma_Y & \sigma_Y^2 \end{bmatrix}$.
+$\det(\Sigma -\lambda I) = \lambda (\lambda - (\sigma_X^2 +  \sigma_Y^2)), \lambda \in   \mathbf{R} \Rightarrow $ the eigenvalues are $0$ and $\sigma_X^2 +  \sigma_Y^2$.
+The sample variance of the second principal component is the smaller eigenvalue $0$. We can expect such result since there $X$ and $Y$ are positively correlated with a coefficient of one thus the variance of the data is completely expressed by the variance of the first principal component, there is no information on the second principal component.
+
+
+\newpage
+\item (Not centering) To analyze what happens if we apply PCA without centering, let $\rx$ be a $d$-dimensional vector with mean $\mu \in \R^{d}$ and covariance matrix $\Sigma_{\rx}$ equal to the identity matrix. If we compute the eigendecomposition of the matrix $\E(\rx \rx^T)$ what is the value of the largest eigenvalue? What is the direction of the corresponding eigenvector? 
+  
+ \newpage
+  
+ \item (Financial data) In this exercise you will use the code in the findata folder.
+  For the data loading code to work properly, make sure you
+  have the pandas Python package installed on your system.
+
+  Throughout, we will be using the data obtained by calling
+ \emph{load\_data} in \emph{findata\_tools.py}.  This will
+  give you the names, and closing prices for a set of 18 stocks over a
+  period of 433 days ordered chronologically.
+  For a fixed stock (such as msft), let
+  $P_1,\ldots,P_{433}$ denote its sequence of closing prices ordered in
+  time.  For that stock, define the daily returns series $R_i:=P_{i+1}-P_i$ for
+  $i=1,\ldots,432$.  Throughout we think of the daily stock returns as features,
+  and each day (but the last) as a separate datapoint in $\R^{18}$.
+  That is, we have $432$ datapoints each having $18$ features.
+  \begin{enumerate}
+  \item Looking at the first two principal directions of the
+    centered data, give the two stocks with the largest
+    coefficients (in absolute value) in each direction.  
+    Give a hypothesis why these two stocks have the largest
+    coefficients, and confirm your hypothesis using the data.  The file 
+   \emph{findata\_tools.py} has\emph{pretty\_print}
+    functions that can help you output your results.
+    You are not required to include the principal directions in
+    your submission.\\ \\
+    The two stocks corresponding to the two principal directions of the centered data with the largest coefficients (in absolute value) in each direction
+    are: "amzn" and  "goog". It can be explained by computing the absolute return for each stock over the period of 433 days:
+
+	\begin{figure}[H]
+		\centering
+		\includegraphics[width=200pt]{figures/pb_3_a.png}
+		\caption{Stocks returns over a period of 433 days (output of pretty\_print).}
+		\label{fig1}
+	\end{figure}
+    
+    In term of return goog and amzn stocks returned about 4 and  3 times more than the next stock after amzn and goog stocks with the highest return: gs, 53 and 43 times more than
+    the last stock in term of return among the 18 stocks: xlf.
+    \begin{center}
+    		\begin{tabular}{ | c | c | c | c | }
+    		\hline
+			\text{amzn/gs} & \text{amzn/xlf} & \text{goog/gs}  & \text{goog/xlf} \\
+		\hline
+			3.8 & 53.2 & 3.1 & 43.5  \\ 
+		\hline
+    	\end{tabular}
+    \end{center}
+   So most of the variance in the data will be explained by these two stocks: goog and amzn.
+
+  \item Standardize the centered data so that each stock (feature) has
+    variance 1 and compute the first 2 principal directions.  This is
+    equivalent to computing the principal directions of the
+    correlation matrix (the previous part used the covariance
+    matrix).  Using the information in the comments of
+   \emph{generate\_findata.py} as a guide to the stocks, 
+    give an English interpretation of the first 2 principal directions
+    computed here. 
+    You are not required to include the principal directions in
+    your submission.
+     
+    We can think of each of the entries of the principal directions as a weighting on the corresponding stock.  
+    	\bi
+    		\item SPY - A security that roughly tracks the S\&P 500, a weighted average of the stock prices of 500 top US companies.
+		We have only 18 stocks and excluding the ETF (Exchange traded products), we are left with 13 stocks. 
+		Computing the  weighted average using the entries in the first principal direction, we obtain a weighted average price
+		in the range of the SPY price reported for the same day. It is less true using the entries of the second principal direction.
+		
+		\begin{figure}[H]
+			\centering
+			\includegraphics[width=200pt]{figures/pb_3_b_1.png}
+			\caption{Weighted average of the 13 stock prices and SPY price using PD0.}
+			\label{fig2}
+		\end{figure}
+			
+		\begin{figure}[H]
+			\centering
+			\includegraphics[width=200pt]{figures/pb_3_b_2.png}
+			\caption{Weighted average of the 13 stock prices and SPY price using PD1.}
+			\label{fig3}
+		\end{figure}
+			
+		\item  XLF -  A security that tracks a weighted average of top US financial companies.
+		We find the same weighting scheme but to a less extent as we have only 3 financial stocks among the 18 stocks.
+		
+		\begin{figure}[H]
+			\centering
+			\includegraphics[width=200pt]{figures/pb_3_b_3.png}
+			\caption{Weighted average of the 3 financial stock prices and XLF price using PD0.}
+			\label{fig3}
+		\end{figure}
+	
+		\item SSO - ProShares levered ETF that roughly corresponds to twice the daily performance of the S\&P 500.
+		We have similar entries for SSO and SPY which indicate a strong correlation between these two stocks
+		\begin{center}
+    			\begin{tabular}{ | c | c | c | }
+    			\hline
+								& \text{SSO} 	& \text{SPY} \\
+			\hline
+				\text{First PD}		& -0.3348		& -0.3366  \\ 
+    			\hline
+				\text{Second PD}	& 0.09156		& 0.0848  \\ 
+			\hline
+    			\end{tabular}
+   		 \end{center}
+		 
+		\item SDS - ProShares inverse levered ETF that roughly corresponds to twice the negative daily performance of the S\&P 500. 
+		The entries for SDS and SPY are roughly opposite confirming the opposite trend of SDS compared to SPY.
+		\begin{center}
+    			\begin{tabular}{ | c | c | c | }
+    			\hline
+								& \text{SDS} 	& \text{SPY} \\
+			\hline
+				\text{First PD}		& 0.3272		& -0.3366  \\ 
+    			\hline
+				\text{Second PD}	& -0.0560		& 0.0848  \\ 
+			\hline
+    			\end{tabular}
+   		 \end{center}
+		 
+		\item USO - Exchange traded product that tracks the price of oil in the US
+		Taking the mean of the entries related to oil company (xom, apc, cvx) from the principal directions  and comparing to the entry for USO, they are close,
+		confirming the correlation between uso and (xom, apc, cvx):
+		\begin{center}
+    			\begin{tabular}{ | c | c | c | }
+    			\hline
+								& \text{USO} 	& \text{Mean(XOM, APC, CVX)} \\
+			\hline
+				\text{First PD}		& -0.1592		& -0.2091 \\ 
+    			\hline
+				\text{Second PD}	& -0.3709		& -0.3102  \\ 
+			\hline
+    			\end{tabular}
+   		 \end{center}
+		
+
+   	\ei
+     
+    
+  \item Assume the stock returns each day are drawn independently from a
+    multivariate distribution $\rx$ where
+    $\rx[i]$ corresponds to the $i$th stock.  Assume further that
+    you hold a portfolio with $200$ shares of each of appl, amzn, msft, and
+    goog, and $100$ shares of each of the remaining 14 stocks in the
+    dataset.  Using the sample covariance matrix as an estimator for
+    the true covariance of $\rx$, approximate the standard deviation of
+    your 1 day portfolio returns $\ry$ (this is a measure of the risk of your
+    portfolio).  Here $\ry$ is given by
+    $$\ry := \sum_{i=1}^{18} \alpha[i] \rx[i],$$
+    where $\alpha[i]$ is the number of shares you hold of stock $i$.  
+    
+    Using the sample covariance matrix and taking the root square of [$ \text{shares}^T \times \text{covariance} \times \text{shares}$], we find that for such portfolio the standard deviation of 1 day is: $4309.94952$.
+    
+  \item Assume further that $\rx$ from the previous part has a
+    multivariate Gaussian distribution.  Compute the probability
+    of losing $1000$ or more dollars in a single day.  That is,
+    compute
+    $$\Pr(\ry \leq -1000).$$
+    For each day of the $432$ days, we compute the daily return $\ry := \sum_{i=1}^{18} \alpha[i] \rx[i]$ and count the number of times over the $432$ days: $\Pr(\ry \leq -1000)$, then divide the result by the number of days (432),
+    we obtain: $0.3425$.
+    
+  \end{enumerate}
+  Note: The assumptions made in the previous parts are often
+  invalid and can lead to inaccurate risk calculations in real
+  financial situations. 
+  
+\end{enumerate}
+\end{document}

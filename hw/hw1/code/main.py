@@ -49,6 +49,7 @@ def eigen_iteration(A, x0, alpha, max_iter=50, thresh=1e-5):
 
     w, v = np.linalg.eigh(A)
     true_lam = w[w.size - 1]  # fill in your code to find max eigenvalue of A
+    true_lamn = w[0]
     true_u1 = v[:, v.shape[1] - 1]  # np array with the first eigenvector of A
     relative_errors_eigvec = list()
     true_errors_eigvec = list()
@@ -77,16 +78,16 @@ def eigen_iteration(A, x0, alpha, max_iter=50, thresh=1e-5):
              init_point_norm={}".format(iteration, alpha, np.linalg.norm(x0)))
             print("True u1:{}, computed u1:{}, rel_error:{}, true_error:{}"
                   .format(true_u1, next_eigv, rel_eigvec_error, true_eigvec_error))
-            print("True max.eigenval:{}, computed max_eigval:{}, rel_error:{}, true_error:{}"
-                  .format(true_lam, eigval_next, rel_eigval_error, true_eigval_error))
+            print("True max.eigenval:{}, computed max_eigval:{}, rel_error:{}, true_error:{}, ratio eigenvalues:{}"
+                  .format(true_lam, eigval_next, rel_eigval_error, true_eigval_error, abs(true_lam/true_lamn)))
             break
         iteration += 1
         if iteration >= max_iter:
             print("Maximum iteration exceeded!")
             print("True u1:{}, computed u1:{}, rel_error:{}, true_error:{}"
                   .format(true_u1, next_eigv, rel_eigvec_error, true_eigvec_error))
-            print("True max.eigenval:{}, computed max_eigval:{}, rel_error:{}, true_error:{}"
-                  .format(true_lam, eigval_next, rel_eigval_error, true_eigval_error))
+            print("True max.eigenval:{}, computed max_eigval:{}, rel_error:{}, true_error:{}, ratio eigenvalues:{}"
+                  .format(true_lam, eigval_next, rel_eigval_error, true_eigval_error, (true_lam/true_lamn)))
             break
 
         curr_eigvec = next_eigv
@@ -156,11 +157,12 @@ def main():
 
 
 def main_test():
-    np.random.seed(1234)
-    alpha_array = 10 ** np.array([-1.0, 0, 1, 2, 8])
+    #np.random.seed(1234)
+    alpha_array = np.array([0.1, 0, 1, 2])
+    #alpha_array = 10 ** np.array([-1.0, 0, 1, 2, 8])
     max_iter = 2000
-    A = np.diag((1, 2, 3))
-    A = np.array([[2, -1, 0], [-1, 2, -1], [0, -1, 2]])
+    A = np.diag((-20, 2, -1))
+    #A = np.array([[2, -1, 0], [-1, 2, -1], [0, -1, 2]])
     print(A)
     init_point = np.random.randn(A.shape[0])
     true_errors_eigvec = list()
@@ -173,8 +175,8 @@ def main_test():
         true_errors_eigvec.append(t2)
         rel_errors_eigval.append(t3)
         true_errors_eigval.append(t4)
-    plt = plot(rel_errors_eigvec, true_errors_eigvec, rel_errors_eigval, true_errors_eigval, alpha_array)
-    plt.show()
+    #plt = plot(rel_errors_eigvec, true_errors_eigvec, rel_errors_eigval, true_errors_eigval, alpha_array)
+    #plt.show()
 
 
 if __name__ == "__main__":
@@ -185,5 +187,5 @@ if __name__ == "__main__":
     # print(x)
     # print(np.matmul(A, x))
     # print(x.T.dot(np.matmul(A, x)))
-    # main_test()
-    main()
+    main_test()
+    #main()

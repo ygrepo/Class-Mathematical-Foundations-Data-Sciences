@@ -141,8 +141,10 @@ We have $\nabla{f(x)} = 2 A x$, by assumption and using the previous result, the
 	x^{'[k-1]}	&= x^{[k-1]} + \alpha \nabla{f(x^{[k-1]} )} \\
 			&= x^{[k-1]} -2 \alpha A x^{[k-1]} \\
 	x^{[k]}	&= \frac{x^{'[k-1]}}{\|x^{'[k-1]}\|_2} \\
-			&= \frac{(I - 2 \alpha A) x^{[k-1]}}{ \| (I - 2 \alpha A) x^{[k-1]} \|_2} \; k=0,1, \ldots
+			&= \frac{(I - 2 \alpha A) x^{[k-1]}}{ \| (I - 2 \alpha A) x^{[k-1]} \|_2} \; k=1, \ldots
 \end{align*}
+where $\alpha$ is a positive constant and $x^{[0]}$ is an arbitrary initial point.
+We run this algorithm until either the number maximum of iterations is reached or $|x^{[k]} - x^{[k-1]}| < \epsilon$.
 
 
 \item Let us express the iterations in the basis of eigenvectors of $A$: $x^{[k]} := \sum_{i=1}^{n}\beta_i^{[k]} u_i$. Compute the ratio between the coefficient corresponding to the largest eigenvalue and the rest $\frac{\beta_1^{[k]}}{\beta_i^{[k]}}$ as a function of $k$, $\alpha$, and $\beta_1^{[0]}$, \ldots, $\beta_n^{[0]}$  (and also the eigenvalues). Under what conditions on $\alpha$ and the initial point does the algorithm converge to the eigenvector $u_1$ corresponding to the largest eigenvalue? What happens if $\alpha$ is extremely large (i.e. when $\alpha \rightarrow \infty$)?
@@ -156,29 +158,28 @@ Let $x^{[0]} = \sum_{i=1}^n \beta_i^{[0]} u_i$,  and $\lambda_1, \dots , \lambda
 			&=	\frac{\sum_{i=1}^n \beta_i^{[0]} (1 - 2 \alpha \lambda_i)^k u_i} { \| \sum_{i=1}^n \beta_i^{[0]} (1 - 2 \alpha \lambda_i)^k u_i \|_2} \\
 			&= 	\frac{\sum_{i=1}^n \beta_i^{[0]} (1 - 2 \alpha \lambda_i)^k u_i} { (\sum_{i=1}^n (\beta_i^{[0]})^2 (1 - 2 \alpha \lambda_i)^{2k} )^{\frac{1}{2}} }
 \end{align*}
-%if $u_j^T x^{[k]} \to 0$ then $x^{[k]} \to u_1,  j \neq 1$ and
 This give us:
 \begin{align*}
-	%u_j^T x^{[k]}	&=	\frac{ \beta_j^{[0]} (1 - 2 \alpha \lambda_j)^k }  { (\sum_{i=1}^n (\beta_i^{[0]})^2 (1 - 2 \alpha \lambda_i)^{2k} )^{\frac{1}{2}} } \\
+	u_j^T x^{[k]}	&=	\frac{ \beta_j^{[0]} (1 - 2 \alpha \lambda_j)^k }  { (\sum_{i=1}^n (\beta_i^{[0]})^2 (1 - 2 \alpha \lambda_i)^{2k} )^{\frac{1}{2}} } \\
 	u_1^T x^{[k]}	&=	\frac{ \beta_1^{[0]} (1 - 2 \alpha \lambda_1)^k }  { (\sum_{i=1}^n (\beta_i^{[0]})^2 (1 - 2 \alpha \lambda_i)^{2k} )^{\frac{1}{2}} } 
 \end{align*}
-,
+We want $|u_1^T x^{[k]}| \to 1$.
 By the spectral theorem, $\lambda_n \le \dots \le \lambda_i \le \ldots \le \lambda_1 \Rightarrow (1-2 \alpha \lambda_n)^{2k} \ge \ldots \ge (1-2 \alpha \lambda_i)^{2k} \ldots \ge (1-2 \alpha \lambda_1)^{2k}$, so we have
 \begin{align*}
-	%(\frac{1-2 \alpha \lambda_j}{1-2 \alpha \lambda_n})^k \frac{\beta_j^{[0]}} {(\sum_{i=1}^n (\beta_j^{[0]})^2)^{\frac{1}{2}}} 
-	%	&\le \frac{ \beta_j^{[0]} (1 - 2 \alpha \lambda_j)^k }  { (\sum_{i=1}^n (\beta_i^{[0]})^2 (1 - 2 \alpha \lambda_i)^{2k} )^{\frac{1}{2}} } 
-	%	\le (\frac{1-2 \alpha \lambda_j}{1-2 \alpha \lambda_1})^k \frac{\beta_j^{[0]}} {(\sum_{i=1}^n (\beta_j^{[0]})^2)^{\frac{1}{2}}} \\
-	(\frac{1-2 \alpha \lambda_1}{1-2 \alpha \lambda_n})^k \frac{\beta_1^{[0]}} {(\sum_{i=1}^n (\beta_j^{[0]})^2)^{\frac{1}{2}}} 
-		&\le \frac{ \beta_1^{[0]} (1 - 2 \alpha \lambda_j)^k }  { (\sum_{i=1}^n (\beta_i^{[0]})^2 (1 - 2 \alpha \lambda_i)^{2k} )^{\frac{1}{2}} } 
-		\le (\frac{1-2 \alpha \lambda_1}{1-2 \alpha \lambda_1})^k \frac{\beta_1^{[0]}} {(\sum_{i=1}^n (\beta_j^{[0]})^2)^{\frac{1}{2}}} \\
-	(\frac{1-2 \alpha \lambda_1}{1-2 \alpha \lambda_n})^k \frac{\beta_1^{[0]}} {(\sum_{i=1}^n (\beta_j^{[0]})^2)^{\frac{1}{2}}} 
-		&\le \frac{ \beta_1^{[0]} (1 - 2 \alpha \lambda_j)^k }  { (\sum_{i=1}^n (\beta_i^{[0]})^2 (1 - 2 \alpha \lambda_i)^{2k} )^{\frac{1}{2}} } 
-		\le \frac{\beta_1^{[0]}} {(\sum_{i=1}^n (\beta_j^{[0]})^2)^{\frac{1}{2}}} \\
+	|(\frac{1-2 \alpha \lambda_1}{1-2 \alpha \lambda_n})^k \frac{\beta_1^{[0]}} {(\sum_{i=1}^n (\beta_i^{[0]})^2)^{\frac{1}{2}}}| 
+		&\le |\frac{ \beta_1^{[0]} (1 - 2 \alpha \lambda_1)^k }  { (\sum_{i=1}^n (\beta_i^{[0]})^2 (1 - 2 \alpha \lambda_i)^{2k} )^{\frac{1}{2}} }|
+		\le |(\frac{1-2 \alpha \lambda_1}{1-2 \alpha \lambda_1})^k \frac{\beta_1^{[0]}} {(\sum_{i=1}^n (\beta_i^{[0]})^2)^{\frac{1}{2}}}| \\
+	|\frac{1-2 \alpha \lambda_1}{1-2 \alpha \lambda_n}|^k |\frac{\beta_1^{[0]}} {(\sum_{i=1}^n (\beta_j^{[0]})^2)^{\frac{1}{2}}} |
+		&\le |\frac{ \beta_1^{[0]} (1 - 2 \alpha \lambda_1)^k }  { (\sum_{i=1}^n (\beta_i^{[0]})^2 (1 - 2 \alpha \lambda_i)^{2k} )^{\frac{1}{2}} }| 
+		\le | \frac{\beta_1^{[0]}} {(\sum_{i=1}^n (\beta_j^{[0]})^2)^{\frac{1}{2}}}| \\
 \end{align*}
-if $u_1^T x^{[k]} \to 1$, then $x^{[k]} \to u_1$
-By the squeeze limit theorem as taking the limit on both sides for $\alpha \to \infty$, $u_1^T x^{[k]}  \to 1$ and $x^{[k]^T} A x^{[k]} \to \lambda_1$.
+One condition for convergence of the previous inequality will be  $2 \alpha |\lambda_1| - 1 <  |1 - 2 \alpha \lambda_1| < 1$ so $|1 - 2 \alpha \lambda_1|^k \to 0$ which gives us $0 < \alpha < \frac{1}{|\lambda_1|}$ and for upper bound we need  $|\beta_1^{[0]}| =| (\sum_{i=1}^n (\beta_j^{[0]})^2)^{\frac{1}{2}}|$,
+then $u_1^T x^{[k]}  \to +1$ or $-1$, and $x^{[k]^T} A x^{[k]} \to +\lambda_1$ or $-\lambda_1$.
 
 \item Implement the algorithm derived in part (b). Support code is provided in {\tt main.py} within {\tt Q4.zip}. Observe what happens for different sizes of $\alpha$. Report the plots generated by the script.
+As we increase $\alpha$, the algorithm converges faster to the maximum eigenvalue and corresponding eigenvector, for $\alpha=0.1 < 1$, there is no convergence.
+%The initial point has an impact on the relative errors of the eigenvalue, not on the relative error related to the corresponding eigenvector.
+We also observe that the initial point plays a role to the rate of convergence:
 
 \begin{minted}{python}
 
@@ -280,8 +281,6 @@ def eigen_iteration(A, x0, alpha, max_iter=50, thresh=1e-5):
     return relative_errors_eigvec, true_errors_eigvec, relative_errors_eigval, true_errors_eigval
         
 \end{minted}
-As we increase $\alpha$, the algorithm converges faster to the maximum eigenvalue and corresponding eigenvector, for $\alpha=0.1 < 1$, there is no convergence.
-The initial point has an impact on the relative errors of the eigenvalue, not on the relative error related to the corresponding eigenvector.
 
 \begin{figure}[H]
 	\centering
@@ -304,7 +303,6 @@ The initial point has an impact on the relative errors of the eigenvalue, not on
 	\label{fig1}
 \end{figure}
 
-We also observe that the initial point plays a role on how fast there is convergence to a stable state from one iteration to the other:
 
 \end{enumerate}
 
