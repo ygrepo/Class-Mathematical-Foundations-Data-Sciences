@@ -1,0 +1,13 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{n}{rng} \PYG{o}{=} \PYG{n}{RandomState}\PYG{p}{(}\PYG{l+m+mi}{0}\PYG{p}{)}
+\PYG{n}{center} \PYG{o}{=} \PYG{n+nb+bp}{True}
+\PYG{n}{n\PYGZus{}components} \PYG{o}{=} \PYG{l+m+mi}{40}
+
+\PYG{n}{faces} \PYG{o}{=} \PYG{n}{fetch\PYGZus{}olivetti\PYGZus{}faces}\PYG{p}{()}\PYG{o}{.}\PYG{n}{data}
+\PYG{n}{faces\PYGZus{}centered} \PYG{o}{=} \PYG{n}{faces} \PYG{o}{\PYGZhy{}} \PYG{n}{faces}\PYG{o}{.}\PYG{n}{mean}\PYG{p}{(}\PYG{n}{axis}\PYG{o}{=}\PYG{l+m+mi}{0}\PYG{p}{)}
+\PYG{n}{estimator} \PYG{o}{=}  \PYG{n}{KMeans}\PYG{p}{(}\PYG{n}{n\PYGZus{}clusters}\PYG{o}{=}\PYG{n}{n\PYGZus{}components}\PYG{p}{,} \PYG{n}{random\PYGZus{}state}\PYG{o}{=}\PYG{n}{rng}\PYG{p}{)}
+\PYG{n}{estimator}\PYG{o}{.}\PYG{n}{fit}\PYG{p}{(}\PYG{n}{faces}\PYG{p}{)}
+\PYG{n}{kmeans\PYGZus{}components} \PYG{o}{=} \PYG{n}{estimator}\PYG{o}{.}\PYG{n}{cluster\PYGZus{}centers\PYGZus{}}
+\PYG{n}{plot\PYGZus{}tools}\PYG{o}{.}\PYG{n}{plot\PYGZus{}image\PYGZus{}grid}\PYG{p}{(}\PYG{n}{kmeans\PYGZus{}components}\PYG{p}{,}
+ \PYG{l+s+s2}{\PYGZdq{}KMEANS\PYGZus{}clusters\PYGZdq{}}\PYG{p}{,} \PYG{p}{(}\PYG{l+m+mi}{64}\PYG{p}{,} \PYG{l+m+mi}{64}\PYG{p}{),} \PYG{l+m+mi}{10}\PYG{p}{,} \PYG{n}{n\PYGZus{}row}\PYG{o}{=}\PYG{l+m+mi}{4}\PYG{p}{,} \PYG{n}{bycol}\PYG{o}{=}\PYG{n+nb+bp}{True}\PYG{p}{)}
+\end{Verbatim}

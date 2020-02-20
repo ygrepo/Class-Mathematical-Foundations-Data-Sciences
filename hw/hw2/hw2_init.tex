@@ -1,0 +1,138 @@
+\documentclass[12pt,twoside]{article}
+\usepackage[dvipsnames]{xcolor}
+\usepackage{tikz,graphicx,amsmath,amsfonts,amscd,amssymb,bm,cite,epsfig,epsf,url}
+\usepackage[hang,flushmargin]{footmisc}
+\usepackage[colorlinks=true,urlcolor=blue,citecolor=blue]{hyperref}
+\usepackage{amsthm,multirow,wasysym,appendix}
+\usepackage{array,subcaption} 
+% \usepackage[small,bf]{caption}
+\usepackage{bbm}
+\usepackage{pgfplots}
+\usetikzlibrary{spy}
+\usepgfplotslibrary{external}
+\usepgfplotslibrary{fillbetween}
+\usetikzlibrary{arrows,automata}
+\usepackage{thmtools}
+\usepackage{blkarray} 
+\usepackage{textcomp}
+\usepackage[left=0.8in,right=1.0in,top=1.0in,bottom=1.0in]{geometry}
+
+\input{macros}
+
+\begin{document}
+
+\begin{center}
+{\large{\textbf{Homework 2}} } \vspace{0.2cm}\\
+Due February 23 at 11 pm
+\end{center}
+
+\begin{enumerate}
+\item (Correlation coefficient) The entries of a two-dimensional random vector have a correlation coefficient equal to one. What is the variance of the second principal component? Provide both a proof and an intuitive justification. 
+
+\item (Not centering) To analyze what happens if we apply PCA without centering, let $\rx$ be a $d$-dimensional vector with mean $\mu \in \R^{d}$ and covariance matrix $\Sigma_{\rx}$ equal to the identity matrix. If we compute the eigendecomposition of the matrix $\E(\rx \rx^T)$ what is the value of the largest eigenvalue? What is the direction of the corresponding eigenvector? 
+  
+ \item (Financial data) In this exercise you will use the code in the findata folder.
+  For the data loading code to work properly, make sure you
+  have the pandas Python package installed on your system.
+
+  Throughout, we will be using the data obtained by calling
+ \verb|load_data()| in \verb|findata_tools.py|.  This will
+  give you the names, and closing prices for a set of 18 stocks over a
+  period of 433 days ordered chronologically.
+  For a fixed stock (such as msft), let
+  $P_1,\ldots,P_{433}$ denote its sequence of closing prices ordered in
+  time.  For that stock, define the daily returns series $R_i:=P_{i+1}-P_i$ for
+  $i=1,\ldots,432$.  Throughout we think of the daily stock returns as features,
+  and each day (but the last) as a separate datapoint in $\R^{18}$.
+  That is, we have $432$ datapoints each having $18$ features.
+  \begin{enumerate}
+  \item Looking at the first two principal directions of the
+    centered data, give the two stocks with the largest
+    coefficients (in absolute value) in each direction.  
+    Give a hypothesis why these two stocks have the largest
+    coefficients, and confirm your hypothesis using the data.  The file 
+ \verb|findata_tools.py| has \verb|pretty_print()|
+    functions that can help you output your results.
+    You are not required to include the principal directions in
+    your submission.
+  \item Standardize the centered data so that each stock (feature) has
+    variance 1 and compute the first 2 principal directions.  This is
+    equivalent to computing the principal directions of the
+    correlation matrix (the previous part used the covariance
+    matrix).  Using the information in the comments of
+   \emph{generate\_findata.py} as a guide to the stocks, 
+    give an English interpretation of the first 2 principal directions
+    computed here. 
+    You are not required to include the principal directions in
+    your submission.
+  \item Assume the stock returns each day are drawn independently from a
+    multivariate distribution $\rx$ where
+    $\rx[i]$ corresponds to the $i$th stock.  Assume further that
+    you hold a portfolio with $200$ shares of each of appl, amzn, msft, and
+    goog, and $100$ shares of each of the remaining 14 stocks in the
+    dataset.  Using the sample covariance matrix as an estimator for
+    the true covariance of $\rx$, approximate the standard deviation of
+    your 1 day portfolio returns $\ry$ (this is a measure of the risk of your
+    portfolio).  Here $\ry$ is given by
+    $$\ry := \sum_{i=1}^{18} \alpha[i] \rx[i],$$
+    where $\alpha[i]$ is the number of shares you hold of stock $i$.  
+  \item Assume further that $\rx$ from the previous part has a
+    multivariate Gaussian distribution.  Compute the probability
+    of losing $1000$ or more dollars in a single day.  That is,
+    compute
+    $$\Pr(\ry \leq -1000).$$
+  \end{enumerate}
+  Note: The assumptions made in the previous parts are often
+  invalid and can lead to inaccurate risk calculations in real
+  financial situations.   
+
+
+\item The following questions refer to the code in the folder {\tt faces }
+  The Olivetti faces dataset used in  {\tt faces }  contains images of faces of people associated with a unique numeric id to identify the person.
+ 
+\begin{enumerate}
+\item  Complete the \verb|compute_nearest_neighbors()| function in \verb|nearest_neighbors.py| that finds the image in the training data that is closest to a given test image.  Include the generated images in your submitted homework.
+
+
+\vspace{0.5cm}Create a new file  in which
+you must write code to complete the following tasks:
+
+\item Generate a plot of $k$ vs.~$\sigma^2_k$, where $\sigma^2_k$ is
+the variance  with the $k$th principal component of the data (e.g., $\sigma^2_1$
+is the largest variance). 
+Include
+the plot in your submitted homework document. You can limit the x axis to a reasonable number.
+\item  Plot (using  \verb|plot_image_grid()| in
+\verb|plot_tools.py| ) the vectors
+corresponding to the top 10 principal directions of the data.
+Your principal direction vectors should be elements of $\mathbb{R}^{4096}$ (i.e., they
+should represent images).
+Include the plot in your submitted homework document.
+\item Use the variance of principal directions plot to determine a 
+realtively small number $k$ of principal components
+that explains the training data reasonably well.
+Project the training data 
+and the test data onto the
+first $k$ principal components, and run nearest neighbors for
+each test image in this lower dimensional space.  Include your
+choice for $k$, and the plots
+of your nearest neighbor results in your submitted homework
+document.  You should use the code from
+ \verb|nearest_neighbors.py| to generate your image plots.
+\item Give a potential reason why the principal component-based 
+nearest-neighbor approach used in the previous part could be
+more accurate than using the full training set.
+\item Use \verb|sklearn.cluster.KMeans| to perform KMeans on the entire dataset (both train and test set) with $k=40$. Use \verb|plot_image_grid()| to create a picture of all the $k$ cluster centers. 
+\end{enumerate}
+
+  Some notes to keep in mind:
+  \begin{enumerate}
+  \item The function {\tt np.linalg.eig} might return complex eigenvectors.
+  \item The data points in the training and test data are given as
+    rows.
+    \item Include all new code (or functions) you have filled in your final PDF.
+ \end{enumerate}
+ 
+ \end{enumerate}
+ 
+\end{document}

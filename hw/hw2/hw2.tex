@@ -59,6 +59,15 @@ The sample variance of the second principal component is the smaller eigenvalue 
 \newpage
 \item (Not centering) To analyze what happens if we apply PCA without centering, let $\rx$ be a $d$-dimensional vector with mean $\mu \in \R^{d}$ and covariance matrix $\Sigma_{\rx}$ equal to the identity matrix. If we compute the eigendecomposition of the matrix $\E(\rx \rx^T)$ what is the value of the largest eigenvalue? What is the direction of the corresponding eigenvector? 
   
+  \begin{align*}
+  	\E((\rx - \mu) (\rx - \mu)^T))		&=	\E(\rx \rx^T -2 \mu^T \rx + \mu^T \mu) \\
+								&= 	\E(\rx \rx^T) -2 \mu \E(\rx^T) + \mu \mu^T \\
+								&=	\E(\rx \rx^T) -2  \mu \mu^T +  \mu \mu^T \\
+								&=	\E(\rx \rx^T) - \mu \mu^T \\
+	\Rightarrow	\E(\rx \rx^T) 		&=	\E((\rx - \mu) (\rx - \mu)^T)	) +  \mu \mu^T \\	
+								&=	\Sigma_{\rx} +  \mu \mu^T
+  \end{align*}
+  
  \newpage
   
  \item (Financial data) In this exercise you will use the code in the findata folder.
@@ -144,7 +153,7 @@ The sample variance of the second principal component is the smaller eigenvalue 
 					
 		\item  XLF -  A security that tracks a weighted average of top US financial companies.
 		Among the 18 stocks, there are only 3 financial stocks: c, gs and jpm. Entry for xlf has the same sign as the entries for these three stocks in the first two 
-		principal directions. To some extent the weighted average price of these 3 stocks is close to XLF price.
+		principal directions. To some extent the weighted average price of these 3 stocks is somewhat close to XLF price.
 		
 		\begin{figure}[H]
 			\centering
@@ -166,6 +175,19 @@ The sample variance of the second principal component is the smaller eigenvalue 
 			\hline
     			\end{tabular}
    		 \end{center}
+		 We can also pick two random days (200 and 201) and compare the returns for spy vs. xlf, you can see the return for xlf tracks the return of spy:
+		 \begin{figure}[H]
+			\centering
+			\includegraphics[width=200pt]{figures/sso_200.png}
+			\caption{Returns for day 200}
+		 \end{figure}
+		 \begin{figure}[H]
+			\centering
+			\includegraphics[width=200pt]{figures/sso_201.png}
+			\caption{Returns for day 201}
+		 \end{figure}
+
+		 
 		 
 		\item SDS - ProShares inverse levered ETF that roughly corresponds to twice the negative daily performance of the S\&P 500. 
 		The entries for SDS and SPY are roughly opposite confirming the opposite trend of SDS compared to SPY.
@@ -228,9 +250,13 @@ The sample variance of the second principal component is the smaller eigenvalue 
   financial situations. 
   
   \newpage
-  \item Faces
-  	\bi
-		\item 
+  \item The following questions refer to the code in the folder {\tt faces }
+  The Olivetti faces dataset used in  {\tt faces }  contains images of faces of people associated with a unique numeric id to identify the person.
+
+  	\begin{enumerate}
+		\item Complete the \verb|compute_nearest_neighbors()| function in \verb|nearest_neighbors.py| that finds the image in the training data that is closest to a given test image.  Include the generated images in your submitted homework.
+
+
 		The data set consists in $400$ rows of a ravelled face image of original size 64 x 64 pixels . Each row represent a datapoint in $\R^{4096}$.
 		A label is associated to each face image which correspond to the Subject IDs.
 		In the \emph{nearest\_neighbors} function we compute the distance between a test image and a set of reference image (train\_matrix).
@@ -254,7 +280,195 @@ The sample variance of the second principal component is the smaller eigenvalue 
 	\end{figure}
 
 
-	\ei	
+\vspace{0.5cm}Create a new file  in which
+you must write code to complete the following tasks:
+
+
+\item Generate a plot of $k$ vs.~$\sigma^2_k$, where $\sigma^2_k$ is
+the variance  with the $k$th principal component of the data (e.g., $\sigma^2_1$
+is the largest variance). 
+Include
+the plot in your submitted homework document. You can limit the x axis to a reasonable number.
+
+We use PCA decomposition from sklearn which gives us the singular values ordered which correspond to the variance with each principal component, we select $k$ of them
+and plot them for each principal component:
+\begin{minted}{python}
+faces = fetch_olivetti_faces().data
+n_samples, n_features = faces.shape
+faces_centered = faces - faces.mean(axis=0)
+cov = np.cov(faces_centered, rowvar=False)
+eigvals, _ = np.linalg.eigh(cov)
+
+k = 40
+truncated_eigvals = eigvals[::-1][:k]
+fig, ax = plt.subplots(figsize=(10, 6))
+k_range = range(1, k+1)
+label_str = "variance for largest {} principal components".format(k)
+ax.plot(k_range, truncated_eigvals, "-", color="red", label=label_str)
+ax.set_xlabel("principal component")
+ax.set_ylabel("Variance")
+ax.set_title(r"Explained Variance of the $k^{th}$ component")
+ax.legend()
+plt.show();
+fig.savefig("pb_4_b.pdf",bbox_inches='tight');
+\end{minted}
+
+	\begin{figure}[H]
+		\centering
+		\includegraphics[width=200pt]{figures/pb_4_b.pdf}
+		\caption{Variance with principal components}
+		\label{fig6}
+	\end{figure}
+
+\item  Plot (using  \verb|plot_image_grid()| in
+\verb|plot_tools.py| ) the vectors
+corresponding to the top 10 principal directions of the data.
+Your principal direction vectors should be elements of $\mathbb{R}^{4096}$ (i.e., they
+should represent images).
+Include the plot in your submitted homework document.
+
+We compute the sample covariance matrix of the data $\Sigma_{\mathcal{X}}$ ,
+ the principal directions are the eigenvectors of the eigendecomposition of  $\Sigma_{\mathcal{X}}$:
+ 
+\begin{minted}{python} 
+faces = fetch_olivetti_faces().data
+n_samples, n_features = faces.shape
+faces_centered = faces - faces.mean(axis=0)
+centered_cov = np.cov(faces_centered, rowvar=False)
+pd_eigvals, principal_directions = np.linalg.eigh(cov)
+k = 10
+idx = np.argsort(pd_eigvals)[::-1][:k]
+pd_evecs = principal_directions[:,idx].T
+title = "Top {} principal direction vectors".format(k)
+plot_tools.plot_image_grid(pd_evecs, title)
+\end{minted}
+
+	\begin{figure}[H]
+		\centering
+		\includegraphics[width=200pt]{figures/Top_10_principal_direction_vectors.pdf}
+		\caption{Top 10 principal direction vectors}
+		\label{fig7}
+	\end{figure}
+
+
+\item Use the variance of principal directions plot to determine a 
+realtively small number $k$ of principal components
+that explains the training data reasonably well.
+Project the training data 
+and the test data onto the
+first $k$ principal components, and run nearest neighbors for
+each test image in this lower dimensional space.  Include your
+choice for $k$, and the plots
+of your nearest neighbor results in your submitted homework
+document.  You should use the code from
+ \verb|nearest_neighbors.py| to generate your image plots.
+Based on the variance plot, most of the variance of the data is captured by the $40$ first principal components. Using the first 40 principal components, we project the training
+and test data set onto these principal components before finding the nearest neighbors.
+
+\begin{minted}{python} 
+
+def compute_nearest_neighbors(train_matrix, testImage):
+	   distances = np.sqrt(
+	   	np.sum((train_matrix - testImage) ** 2, 
+	   			axis=1))
+    	    idx_of_closest_point_in_train_matrix = 
+	    	np.argsort(distances)
+	    return idx_of_closest_point_in_train_matrix[0]
+
+test_idx = [1, 87, 94, 78]
+
+faces = fetch_olivetti_faces()
+targets = faces.target
+faces = faces.images.reshape((len(faces.images), -1))
+
+train_idx = np.array(list(set(list(range(faces.shape[0]))) 
+- set(test_idx)))
+
+train_set = faces[train_idx]
+y_train = targets[train_idx]
+test_set = faces[np.array(test_idx)]
+y_test = targets[np.array(test_idx)]
+
+k = 40
+model = PCA(n_components=k)
+model.fit(faces);
+
+top_principal_components = model.components_
+
+projected_train_set =
+ train_set.dot(top_principal_components.T)
+projected_test_set = 
+test_set.dot(top_principal_components.T)
+
+imgs = list()
+est_labels = list()
+for i in range(projected_test_set.shape[0]):
+    test_image = projected_test_set[i, :]
+    nnIdx = compute_nearest_neighbors(projected_train_set, 
+    test_image)
+    imgs.extend([test_set[i,:], train_set[nnIdx, :]])
+    est_labels.append(y_train[nnIdx])
+
+row_titles = ['Test', 'Nearest']
+col_titles = 
+['%d vs. %d' % (i, j) for i, j in zip(y_test, est_labels)]
+plot_tools.plot_image_grid(imgs,
+                               "PC-Image-NearestNeighbor",
+                               (64, 64), len(projected_test_set), 
+                           n_row=2, bycol=True, row_titles=row_titles,
+                            col_titles=col_titles)
+\end{minted}
+
+	\begin{figure}[H]
+		\centering
+		\includegraphics[width=200pt]{figures/PC-Image-NearestNeighbor.pdf}
+		\caption{Nearest neighbors using top 10 principal component vectors}
+		\label{fig8}
+	\end{figure}
+
+
+\item Give a potential reason why the principal component-based 
+nearest-neighbor approach used in the previous part could be
+more accurate than using the full training set.
+
+Using the top 40 principal components, we keep most of the variance of the data and by projecting into the span of these vectors, we can expect to have captured most of the significant characteristics of the data. So performing nearest neighbors in this space with smaller dimension could be if not as accurate.
+ 
+\item Use \verb|sklearn.cluster.KMeans| to perform KMeans on the entire dataset (both train and test set) with $k=40$. Use \verb|plot_image_grid()| to create a picture of all the $k$ cluster centers. 
+
+\begin{minted}{python} 
+rng = RandomState(0)
+center = True
+n_components = 40
+
+faces = fetch_olivetti_faces().data
+faces_centered = faces - faces.mean(axis=0)
+estimator =  KMeans(n_clusters=n_components, random_state=rng)
+estimator.fit(faces)
+kmeans_components = estimator.cluster_centers_
+plot_tools.plot_image_grid(kmeans_components,
+ "KMEANS_clusters", (64, 64), 10, n_row=4, bycol=True)
+\end{minted}
+
+	\begin{figure}[H]
+		\centering
+		\includegraphics[width=200pt]{figures/KMEANS_clusters}
+		\caption{40 KMeans clusters}
+		\label{fig9}
+	\end{figure}
+	
+
+
+ Some notes to keep in mind:
+  \begin{enumerate}
+  \item The function {\tt np.linalg.eig} might return complex eigenvectors.
+  \item The data points in the training and test data are given as
+    rows.
+    \item Include all new code (or functions) you have filled in your final PDF.
+ \end{enumerate}
+ 
+
+
+	\end{enumerate}
   
 \end{enumerate}
 \end{document}

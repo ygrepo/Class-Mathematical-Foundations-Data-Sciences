@@ -1,7 +1,7 @@
 import numpy as np
 import plot_tools
 from sklearn.datasets import fetch_olivetti_faces
-
+from sklearn.decomposition import PCA
 
 def compute_nearest_neighbors(train_matrix, testImage):
     distances = np.sqrt(np.sum((train_matrix - testImage) ** 2,
