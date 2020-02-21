@@ -58,7 +58,7 @@ def eigen_iteration(A, x0, alpha, max_iter=50, thresh=1e-5):
     curr_eigvec = x0.copy()
     iteration = 1
     while True:
-        next_eigv = curr_eigvec + alpha * np.matmul(-2 * A, curr_eigvec)
+        next_eigv = curr_eigvec + alpha * np.matmul(2 * A, curr_eigvec)
         next_eigv = unit_vector(next_eigv)
 
         rel_eigvec_error = np.linalg.norm(next_eigv - curr_eigvec)
@@ -187,5 +187,5 @@ if __name__ == "__main__":
     # print(x)
     # print(np.matmul(A, x))
     # print(x.T.dot(np.matmul(A, x)))
-    main_test()
-    #main()
+    #main_test()
+    main()

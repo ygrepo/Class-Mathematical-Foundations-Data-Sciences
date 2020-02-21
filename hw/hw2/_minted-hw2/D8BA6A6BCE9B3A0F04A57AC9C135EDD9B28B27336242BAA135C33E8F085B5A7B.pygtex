@@ -23,10 +23,13 @@
 
 \PYG{n}{k} \PYG{o}{=} \PYG{l+m+mi}{40}
 \PYG{n}{model} \PYG{o}{=} \PYG{n}{PCA}\PYG{p}{(}\PYG{n}{n\PYGZus{}components}\PYG{o}{=}\PYG{n}{k}\PYG{p}{)}
+\PYG{c+c1}{\PYGZsh{} Do PCA and compute principal directions.}
 \PYG{n}{model}\PYG{o}{.}\PYG{n}{fit}\PYG{p}{(}\PYG{n}{faces}\PYG{p}{);}
+
 
 \PYG{n}{top\PYGZus{}principal\PYGZus{}components} \PYG{o}{=} \PYG{n}{model}\PYG{o}{.}\PYG{n}{components\PYGZus{}}
 
+\PYG{c+c1}{\PYGZsh{} Projection of training and test data}
 \PYG{n}{projected\PYGZus{}train\PYGZus{}set} \PYG{o}{=}
  \PYG{n}{train\PYGZus{}set}\PYG{o}{.}\PYG{n}{dot}\PYG{p}{(}\PYG{n}{top\PYGZus{}principal\PYGZus{}components}\PYG{o}{.}\PYG{n}{T}\PYG{p}{)}
 \PYG{n}{projected\PYGZus{}test\PYGZus{}set} \PYG{o}{=}
@@ -36,6 +39,7 @@
 \PYG{n}{est\PYGZus{}labels} \PYG{o}{=} \PYG{n+nb}{list}\PYG{p}{()}
 \PYG{k}{for} \PYG{n}{i} \PYG{o+ow}{in} \PYG{n+nb}{range}\PYG{p}{(}\PYG{n}{projected\PYGZus{}test\PYGZus{}set}\PYG{o}{.}\PYG{n}{shape}\PYG{p}{[}\PYG{l+m+mi}{0}\PYG{p}{]):}
     \PYG{n}{test\PYGZus{}image} \PYG{o}{=} \PYG{n}{projected\PYGZus{}test\PYGZus{}set}\PYG{p}{[}\PYG{n}{i}\PYG{p}{,} \PYG{p}{:]}
+    \PYG{c+c1}{\PYGZsh{} Nearest neighbors in smaller dimension space}
     \PYG{n}{nnIdx} \PYG{o}{=} \PYG{n}{compute\PYGZus{}nearest\PYGZus{}neighbors}\PYG{p}{(}\PYG{n}{projected\PYGZus{}train\PYGZus{}set}\PYG{p}{,}
     \PYG{n}{test\PYGZus{}image}\PYG{p}{)}
     \PYG{n}{imgs}\PYG{o}{.}\PYG{n}{extend}\PYG{p}{([}\PYG{n}{test\PYGZus{}set}\PYG{p}{[}\PYG{n}{i}\PYG{p}{,:],} \PYG{n}{train\PYGZus{}set}\PYG{p}{[}\PYG{n}{nnIdx}\PYG{p}{,} \PYG{p}{:]])}

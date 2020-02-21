@@ -68,6 +68,21 @@ The sample variance of the second principal component is the smaller eigenvalue 
 								&=	\Sigma_{\rx} +  \mu \mu^T
   \end{align*}
   
+We have
+  \begin{align*}
+  		\E(\rx \rx^T) =
+	   \begin{bmatrix}
+	   		1+ \mu_1^2	& 	\mu_1 \mu_2	&	\ldots	& 	\mu_1 \mu_d	\\
+			\mu_1 \mu_2	&	1+ \mu_2^2	&	\ldots	& 	\mu_2 \mu_d	\\
+			\vdots		&	\ddots		&			& 	\vdots		\\
+			\mu_1 \mu_d	&	\ldots		&			&	1 + \mu_d^2	
+	   \end{bmatrix}
+  \end{align*}
+  We note that an eigenvectors of this matrix is
+   $u = \begin{bmatrix}
+  	\mu_1	& \mu_2	& \ldots	& \mu_d
+  \end{bmatrix}^T$ since $\E(\rx \rx^T) u = (1 + \sum_{i=1}^d \mu_i^2) u$.
+    	
  \newpage
   
  \item (Financial data) In this exercise you will use the code in the findata folder.
@@ -303,8 +318,10 @@ k = 40
 truncated_eigvals = eigvals[::-1][:k]
 fig, ax = plt.subplots(figsize=(10, 6))
 k_range = range(1, k+1)
-label_str = "variance for largest {} principal components".format(k)
-ax.plot(k_range, truncated_eigvals, "-", color="red", label=label_str)
+label_str = "variance for largest {} 
+principal components".format(k)
+ax.plot(k_range, truncated_eigvals, "-", color="red", 
+label=label_str)
 ax.set_xlabel("principal component")
 ax.set_ylabel("Variance")
 ax.set_title(r"Explained Variance of the $k^{th}$ component")
@@ -334,13 +351,12 @@ We compute the sample covariance matrix of the data $\Sigma_{\mathcal{X}}$ ,
 faces = fetch_olivetti_faces().data
 n_samples, n_features = faces.shape
 faces_centered = faces - faces.mean(axis=0)
-centered_cov = np.cov(faces_centered, rowvar=False)
-pd_eigvals, principal_directions = np.linalg.eigh(cov)
+cov = np.cov(faces_centered, rowvar=False)
+_, principal_directions = np.linalg.eigh(cov)
 k = 10
-idx = np.argsort(pd_eigvals)[::-1][:k]
-pd_evecs = principal_directions[:,idx].T
-title = "Top {} principal direction vectors".format(k)
-plot_tools.plot_image_grid(pd_evecs, title)
+top_pd = principal_directions[:, ::-1][:,:k].T
+title = "Top {} principal directions vectors".format(k)
+plot_tools.plot_image_grid(top_pd, title)
 \end{minted}
 
 	\begin{figure}[H]
@@ -391,10 +407,13 @@ y_test = targets[np.array(test_idx)]
 
 k = 40
 model = PCA(n_components=k)
+# Do PCA and compute principal directions.
 model.fit(faces);
+
 
 top_principal_components = model.components_
 
+# Projection of training and test data
 projected_train_set =
  train_set.dot(top_principal_components.T)
 projected_test_set = 
@@ -404,6 +423,7 @@ imgs = list()
 est_labels = list()
 for i in range(projected_test_set.shape[0]):
     test_image = projected_test_set[i, :]
+    # Nearest neighbors in smaller dimension space
     nnIdx = compute_nearest_neighbors(projected_train_set, 
     test_image)
     imgs.extend([test_set[i,:], train_set[nnIdx, :]])
@@ -431,7 +451,7 @@ plot_tools.plot_image_grid(imgs,
 nearest-neighbor approach used in the previous part could be
 more accurate than using the full training set.
 
-Using the top 40 principal components, we keep most of the variance of the data and by projecting into the span of these vectors, we can expect to have captured most of the significant characteristics of the data. So performing nearest neighbors in this space with smaller dimension could be if not as accurate.
+Using the top 40 principal directions, we keep most of the variance of the data along these directions and by projecting into the span of these vectors, we can expect to have capture most of the significant characteristics of the data in a space of smaller dimensions ($\mathbb{R}^{40}$ vs. $\mathbb{R}^{4096}$). So performing nearest neighbors in the space with smaller dimension could be more or as accurate than doing it in the original space.
  
 \item Use \verb|sklearn.cluster.KMeans| to perform KMeans on the entire dataset (both train and test set) with $k=40$. Use \verb|plot_image_grid()| to create a picture of all the $k$ cluster centers. 
 

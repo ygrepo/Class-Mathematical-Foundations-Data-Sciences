@@ -9,8 +9,10 @@
 \PYG{n}{truncated\PYGZus{}eigvals} \PYG{o}{=} \PYG{n}{eigvals}\PYG{p}{[::}\PYG{o}{\PYGZhy{}}\PYG{l+m+mi}{1}\PYG{p}{][:}\PYG{n}{k}\PYG{p}{]}
 \PYG{n}{fig}\PYG{p}{,} \PYG{n}{ax} \PYG{o}{=} \PYG{n}{plt}\PYG{o}{.}\PYG{n}{subplots}\PYG{p}{(}\PYG{n}{figsize}\PYG{o}{=}\PYG{p}{(}\PYG{l+m+mi}{10}\PYG{p}{,} \PYG{l+m+mi}{6}\PYG{p}{))}
 \PYG{n}{k\PYGZus{}range} \PYG{o}{=} \PYG{n+nb}{range}\PYG{p}{(}\PYG{l+m+mi}{1}\PYG{p}{,} \PYG{n}{k}\PYG{o}{+}\PYG{l+m+mi}{1}\PYG{p}{)}
-\PYG{n}{label\PYGZus{}str} \PYG{o}{=} \PYG{l+s+s2}{\PYGZdq{}variance for largest \PYGZob{}\PYGZcb{} principal components\PYGZdq{}}\PYG{o}{.}\PYG{n}{format}\PYG{p}{(}\PYG{n}{k}\PYG{p}{)}
-\PYG{n}{ax}\PYG{o}{.}\PYG{n}{plot}\PYG{p}{(}\PYG{n}{k\PYGZus{}range}\PYG{p}{,} \PYG{n}{truncated\PYGZus{}eigvals}\PYG{p}{,} \PYG{l+s+s2}{\PYGZdq{}\PYGZhy{}\PYGZdq{}}\PYG{p}{,} \PYG{n}{color}\PYG{o}{=}\PYG{l+s+s2}{\PYGZdq{}red\PYGZdq{}}\PYG{p}{,} \PYG{n}{label}\PYG{o}{=}\PYG{n}{label\PYGZus{}str}\PYG{p}{)}
+\PYG{n}{label\PYGZus{}str} \PYG{o}{=} \PYG{l+s+s2}{\PYGZdq{}variance for largest \PYGZob{}\PYGZcb{}}
+\PYG{n}{principal} \PYG{n}{components}\PYG{l+s+s2}{\PYGZdq{}.format(k)}
+\PYG{n}{ax}\PYG{o}{.}\PYG{n}{plot}\PYG{p}{(}\PYG{n}{k\PYGZus{}range}\PYG{p}{,} \PYG{n}{truncated\PYGZus{}eigvals}\PYG{p}{,} \PYG{l+s+s2}{\PYGZdq{}\PYGZhy{}\PYGZdq{}}\PYG{p}{,} \PYG{n}{color}\PYG{o}{=}\PYG{l+s+s2}{\PYGZdq{}red\PYGZdq{}}\PYG{p}{,}
+\PYG{n}{label}\PYG{o}{=}\PYG{n}{label\PYGZus{}str}\PYG{p}{)}
 \PYG{n}{ax}\PYG{o}{.}\PYG{n}{set\PYGZus{}xlabel}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}principal component\PYGZdq{}}\PYG{p}{)}
 \PYG{n}{ax}\PYG{o}{.}\PYG{n}{set\PYGZus{}ylabel}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}Variance\PYGZdq{}}\PYG{p}{)}
 \PYG{n}{ax}\PYG{o}{.}\PYG{n}{set\PYGZus{}title}\PYG{p}{(}\PYG{l+s+sa}{r}\PYG{l+s+s2}{\PYGZdq{}Explained Variance of the \PYGZdl{}k\PYGZca{}\PYGZob{}th\PYGZcb{}\PYGZdl{} component\PYGZdq{}}\PYG{p}{)}

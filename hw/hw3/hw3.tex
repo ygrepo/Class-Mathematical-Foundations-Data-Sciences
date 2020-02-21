@@ -1,0 +1,70 @@
+\documentclass[12pt,twoside]{article}
+\usepackage[dvipsnames]{xcolor}
+\usepackage{tikz,graphicx,amsmath,amsfonts,amscd,amssymb,bm,cite,epsfig,epsf,url}
+\usepackage[hang,flushmargin]{footmisc}
+\usepackage[colorlinks=true,urlcolor=blue,citecolor=blue]{hyperref}
+\usepackage{amsthm,multirow,wasysym,appendix}
+\usepackage{array,subcaption} 
+% \usepackage[small,bf]{caption}
+\usepackage{bbm}
+\usepackage{pgfplots}
+\usetikzlibrary{spy}
+\usepgfplotslibrary{external}
+\usepgfplotslibrary{fillbetween}
+\usetikzlibrary{arrows,automata}
+\usepackage{thmtools}
+\usepackage{blkarray} 
+\usepackage{textcomp}
+\usepackage[left=0.8in,right=1.0in,top=1.0in,bottom=1.0in]{geometry}
+
+\input{macros}
+
+\begin{document}
+
+\begin{center}
+{\large{\textbf{Homework 3}} } \vspace{0.2cm}\\
+Due March 1 at 11 pm
+\end{center}
+
+\begin{enumerate}
+\item (PCA and linear regression) Consider a dataset of $n$ 2-dimensional data points $x_1,\ldots,x_n \in \R^2$. Assume that the dataset is centered. Our goal is to find a line in the 2D space that lies \emph{closest} to the data. First, we apply PCA and consider the line in the direction of the first principal direction. Second, we fit a linear regression model where $x_i[1]$ is a feature, and $x_i[2]$ the corresponding response. Are these lines the same? Describe each line in terms of the quantity it minimizes geometrically (e.g. sum of some distance from the points to the lines).
+
+ \item (Heartbeat) We are interested in computing the best linear estimate of the heartbeat of a fetus in the presence of strong interference in the form of the heartbeat of the baby's mother. To simplify matters, let us assume that we only want to estimate the heartbeat at a certain moment. We have available a measurement from a microphone situated near the mother's belly and another from a microphone that is away from her belly. We model the measurements as
+\begin{align}
+\rx[1] & = \rb + \rnd{m} + \rnd{z_1}\\
+\rx[2] & = \rnd{m} + \rnd{z_2},
+\end{align}
+where $\rb$ is a random variable modeling the heartbeat of the baby, $\rnd{m}$ is a random variable modeling the heartbeat of the mother, and $\rnd{z}_1$ and $\rnd{z}_2$ model additive noise. From past data, we determine that $\rb$, $\rnd{m}$, $\rnd{z}_1$, and $\rnd{z}_2$ are all zero mean and uncorrelated with each other. The variances of $\rb$, $\rnd{z}_1$ and $\rnd{z}_2$ are equal to $1$, whereas the variance of $\rnd{m}$ is much larger, it is equal to $10$.
+\begin{enumerate}
+\item Compute the best linear estimator of $\rb$ given $\rx[1]$ in terms of MSE, and the corresponding MSE. Describe in words what the estimator does. 
+\item Compute the best linear estimator of $\rb$ given $\rx$ in terms of MSE, and the corresponding MSE. Describe in words what the estimator does. 
+\end{enumerate}
+
+\item (Gaussian minimum MSE estimator) In this problem we derive the minimum MSE estimator of a random variable $\rnd{b}$ given another random variable $\rnd{a}$ when both are jointly Gaussian. To simplify matters we assume the mean of both random variables is zero. 
+  \begin{enumerate}
+  \item Let us define
+  \begin{align}
+  \rnd{c} := \frac{\cov(\ra,\rb)}{\var(\ra)}\ra.
+  \end{align}
+  Consider the decomposition of $\rnd{b}$ into the sum of $\rnd{c} $ and $\rb - \rnd{c}$. Provide a geometric interpretation of this decomposition. 
+  \item Compute the conditional expectation of $\rnd{c} $ given $\ra=a$ for a fixed $a \in \R$.
+  \item Compute the conditional expectation of $\rb - \rnd{c}$ given $\ra=a$ for a fixed $a \in \R$. (Hint: Start by computing the covariance between $\rb - \rnd{c}$ and $\ra$.)
+  \item Prove that the minimum MSE estimator of $\rnd{b}$ given $\ra=a$ for a fixed $a \in \R$ is linear. 
+  \item What step of the proof fails for non-Gaussian random variables?
+  \end{enumerate} 
+  
+ \item (Oxford Dataset) In this problem, we will compute an estimator for rainfall in Oxford as a function of the maximum temperature. \verb|oxford.zip| contains the support code for the problem and the dataset. \verb|regression.py| within \verb|oxford.zip| reads the dataset and splits it into train, validation and test sets. We parameterize our estimator for rainfall($y$) from maximum temperature($x$) as 
+  \begin{equation*}
+f_a(x)=\begin{cases}
+          w_1x + b_1 \quad &\text{if} \, x< a \\
+         w_2x + b_2 &\text{if} \, x \geq a \\
+     \end{cases}
+ \end{equation*}
+ $w_1, w_2, b_1$ and $b_2$ are estimated by minimizing the mean squared error on the training dataset. 
+ \begin{enumerate}
+ \item Complete \verb|split_and_plot()| in \verb|regression.py| to fit two different linear function for a given value of threshold $a$. The function will generate a plot of the fit overlaid on a scatter plot of the validation data. Report the plot generate by the function for different values of $a$ defined in \verb|main()|. You are welcome to try other values of $a$, but please make sure that you report the plots generated for all values of $a$ defined in \verb|main()|. 
+ \item Choose the best estimator $f_{a'}(x)$ according to the validation error. Fill in the rest of \verb|main()| function to fit a single linear estimator on the entire dataset. Compare the fit and error values of $f_{a'}(x)$ with the single linear estimator fit on the training set on the held out test set.  Report the plot generated by this section. 
+ \end{enumerate}
+ We do not require you to include your code in the report. You can choose to include it or not include it. 
+\end{enumerate}
+\end{document}
