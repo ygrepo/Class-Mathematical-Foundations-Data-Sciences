@@ -82,7 +82,24 @@ We have
    $u = \begin{bmatrix}
   	\mu_1	& \mu_2	& \ldots	& \mu_d
   \end{bmatrix}^T$ since $\E(\rx \rx^T) u = (1 + \sum_{i=1}^d \mu_i^2) u$.
-    	
+Let's prove that if $A$ and $B=I+A$ matrices share the same number of eigenvalues and eigenvector.
+If $\lambda$ and the corresponding eigenvector $v$, $v \neq 0$,  is an eigenvalue of $A$ then $B v = (I+A) v = (1+\lambda) v$ thus 
+$(1+\lambda)$ is an eigenvalue of $B$ and v is also an eigenvector. Now if $\mu$ is an eigenvalue of $B$ then $ A v = (A+I) v - I v = B v - I v = (\mu -1) v$ thus
+$(\mu -1)$ is an eigenvalue of $A$ for the same eigenvector $v$.  Let $A=
+	   \begin{bmatrix}
+	   		\mu_1^2	& 	\mu_1 \mu_2	&	\ldots	& 	\mu_1 \mu_d	\\
+			\mu_1 \mu_2	&	\mu_2^2	&	\ldots	& 	\mu_2 \mu_d	\\
+			\vdots		&	\ddots		&			& 	\vdots		\\
+			\mu_1 \mu_d	&	\ldots		&			&	\mu_d^2	
+	   \end{bmatrix}
+$, we know that $\sum_{i=1}^d \lambda_i = \trace{A} = \sum_{i=1}^d \mu_i^2$ where $\lambda_i, i=1, \dots, d$  are the eigenvalues of $A$
+ thus  $(\sum_{i=1}^d \mu_i^2)$ is the only eigenvalue $A$.
+
+Setting $\E(\rx \rx^T)=B = I + A$, we can conclude that the largest eigenvalue of $\E(\rx \rx^T)$ is $1 + \|\mu\|_2^2$ with eigenvector 
+ $u = \begin{bmatrix}
+  	\mu_1	& \mu_2	& \ldots	& \mu_d
+  \end{bmatrix}^T$.
+  
  \newpage
   
  \item (Financial data) In this exercise you will use the code in the findata folder.
