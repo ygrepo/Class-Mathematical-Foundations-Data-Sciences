@@ -2,7 +2,7 @@
 \PYG{n}{faces} \PYG{o}{=} \PYG{n}{fetch\PYGZus{}olivetti\PYGZus{}faces}\PYG{p}{()}\PYG{o}{.}\PYG{n}{data}
 \PYG{n}{n\PYGZus{}samples}\PYG{p}{,} \PYG{n}{n\PYGZus{}features} \PYG{o}{=} \PYG{n}{faces}\PYG{o}{.}\PYG{n}{shape}
 \PYG{n}{faces\PYGZus{}centered} \PYG{o}{=} \PYG{n}{faces} \PYG{o}{\PYGZhy{}} \PYG{n}{faces}\PYG{o}{.}\PYG{n}{mean}\PYG{p}{(}\PYG{n}{axis}\PYG{o}{=}\PYG{l+m+mi}{0}\PYG{p}{)}
-\PYG{n}{cov} \PYG{o}{=} \PYG{n}{np}\PYG{o}{.}\PYG{n}{cov}\PYG{p}{(}\PYG{n}{faces\PYGZus{}centered}\PYG{p}{,} \PYG{n}{rowvar}\PYG{o}{=}\PYG{n+nb+bp}{False}\PYG{p}{)}
+\PYG{n}{cov}  \PYG{o}{=} \PYG{n}{np}\PYG{o}{.}\PYG{n}{matmul}\PYG{p}{(}\PYG{n}{faces\PYGZus{}centered}\PYG{o}{.}\PYG{n}{T}\PYG{p}{,} \PYG{n}{faces\PYGZus{}centered}\PYG{p}{)}\PYG{o}{/}\PYG{n}{n\PYGZus{}samples}
 \PYG{n}{eigvals}\PYG{p}{,} \PYG{n}{\PYGZus{}} \PYG{o}{=} \PYG{n}{np}\PYG{o}{.}\PYG{n}{linalg}\PYG{o}{.}\PYG{n}{eigh}\PYG{p}{(}\PYG{n}{cov}\PYG{p}{)}
 
 \PYG{n}{k} \PYG{o}{=} \PYG{l+m+mi}{40}
