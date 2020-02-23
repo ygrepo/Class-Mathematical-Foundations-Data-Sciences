@@ -120,10 +120,39 @@ Hence MSE = $ 1 - \frac{11}{32} = \frac{21}{32} = 0.65$. The second estimator pr
   \rnd{c} := \frac{\cov(\ra,\rb)}{\var(\ra)}\ra.
   \end{align}
   Consider the decomposition of $\rnd{b}$ into the sum of $\rnd{c} $ and $\rb - \rnd{c}$. Provide a geometric interpretation of this decomposition. 
+  This decomposition is the orthogonal projection of $\rnd{b}$ into a vector in the span of $\rnd{a}$: $\rnd{c}$ and a vector orthogonal to this hyperspace:  $\rb - \rnd{c}$.
+  
   \item Compute the conditional expectation of $\rnd{c} $ given $\ra=a$ for a fixed $a \in \R$.
+  $$\E[\rnd{c} | \rnd{a}= a] = \E[\frac{\cov(\ra,\rb)}{\var(\ra)}\ra | \ra= a] = \frac{\cov(\ra,\rb)}{\var(\ra)}\ra$$
+  
   \item Compute the conditional expectation of $\rb - \rnd{c}$ given $\ra=a$ for a fixed $a \in \R$. (Hint: Start by computing the covariance between $\rb - \rnd{c}$ and $\ra$.)
+  First few results
+  \begin{align*}
+  	\cov(\ra, \rb)	&=	 \E[\ra \; \rb]	- \E[\ra] \; \E[\rb]	\\
+				&=	 \E[\ra \; \rb] - 0 = \E[\ra \; \rb] 		\\
+	\var(\ra)		&=	 \E[\ra^2] - \E[\ra]^2 =  \E[\ra^2]		\\
+	\E[\rb  - \rnd{c}]	&= 	 \E[ \rb  - \frac{\cov(\ra,\rb)}{\var(\ra)}\ra] \\
+				&=	 \E[ \rb] - \frac{\cov(\ra,\rb)}{\var(\ra)} \E[\ra] = 0 
+  \end{align*}
+  Hence $$\cov(\rb  - \rnd{c}, \ra)   = \E[ \rb  \; \ra] -  \frac{\cov(\ra,\rb)}{\var(\ra)} \E[\ra^2]  = \cov(\ra, \rb) - \cov(\ra, \rb) = 0$$
+  Thus  $\rb  - \rnd{c}$ and $\ra$ are uncorrelated and $\E[ \rb - \frac{\cov(\ra,\rb)}{\var(\ra)} \ra | \ra= a ] = \E[ \rb - \frac{\cov(\ra,\rb)}{\var(\ra)} \ra] = \E[ \rb] -  \frac{\cov(\ra,\rb)}{\var(\ra)}  \E[\ra] = 0$.
+  
   \item Prove that the minimum MSE estimator of $\rnd{b}$ given $\ra=a$ for a fixed $a \in \R$ is linear. 
+  
+  Using the problem assumptions, and theorem 2.1 from our class, the minimum MSE estimator of $\rnd{b}$ given $\ra=a$ for a fixed $a \in \R$ is given by:
+  \begin{align*}
+  	\E[\rb | \ra = a]		&=	\E[\rb-  \rnd{c} +  \rnd{c} | \ra= a]	\\
+					&=	\E[\rb-  \rnd{c} | \ra= a] + \E[\rnd{c} | \ra= a] \\
+					&=	\frac{\cov(\ra,\rb)}{\var(\ra)} \ra
+  \end{align*}
+  
+  
   \item What step of the proof fails for non-Gaussian random variables?
+  Since $\ra$ and $\rb$ are gaussian random variables then $\ra$ and $\rb -  \rnd{c}$ are also jointly gaussian.
+  Furthermore $\E[\ra (\rb-  \rnd{c})] = \E[\ra \rb] - \E[\ra \rnd{c}] = \cov(\ra,\rb) - \cov(\ra,\rb) = 0$. Thus $\ra$ and $\rb - \rnd{c}$ are uncorrelated and being gaussian are also independent.
+  By linear combination of $\ra$, $\rnd{c} $ and $\rb - \rnd{c}$ are also independent.
+  This allows in the first step, to decompose $\rb$ into two independent gaussian random variables: $\rb =\rnd{c}  + \rb -  \rnd{c}$.
+  
   \end{enumerate} 
   
  \item (Oxford Dataset) In this problem, we will compute an estimator for rainfall in Oxford as a function of the maximum temperature. \verb|oxford.zip| contains the support code for the problem and the dataset. \verb|regression.py| within \verb|oxford.zip| reads the dataset and splits it into train, validation and test sets. We parameterize our estimator for rainfall($y$) from maximum temperature($x$) as 
