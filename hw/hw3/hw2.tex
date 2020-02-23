@@ -1,0 +1,507 @@
+\documentclass[12pt,twoside]{article}
+\usepackage[dvipsnames]{xcolor}
+\usepackage{tikz,graphicx,amsmath,amsfonts,amscd,amssymb,bm,cite,epsfig,epsf,url}
+\usepackage[hang,flushmargin]{footmisc}
+\usepackage[colorlinks=true,urlcolor=blue,citecolor=blue]{hyperref}
+\usepackage{amsthm,multirow,wasysym,appendix}
+\usepackage{array,subcaption} 
+% \usepackage[small,bf]{caption}
+\usepackage{bbm}
+\usepackage{pgfplots}
+\usetikzlibrary{spy}
+\usepgfplotslibrary{external}
+\usepgfplotslibrary{fillbetween}
+\usetikzlibrary{arrows,automata}
+\usepackage{thmtools}
+\usepackage{blkarray} 
+\usepackage{textcomp}
+\usepackage[left=0.8in,right=1.0in,top=1.0in,bottom=1.0in]{geometry}
+
+\usepackage{times}
+\usepackage{amsfonts}
+\usepackage{amsmath}
+%\usepackage[psamsfonts]{amssymb}
+\usepackage{latexsym}
+\usepackage{color}
+\usepackage{graphics}
+\usepackage{enumerate}
+\usepackage{amstext}
+\usepackage{blkarray}
+\usepackage{url}
+\usepackage{epsfig}
+\usepackage{bm}
+\usepackage{hyperref}
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue,
+    filecolor=magenta,      
+    urlcolor=blue,
+}
+\usepackage{mathtools}
+\usepackage{minted}
+\input{macros}
+
+\begin{document}
+
+\noindent DS-GA.1013 Mathematical Tools for Data Science \\
+Homework 2 \\
+Yves Greatti - yg390\\
+
+\begin{enumerate}
+\item (Correlation coefficient) The entries of a two-dimensional random vector have a correlation coefficient equal to one. What is the variance of the second principal component? Provide both a proof and an intuitive justification. 
+
+Let X and Y the two components of a random vector. If $\rho_{X,Y} = \frac {\Cov(X,Y)}{\sigma_X \sigma_Y} = 1$ then $\Cov(X,Y) = \sigma_X \sigma_Y$
+The covariance matrix  is then  $ \Sigma = \begin{bmatrix} \sigma_X^2 & \Cov(X,Y) \\  \Cov(X,Y) & \sigma_Y^2  \end{bmatrix}  = \begin{bmatrix}  \sigma_X^2 &  \sigma_X \sigma_Y \\ \sigma_X \sigma_Y & \sigma_Y^2 \end{bmatrix}$.
+$\det(\Sigma -\lambda I) = \lambda (\lambda - (\sigma_X^2 +  \sigma_Y^2)), \lambda \in   \mathbf{R} \Rightarrow $ the eigenvalues are $0$ and $\sigma_X^2 +  \sigma_Y^2$.
+The sample variance of the second principal component is the smaller eigenvalue $0$. We can expect such result since there $X$ and $Y$ are positively correlated with a coefficient of one thus the variance of the data is completely expressed by the variance of the first principal component, there is no meaningful information on the second principal component.
+
+
+\newpage
+\item (Not centering) To analyze what happens if we apply PCA without centering, let $\rx$ be a $d$-dimensional vector with mean $\mu \in \R^{d}$ and covariance matrix $\Sigma_{\rx}$ equal to the identity matrix. If we compute the eigendecomposition of the matrix $\E(\rx \rx^T)$ what is the value of the largest eigenvalue? What is the direction of the corresponding eigenvector? 
+  
+  \begin{align*}
+  	\E((\rx - \mu) (\rx - \mu)^T))		&=	\E(\rx \rx^T -2 \mu^T \rx + \mu \mu^T) \\
+								&= 	\E(\rx \rx^T) -2 \mu \E(\rx^T) + \mu \mu^T \\
+								&=	\E(\rx \rx^T) -2  \mu \mu^T +  \mu \mu^T \\
+								&=	\E(\rx \rx^T) - \mu \mu^T \\
+	\Rightarrow	\E(\rx \rx^T) 		&=	\E((\rx - \mu) (\rx - \mu)^T)	) +  \mu \mu^T \\	
+								&=	\Sigma_{\rx} +  \mu \mu^T
+  \end{align*}
+  
+We have
+  \begin{align*}
+  		\E(\rx \rx^T) =
+	   \begin{bmatrix}
+	   		1+ \mu_1^2	& 	\mu_1 \mu_2	&	\ldots	& 	\mu_1 \mu_d	\\
+			\mu_1 \mu_2	&	1+ \mu_2^2	&	\ldots	& 	\mu_2 \mu_d	\\
+			\vdots		&	\ddots		&			& 	\vdots		\\
+			\mu_1 \mu_d	&	\ldots		&			&	1 + \mu_d^2	
+	   \end{bmatrix}
+  \end{align*}
+  We note that an eigenvectors of this matrix is
+   $u = \begin{bmatrix}
+  	\mu_1	& \mu_2	& \ldots	& \mu_d
+  \end{bmatrix}^T$ since $\E(\rx \rx^T) u = (1 + \sum_{i=1}^d \mu_i^2) u$.
+Let's prove that $A$ and $B=I+A$ matrices share the same eigenvalues and eigenvectorsß.
+If $\lambda$ and the corresponding eigenvector $v$, $v \neq 0$,  is an eigenvalue of $A$ then $B v = (I+A) v = (1+\lambda) v$ thus 
+$(1+\lambda)$ is an eigenvalue of $B$ and v is also an eigenvector. Now if $\mu$ is an eigenvalue of $B$ then $ A v = (A+I) v - I v = B v - I v = (\mu -1) v$ thus
+$(\mu -1)$ is an eigenvalue of $A$ for the same eigenvector $v$.  Let $A=
+	   \begin{bmatrix}
+	   		\mu_1^2	& 	\mu_1 \mu_2	&	\ldots	& 	\mu_1 \mu_d	\\
+			\mu_1 \mu_2	&	\mu_2^2	&	\ldots	& 	\mu_2 \mu_d	\\
+			\vdots		&	\ddots		&			& 	\vdots		\\
+			\mu_1 \mu_d	&	\ldots		&			&	\mu_d^2	
+	   \end{bmatrix}
+$, using a similar proof that we use for  I+A, we can show that  $\sum_{i=1}^d \mu_i^2$ is an eigenvalue of A. In addition, $\sum_{i=1}^d \lambda_i = \trace{A} = \sum_{i=1}^d \mu_i^2$ where $\lambda_i, i=1, \dots, d$  are the eigenvalues of $A$
+ thus  $(\sum_{i=1}^d \mu_i^2)$ is the only eigenvalue $A$.
+
+Setting $\E(\rx \rx^T)=B = I + A$, we can conclude that the largest eigenvalue of $\E(\rx \rx^T)$ is $1 + \|\mu\|_2^2$ with eigenvector 
+ $u = \begin{bmatrix}
+  	\mu_1	& \mu_2	& \ldots	& \mu_d
+  \end{bmatrix}^T$.
+  
+ \newpage
+  
+ \item (Financial data) In this exercise you will use the code in the findata folder.
+  For the data loading code to work properly, make sure you
+  have the pandas Python package installed on your system.
+
+  Throughout, we will be using the data obtained by calling
+ \emph{load\_data} in \emph{findata\_tools.py}.  This will
+  give you the names, and closing prices for a set of 18 stocks over a
+  period of 433 days ordered chronologically.
+  For a fixed stock (such as msft), let
+  $P_1,\ldots,P_{433}$ denote its sequence of closing prices ordered in
+  time.  For that stock, define the daily returns series $R_i:=P_{i+1}-P_i$ for
+  $i=1,\ldots,432$.  Throughout we think of the daily stock returns as features,
+  and each day (but the last) as a separate datapoint in $\R^{18}$.
+  That is, we have $432$ datapoints each having $18$ features.
+  \begin{enumerate}
+  \item Looking at the first two principal directions of the
+    centered data, give the two stocks with the largest
+    coefficients (in absolute value) in each direction.  
+    Give a hypothesis why these two stocks have the largest
+    coefficients, and confirm your hypothesis using the data.  The file 
+   \emph{findata\_tools.py} has\emph{pretty\_print}
+    functions that can help you output your results.
+    You are not required to include the principal directions in
+    your submission.\\ \\
+    The two stocks corresponding to the two principal directions of the centered data with the largest coefficients (in absolute value) in each direction
+    are: "amzn" and  "goog". It can be explained by computing the absolute return for each stock over the period of 433 days:
+
+	\begin{figure}[H]
+		\centering
+		\includegraphics[width=200pt]{figures/pb_3_a.png}
+		\caption{Stocks returns over a period of 433 days (output of pretty\_print).}
+		\label{fig1}
+	\end{figure}
+    
+    In term of return goog and amzn stocks returned about 4 and  3 times more than the next stock after amzn and goog stocks with the highest return: gs, 53 and 43 times more than
+    the last stock in term of return among the 18 stocks: xlf.
+    \begin{center}
+    		\begin{tabular}{ | c | c | c | c | }
+    		\hline
+			\text{amzn/gs} & \text{amzn/xlf} & \text{goog/gs}  & \text{goog/xlf} \\
+		\hline
+			3.8 & 53.2 & 3.1 & 43.5  \\ 
+		\hline
+    	\end{tabular}
+    \end{center}
+   So most of the variance in the data will be explained by these two stocks: goog and amzn.
+
+  \item Standardize the centered data so that each stock (feature) has
+    variance 1 and compute the first 2 principal directions.  This is
+    equivalent to computing the principal directions of the
+    correlation matrix (the previous part used the covariance
+    matrix).  Using the information in the comments of
+   \emph{generate\_findata.py} as a guide to the stocks, 
+    give an English interpretation of the first 2 principal directions
+    computed here. 
+    You are not required to include the principal directions in
+    your submission.
+     
+    We can think of each of the entries of the principal directions as a weight of the corresponding stock.  
+    	\bi
+    		\item SPY - A security that roughly tracks the S\&P 500, a weighted average of the stock prices of 500 top US companies.
+		We have only 18 stocks and excluding the ETF (Exchange traded products), we are left with 13 stocks. 
+		We can notice that among these 13 stocks, SPY entry in the principal directions, has the sign as the other 13 entries
+		for the same principal direction.
+		For a given day, computing a weighted average using the absolute values of entries in the first principal direction and the prices of these 13 stocks, 
+		we obtain a weighted average price in the range of the SPY price reported for the same day. It is less true using the entries of the second principal direction.
+
+		\begin{figure}[H]
+			\centering
+			\includegraphics[width=200pt]{figures/pb_3_b_principal_directions.png}
+			\caption{First two Principal Directions.}
+			\label{fig3}
+		\end{figure}
+
+		\begin{figure}[H]
+			\centering
+			\includegraphics[width=200pt]{figures/pb_3_b_1.png}
+			\caption{Weighted average of the 13 stock prices and SPY price using PD0.}
+			\label{fig2}
+		\end{figure}
+					
+		\item  XLF -  A security that tracks a weighted average of top US financial companies.
+		Among the 18 stocks, there are only 3 financial stocks: c, gs and jpm. Entry for xlf has the same sign as the entries for these three stocks in the first two 
+		principal directions. To some extent the weighted average price of these 3 stocks is somewhat close to XLF price.
+		
+		\begin{figure}[H]
+			\centering
+			\includegraphics[width=200pt]{figures/pb_3_b_3.png}
+			\caption{Weighted average of the 3 financial stock prices and XLF price using PD0.}
+			\label{fig4}
+		\end{figure}
+	
+		\item SSO - ProShares levered ETF that roughly corresponds to twice the daily performance of the S\&P 500.
+		We have similar entries for SSO and SPY which indicate a strong correlation between these two stocks
+		\begin{center}
+    			\begin{tabular}{ | c | c | c | }
+    			\hline
+								& \text{SSO} 	& \text{SPY} \\
+			\hline
+				\text{First PD}		& -0.3348		& -0.3366  \\ 
+    			\hline
+				\text{Second PD}	& 0.09156		& 0.0848  \\ 
+			\hline
+    			\end{tabular}
+   		 \end{center}
+		 We can also pick two random days (200 and 201) and compare the returns for spy vs. xlf, you can see the return for xlf tracks the return of spy:
+		 \begin{figure}[H]
+			\centering
+			\includegraphics[width=200pt]{figures/sso_200.png}
+			\caption{Returns for day 200}
+		 \end{figure}
+		 \begin{figure}[H]
+			\centering
+			\includegraphics[width=200pt]{figures/sso_201.png}
+			\caption{Returns for day 201}
+		 \end{figure}
+
+		 
+		 
+		\item SDS - ProShares inverse levered ETF that roughly corresponds to twice the negative daily performance of the S\&P 500. 
+		The entries for SDS and SPY are roughly opposite confirming the opposite trend of SDS compared to SPY.
+		\begin{center}
+    			\begin{tabular}{ | c | c | c | }
+    			\hline
+								& \text{SDS} 	& \text{SPY} \\
+			\hline
+				\text{First PD}		& 0.3272		& -0.3366  \\ 
+    			\hline
+				\text{Second PD}	& -0.0560		& 0.0848  \\ 
+			\hline
+    			\end{tabular}
+   		 \end{center}
+		 
+		\item USO - Exchange traded product that tracks the price of oil in the US.
+		Taking the mean of the entries related to oil company (xom, apc, cvx) from the principal directions  and comparing to the entry for USO, they are close,
+		confirming the correlation between uso and (xom, apc, cvx):
+		\begin{center}
+    			\begin{tabular}{ | c | c | c | }
+    			\hline
+								& \text{USO} 	& \text{Mean(XOM, APC, CVX)} \\
+			\hline
+				\text{First PD}		& -0.1592		& -0.2091 \\ 
+    			\hline
+				\text{Second PD}	& -0.3709		& -0.3102  \\ 
+			\hline
+    			\end{tabular}
+   		 \end{center}
+		
+
+   	\ei
+     
+    
+  \item Assume the stock returns each day are drawn independently from a
+    multivariate distribution $\rx$ where
+    $\rx[i]$ corresponds to the $i$th stock.  Assume further that
+    you hold a portfolio with $200$ shares of each of appl, amzn, msft, and
+    goog, and $100$ shares of each of the remaining 14 stocks in the
+    dataset.  Using the sample covariance matrix as an estimator for
+    the true covariance of $\rx$, approximate the standard deviation of
+    your 1 day portfolio returns $\ry$ (this is a measure of the risk of your
+    portfolio).  Here $\ry$ is given by
+    $$\ry := \sum_{i=1}^{18} \alpha[i] \rx[i],$$
+    where $\alpha[i]$ is the number of shares you hold of stock $i$.  
+    
+    Using the sample covariance matrix and taking the root square of [$ \text{shares}^T \times \text{covariance} \times \text{shares}$] as value of the standard deviation, we find that for such portfolio the standard deviation of 1 day is after rounding up: $4309.95$.
+    
+  \item Assume further that $\rx$ from the previous part has a
+    multivariate Gaussian distribution.  Compute the probability
+    of losing $1000$ or more dollars in a single day.  That is,
+    compute
+    $$\Pr(\ry \leq -1000).$$
+    For each day of the $433$ days, we compute the daily return $\ry := \sum_{i=1}^{18} \alpha[i] \rx[i]$ and count the number of times over the $432$ returns: $\Pr(\ry \leq -1000)$, then divide the result by the number of return (432),
+    we obtain: $0.3425$.
+    
+  \end{enumerate}
+  Note: The assumptions made in the previous parts are often
+  invalid and can lead to inaccurate risk calculations in real
+  financial situations. 
+  
+  \newpage
+  \item The following questions refer to the code in the folder {\tt faces }
+  The Olivetti faces dataset used in  {\tt faces }  contains images of faces of people associated with a unique numeric id to identify the person.
+
+  	\begin{enumerate}
+		\item Complete the \verb|compute_nearest_neighbors()| function in \verb|nearest_neighbors.py| that finds the image in the training data that is closest to a given test image.  Include the generated images in your submitted homework.
+
+
+		The data set consists in $400$ rows of a ravelled face image of original size 64 x 64 pixels . Each row represent a datapoint in $\R^{4096}$.
+		A label is associated to each face image which correspond to the Subject IDs.
+		In the \emph{nearest\_neighbors} function we compute the distance between a test image and a set of reference image (train\_matrix).
+
+\begin{minted}{python}
+	def compute_nearest_neighbors(train_matrix, testImage):
+	   distances = np.sqrt(
+	   	np.sum((train_matrix - testImage) ** 2, 
+	   			axis=1))
+    	    idx_of_closest_point_in_train_matrix = 
+	    	np.argsort(distances)
+	    return idx_of_closest_point_in_train_matrix[0]
+\end{minted}
+
+
+	\begin{figure}[H]
+		\centering
+		\includegraphics[width=200pt]{figures/Image-NearestNeighbor}
+		\caption{Test images and image found by Nearest Neighbors.}
+		\label{fig5}
+	\end{figure}
+
+
+\vspace{0.5cm}Create a new file  in which
+you must write code to complete the following tasks:
+
+
+\item Generate a plot of $k$ vs.~$\sigma^2_k$, where $\sigma^2_k$ is
+the variance  with the $k$th principal component of the data (e.g., $\sigma^2_1$
+is the largest variance). 
+Include
+the plot in your submitted homework document. You can limit the x axis to a reasonable number.
+
+We compute the sample covariance matrix and perform its eigendecompostion which gives us the eigenvalues in ascending order, corresponding to the variance with each principal component, we select $k$ of them
+and plot them for each principal component:
+\begin{minted}{python}
+faces = fetch_olivetti_faces().data
+n_samples, n_features = faces.shape
+faces_centered = faces - faces.mean(axis=0)
+cov  = np.matmul(faces_centered.T, faces_centered)/n_samples
+eigvals, _ = np.linalg.eigh(cov)
+
+k = 40
+truncated_eigvals = eigvals[::-1][:k]
+fig, ax = plt.subplots(figsize=(10, 6))
+k_range = range(1, k+1)
+label_str = "variance for largest {} 
+principal components".format(k)
+ax.plot(k_range, truncated_eigvals, "-", color="red", 
+label=label_str)
+ax.set_xlabel("principal component")
+ax.set_ylabel("Variance")
+ax.set_title(r"Explained Variance of the $k^{th}$ component")
+ax.legend()
+plt.show();
+fig.savefig("pb_4_b.pdf",bbox_inches='tight');
+\end{minted}
+
+	\begin{figure}[H]
+		\centering
+		\includegraphics[width=200pt]{figures/pb_4_b.pdf}
+		\caption{Variance with principal components}
+		\label{fig6}
+	\end{figure}
+
+\item  Plot (using  \verb|plot_image_grid()| in
+\verb|plot_tools.py| ) the vectors
+corresponding to the top 10 principal directions of the data.
+Your principal direction vectors should be elements of $\mathbb{R}^{4096}$ (i.e., they
+should represent images).
+Include the plot in your submitted homework document.
+
+We compute the sample covariance matrix of the data $\Sigma_{\mathcal{X}}$ ,
+ the principal directions are the eigenvectors of the eigendecomposition of  $\Sigma_{\mathcal{X}}$:
+ 
+\begin{minted}{python} 
+faces = fetch_olivetti_faces().data
+n_samples, n_features = faces.shape
+faces_centered = faces - faces.mean(axis=0)
+cov  = np.matmul(faces_centered.T, faces_centered)/n_samples
+_, principal_directions = np.linalg.eigh(cov)
+k = 10
+top_pd = principal_directions[:, ::-1][:,:k].T
+title = "Top {} principal directions vectors".format(k)
+plot_tools.plot_image_grid(top_pd, title)
+\end{minted}
+
+	\begin{figure}[H]
+		\centering
+		\includegraphics[width=200pt]{figures/Top_10_principal_direction_vectors.pdf}
+		\caption{Top 10 principal direction vectors}
+		\label{fig7}
+	\end{figure}
+
+
+\item Use the variance of principal directions plot to determine a 
+realtively small number $k$ of principal components
+that explains the training data reasonably well.
+Project the training data 
+and the test data onto the
+first $k$ principal components, and run nearest neighbors for
+each test image in this lower dimensional space.  Include your
+choice for $k$, and the plots
+of your nearest neighbor results in your submitted homework
+document.  You should use the code from
+ \verb|nearest_neighbors.py| to generate your image plots.
+Based on the variance plot, most of the variance of the data is captured by the $40$ first principal components. Using the first 40 principal components, we project the training
+and test data set onto these principal components before finding the nearest neighbors.
+
+\begin{minted}{python} 
+
+def compute_nearest_neighbors(train_matrix, testImage):
+	   distances = np.sqrt(
+	   	np.sum((train_matrix - testImage) ** 2, 
+	   			axis=1))
+    	    idx_of_closest_point_in_train_matrix = 
+	    	np.argsort(distances)
+	    return idx_of_closest_point_in_train_matrix[0]
+
+test_idx = [1, 87, 94, 78]
+
+bunch  = fetch_olivetti_faces()
+faces = bunch.data
+n_samples, n_features = faces.shape
+faces_centered = faces - faces.mean(axis=0)
+targets = bunch.target
+
+face_images = bunch.images.reshape((len(bunch.images), -1))
+train_idx = np.array(list(set(list(range(face_images.shape[0])))
+ - set(test_idx)))
+
+train_set = face_images[train_idx]
+y_train = targets[train_idx]
+test_set = face_images[np.array(test_idx)]
+y_test = targets[np.array(test_idx)]
+
+
+k = 40
+cov  = np.matmul(faces_centered.T, faces_centered)/n_samples
+_, principal_directions = np.linalg.eigh(cov)
+top_pd = principal_directions[:, ::-1][:,:k].T
+
+projected_train_set = train_set.dot(top_pd.T)
+projected_test_set = test_set.dot(top_pd.T)
+
+imgs = list()
+est_labels = list()
+for i in range(projected_test_set.shape[0]):
+    test_image = projected_test_set[i, :]
+    nnIdx =
+    compute_nearest_neighbors(projected_train_set, test_image)
+    imgs.extend([test_set[i,:], train_set[nnIdx, :]])
+    est_labels.append(y_train[nnIdx])
+
+row_titles = ['Test', 'Nearest']
+col_titles = ['%d vs. %d' % (i, j) 
+for i, j in zip(y_test, est_labels)]
+plot_tools.plot_image_grid(imgs,
+                               "PC-Image-NearestNeighbor",
+                               (64, 64), len(projected_test_set), 
+n_row=2, bycol=True, row_titles=row_titles, col_titles=col_titles)
+ \end{minted}
+
+	\begin{figure}[H]
+		\centering
+		\includegraphics[width=200pt]{figures/PC-Image-NearestNeighbor.pdf}
+		\caption{Nearest neighbors using top 10 principal component vectors}
+		\label{fig8}
+	\end{figure}
+
+
+\item Give a potential reason why the principal component-based 
+nearest-neighbor approach used in the previous part could be
+more accurate than using the full training set.
+
+Using the top 40 principal directions, we keep most of the variance of the data along these directions and by projecting into the span of these vectors, we can expect to have capture most of the significant characteristics of the data in a space of smaller dimensions ($\mathbb{R}^{40}$ vs. $\mathbb{R}^{4096}$). So performing nearest neighbors in the space with smaller dimension could be more or as accurate than doing it in the original space.
+ 
+\item Use \verb|sklearn.cluster.KMeans| to perform KMeans on the entire dataset (both train and test set) with $k=40$. Use \verb|plot_image_grid()| to create a picture of all the $k$ cluster centers. 
+
+\begin{minted}{python} 
+rng = RandomState(0)
+center = True
+n_components = 40
+
+faces = fetch_olivetti_faces().data
+faces_centered = faces - faces.mean(axis=0)
+estimator =  KMeans(n_clusters=n_components, random_state=rng)
+estimator.fit(faces)
+kmeans_components = estimator.cluster_centers_
+plot_tools.plot_image_grid(kmeans_components,
+ "KMEANS_clusters", (64, 64), 10, n_row=4, bycol=True)
+\end{minted}
+
+	\begin{figure}[H]
+		\centering
+		\includegraphics[width=200pt]{figures/KMEANS_clusters}
+		\caption{40 KMeans clusters}
+		\label{fig9}
+	\end{figure}
+	
+
+
+ Some notes to keep in mind:
+  \begin{enumerate}
+  \item The function {\tt np.linalg.eig} might return complex eigenvectors.
+  \item The data points in the training and test data are given as
+    rows.
+    \item Include all new code (or functions) you have filled in your final PDF.
+ \end{enumerate}
+ 
+
+
+	\end{enumerate}
+  
+\end{enumerate}
+\end{document}

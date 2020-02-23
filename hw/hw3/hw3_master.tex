@@ -17,37 +17,14 @@
 \usepackage{textcomp}
 \usepackage[left=0.8in,right=1.0in,top=1.0in,bottom=1.0in]{geometry}
 
-\usepackage{times}
-\usepackage{amsfonts}
-\usepackage{amsmath}
-%\usepackage[psamsfonts]{amssymb}
-\usepackage{latexsym}
-\usepackage{color}
-\usepackage{graphics}
-\usepackage{enumerate}
-\usepackage{amstext}
-\usepackage{blkarray}
-\usepackage{url}
-\usepackage{epsfig}
-\usepackage{bm}
-\usepackage{hyperref}
-\hypersetup{
-    colorlinks=true,
-    linkcolor=blue,
-    filecolor=magenta,      
-    urlcolor=blue,
-}
-\usepackage{textcomp}
-\usepackage[left=0.8in,right=1.0in,top=1.0in,bottom=1.0in]{geometry}
-\usepackage{mathtools}
-\usepackage{minted}
-
 \input{macros}
+
 \begin{document}
 
-\noindent DS-GA.1013 Mathematical Tools for Data Science \\
-Homework 3 \\
-Yves Greatti - yg390\\
+\begin{center}
+{\large{\textbf{Homework 3}} } \vspace{0.2cm}\\
+Due March 1 at 11 pm
+\end{center}
 
 \begin{enumerate}
 \item (PCA and linear regression) Consider a dataset of $n$ 2-dimensional data points $x_1,\ldots,x_n \in \R^2$. Assume that the dataset is centered. Our goal is to find a line in the 2D space that lies \emph{closest} to the data. First, we apply PCA and consider the line in the direction of the first principal direction. Second, we fit a linear regression model where $x_i[1]$ is a feature, and $x_i[2]$ the corresponding response. Are these lines the same? Describe each line in terms of the quantity it minimizes geometrically (e.g. sum of some distance from the points to the lines).
@@ -60,57 +37,7 @@ Yves Greatti - yg390\\
 where $\rb$ is a random variable modeling the heartbeat of the baby, $\rnd{m}$ is a random variable modeling the heartbeat of the mother, and $\rnd{z}_1$ and $\rnd{z}_2$ model additive noise. From past data, we determine that $\rb$, $\rnd{m}$, $\rnd{z}_1$, and $\rnd{z}_2$ are all zero mean and uncorrelated with each other. The variances of $\rb$, $\rnd{z}_1$ and $\rnd{z}_2$ are equal to $1$, whereas the variance of $\rnd{m}$ is much larger, it is equal to $10$.
 \begin{enumerate}
 \item Compute the best linear estimator of $\rb$ given $\rx[1]$ in terms of MSE, and the corresponding MSE. Describe in words what the estimator does. 
-
-We have shown in class that centering the variables does not change the MSE, so we want to estimate 
-MSE = $\min_\beta \E[(\rb - \beta \rx[1])^2] = \beta^2 \var(\rx[1]) + \var(\rb) -2 \beta \cov(\rx[1], \rb)$.
-\begin{align*}
-	 \var(\rx[1])		&= 	\var(\rb + \rnd{m} + \rnd{z_1}) \\
-	 				&= 	\var(\rb) + \var(\rnd{m} )	+ \var(\rnd{z_1})	\\
-					&=	1 + 10 + 1	=12	 \\
-	\cov(\rx[1], \rb)		&=	\E[\rx[1] \rb]	\\
-					&= 	\E[ (\rb + \rnd{m} + \rnd{z_1}) \rb] = \E[\rb^2] = 1
-\end{align*}
-Since $\rb$, $\rnd{m}$, $\rnd{z}_1$ are all zero mean and uncorrelated with each other.
-
-MSE = $12 \beta^2 -2 \beta + 1$, it is a convex quadratic function with respect to $\beta$, so we can set the derivative to zero to find the minimum: $\beta^* = \frac{1}{12}$.
-MSE$_{\beta^*} = \frac{11}{12} = 0.91$. This estimator predicts the heartbeat of the baby using the measurement $\rx[1]$ from the microphone situated near  the mother's belly.
-
 \item Compute the best linear estimator of $\rb$ given $\rx$ in terms of MSE, and the corresponding MSE. Describe in words what the estimator does. 
-MSE of this estimator equals $\var(\rb) - \Sigma_{\rb\rx}^T \Sigma_{\rx}^{-1} \Sigma_{\rb\rx}$.
-$$\cov(\rx[1], \rx[2]) = \E[\rx[1]  \rx[2]] = \E[\rx[1]] \E[\rx[2]] =   \E[\rx[1] \rx[2]]$$ Since $\E[\rx[1]] = \E[\rx[2]] = 0$ by linearity of the expectation.
-And by assumptions 
-\begin{align*}
-	\cov(\rx[1], \rx[2]) 	&= 	\E[\rx[1]]  \E[\rx[2]] = \E[\rnd{m}^2] = \var(\rnd{m}) = 10	\\
-	 \var(\rx[2])		&=	\var(\rnd{m} + \rnd{z_2}) = \var(\rnd{m}) + \var(\rnd{z_2}) 	\\
-	 				&=	10 + 1 = 11	\\
-	\cov(\rb, \rx)		&=	\E[\rb \rx] - \E[\rb] \E[\rx] = \E[\rb \rx] \\
-					&= 	[\E[\rx[1] \rb] \; \E[\rx[2] \rb]]^T = [1 \; 0]^T
-\end{align*}
-
-
-
-This gives us:
-\begin{align*}
-	\Sigma_{\rx} &= 
-	\begin{bmatrix}
-		\var(\rx[1])	&			\cov(\rx[1], \rx[2]) \\
-		\cov(\rx[2], \rx[1])	&	\var(\rx[2])		\\
-	\end{bmatrix}
-	=
-	\begin{bmatrix}
-		12	&	10 \\
-		10	&	11 
-	\end{bmatrix} \\
-	\Sigma_{\rx}^{-1} &= 
-	\begin{bmatrix}
-		\frac{11}{32}	&	-\frac{5}{16} \\
-		-\frac{5}{16}	&	-\frac{3}{8}
-	\end{bmatrix} \\
-	\Sigma_{\rb\rx}^T \Sigma_{\rx}^{-1} \Sigma_{\rb\rx} &=
-	[1 \; 0] 	\begin{bmatrix} \frac{11}{32} \\ -\frac{5}{16} \end{bmatrix} = \frac{11}{32}
-\end{align*}
-Hence MSE = $ 1 - \frac{11}{32} = \frac{21}{32} = 0.65$. The second estimator provides a better estimation of the heartbeat of the baby by jointly using the two microphones.
-
 \end{enumerate}
 
 \item (Gaussian minimum MSE estimator) In this problem we derive the minimum MSE estimator of a random variable $\rnd{b}$ given another random variable $\rnd{a}$ when both are jointly Gaussian. To simplify matters we assume the mean of both random variables is zero. 
