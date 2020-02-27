@@ -1,31 +1,24 @@
 import matplotlib.pyplot as plt
 import numpy as np
-from sklearn.linear_model import SGDRegressor, LinearRegression
+from sklearn.linear_model import LinearRegression
 from sklearn.metrics import mean_squared_error
 from sklearn.model_selection import train_test_split
 
 
-def compute_error(less_a, less_a_pred, greater_a, greater_a_pred):
-    less_a_error = mean_squared_error(less_a, less_a_pred)
-    # less_a_train_sample_weights = np.array([1. / rain_train_less_a_pred.shape[0]])
-    # less_a_train_sample_weights = np.tile(less_a_train_sample_weights, rain_train_less_a_pred.shape[0])
+def create_model():
+    return LinearRegression()
 
+
+def compute_error(a, text, less_a, less_a_pred, greater_a, greater_a_pred):
+    less_a_error = mean_squared_error(less_a, less_a_pred)
     greater_a_error = mean_squared_error(greater_a, greater_a_pred)
 
     n_samples_less_a = less_a.shape[0]
     n_samples_greater_a = greater_a.shape[0]
     error = n_samples_less_a * less_a_error + n_samples_greater_a * greater_a_error
     error = error / (n_samples_less_a + n_samples_greater_a)
-    print("{},{}, {}".format(less_a_error, greater_a_error, error))
+    print("a:{}, {}: less:{}, greater:{}, error:{}".format(a, text, less_a_error, greater_a_error, error))
     return error
-
-    # greater_a_train_sample_weights = np.array([1. / rain_train_greater_a_pred.shape[0]])
-    # greater_a_train_sample_weights = np.tile(greater_a_train_sample_weights, rain_train_greater_a_pred.shape[0])
-    #
-    # stacked_rain_train = np.hstack((rain_train_less_a, rain_train_greater_a))
-    # stacked_rain_train_pred = np.hstack((rain_train_less_a_pred, rain_train_greater_a_pred))
-    # stacked_train_sample_weights = np.hstack((less_a_train_sample_weights, greater_a_train_sample_weights))
-    # train_error = mean_squared_error(stacked_rain_train, stacked_rain_train_pred, stacked_train_sample_weights)
 
 
 def split_and_plot(a, max_temp_train, rain_train, max_temp_val, rain_val, grid):
@@ -41,16 +34,17 @@ def split_and_plot(a, max_temp_train, rain_train, max_temp_val, rain_val, grid):
     rain_train_greater_a = rain_train[np.where(max_temp_train >= a)]
 
     # fill in code to assign values for the variables below.
+
     # reg_1 = SGDRegressor()
-    reg_1 = LinearRegression()
+    reg_1 = create_model()
+
     # We fit a linear estimator for temperatures less than a
     reg_1.fit(max_temp_train_less_a, rain_train_less_a)
 
     # prediction values on relevant points on grid using linear fit with points max_temp < a
     linear_fit_rain_less_a = reg_1.predict(grid_less_a)
 
-    # reg_2 = SGDRegressor()
-    reg_2 = LinearRegression()
+    reg_2 = create_model()
 
     reg_2.fit(max_temp_train_greater_a, rain_train_greater_a)
     # prediction values on relevant points on grid using linear fit with points max_temp > a
@@ -73,7 +67,7 @@ def split_and_plot(a, max_temp_train, rain_train, max_temp_val, rain_val, grid):
     # use a relevant error metric below. make sure you normalize correctly to take into account number of datapoints.
     rain_train_less_a_pred = reg_1.predict(max_temp_train_less_a)
     rain_train_greater_a_pred = reg_2.predict(max_temp_train_greater_a)
-    train_error = compute_error(rain_train_less_a, rain_train_less_a_pred, rain_train_greater_a,
+    train_error = compute_error(a, "Train", rain_train_less_a, rain_train_less_a_pred, rain_train_greater_a,
                                 rain_train_greater_a_pred)
 
     # And we split the same way the validation dataset related to the temperatures
@@ -84,7 +78,8 @@ def split_and_plot(a, max_temp_train, rain_train, max_temp_val, rain_val, grid):
     max_temp_val_greater_a = max_temp_val[np.where(max_temp_val >= a)].reshape(-1, 1)
     rain_val_greater_a = rain_val[np.where(max_temp_val >= a)]
     rain_val_greater_a_pred = reg_2.predict(max_temp_val_greater_a)
-    val_error = compute_error(rain_val_less_a, rain_val_less_a_pred, rain_val_greater_a, rain_val_greater_a_pred)
+    val_error = compute_error(a, "Validation", rain_val_less_a, rain_val_less_a_pred, rain_val_greater_a,
+                              rain_val_greater_a_pred)
 
     # val_error =  # error of your fit on validation data points
     # train_error =  # error of your fit on your train data points
@@ -102,9 +97,9 @@ def main():
     rain = np.array(dataset[:, 5])
 
     max_temp_train, max_temp_test, rain_train, rain_test = train_test_split(max_temp, rain, test_size=0.30,
-                                                                            random_state=42)
+                                                                            random_state=4321)
     max_temp_val, max_temp_test, rain_val, rain_test = train_test_split(max_temp_test, rain_test, test_size=0.50,
-                                                                        random_state=42)
+                                                                        random_state=4321)
 
     max_temp_train = max_temp_train.reshape(-1, 1)
     max_temp_test = max_temp_test.reshape(-1, 1)
@@ -120,17 +115,17 @@ def main():
         split_and_plot(a, max_temp_train, rain_train, max_temp_val, rain_val, grid)
 
     ### selecting the best model according to val accuracy
-    a = 8  # best value of a from grid search above
+    a = 20  # best value of a from grid search above
 
     grid_less_a = grid[grid < a].reshape(-1, 1)
     grid_greater_a = grid[grid >= a].reshape(-1, 1)
 
     # regular linear regression on the entire train dataset
-    reg_model = LinearRegression()
+    reg_model = create_model()
     reg_model.fit(max_temp_train, rain_train)
     linear_fit_rain = reg_model.predict(grid)
 
-    best_model = LinearRegression()
+    best_model = create_model()
     max_temp_less_a = max_temp_train[np.where(max_temp_train < a)].reshape(-1, 1)
     rain_less_a = rain_train[np.where(max_temp_train < a)]
     # fit from your best model/best a
@@ -159,7 +154,7 @@ def main():
     plt.gcf().subplots_adjust(bottom=0.15)
     plt.gcf().subplots_adjust(left=0.15)
 
-    a_error = compute_error(grid_less_a, linear_fit_rain_less_a, grid_greater_a, linear_fit_rain_greater_a)
+    a_error = compute_error(a, "Best", grid_less_a, linear_fit_rain_less_a, grid_greater_a, linear_fit_rain_greater_a)
     lr_error = mean_squared_error(grid, linear_fit_rain)
 
     # a_error =  # error of your best model
