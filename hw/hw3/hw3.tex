@@ -52,8 +52,10 @@ Yves Greatti - yg390\\
 \begin{enumerate}
 \item (PCA and linear regression) Consider a dataset of $n$ 2-dimensional data points $x_1,\ldots,x_n \in \R^2$. Assume that the dataset is centered. Our goal is to find a line in the 2D space that lies \emph{closest} to the data. First, we apply PCA and consider the line in the direction of the first principal direction. Second, we fit a linear regression model where $x_i[1]$ is a feature, and $x_i[2]$ the corresponding response. Are these lines the same? Describe each line in terms of the quantity it minimizes geometrically (e.g. sum of some distance from the points to the lines).
 	These lines are not the same. The linear regression model tries to reduce the sum of residual errors $\sum_{i=1}^n(x_i[2] - x_i[1]^T \beta)^2$, the residual errors are the distances between each datapoint $(x_i[1], x_i[2])$ and the hyperplane $y=x^T \beta$ following the direction parallel to the axis of the dependent variable: $x[2]$.
-	PCA finds the axis of maximum variance, the principal directions. Finding the first component PCA is finding the line which maximizes the variance or equivalently minimizes the loss variance:
-	
+	For a given point $x_i$, the total variance is $x_i x_i^T$, and we know that $\var(\mathcal{P}_{u_1} x_i) =  u_1^T x_i x_i^T u_1$, where the first principal direction is the direction of maximum sample variance, $u_1 = \arg \max_{\|v\|_2} \var(v^T x_i)$.
+	Applying the Pythagorean theorem shows that this total variance equals the sum of $\var(\mathcal{P}_{u_1} x_i)$ and the squared residual: 
+	$\|\var(x_i x_i^T)\|^2 = \| \var(\mathcal{P}_{u_1} x_i\|^2 + \|\var(x_i x_i^T) -  \var(\mathcal{P}_{u_1} x_i \|^2	$ .
+	The line in the direction of the first principal direction is the line which maximizes the variance or equivalently minimizes the loss variance.
 	
 
  \item (Heartbeat) We are interested in computing the best linear estimate of the heartbeat of a fetus in the presence of strong interference in the form of the heartbeat of the baby's mother. To simplify matters, let us assume that we only want to estimate the heartbeat at a certain moment. We have available a measurement from a microphone situated near the mother's belly and another from a microphone that is away from her belly. We model the measurements as
