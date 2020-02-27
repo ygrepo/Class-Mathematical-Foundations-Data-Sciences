@@ -1,12 +1,16 @@
 import matplotlib.pyplot as plt
 import numpy as np
-from sklearn.linear_model import LinearRegression
+from sklearn.linear_model import LinearRegression, BayesianRidge, Ridge, SGDRegressor
 from sklearn.metrics import mean_squared_error
 from sklearn.model_selection import train_test_split
 
 
 def create_model():
+    #return BayesianRidge()
+    #return Ridge()
+    #return SGDRegressor()
     return LinearRegression()
+
 
 
 def compute_error(a, text, less_a, less_a_pred, greater_a, greater_a_pred):
@@ -22,15 +26,15 @@ def compute_error(a, text, less_a, less_a_pred, greater_a, greater_a_pred):
 
 
 def split_and_plot(a, max_temp_train, rain_train, max_temp_val, rain_val, grid):
-    grid_less_a = grid[grid < a].reshape(-1, 1)
+    grid_less_a = grid[grid <= a].reshape(-1, 1)
     grid_greater_a = grid[grid >= a].reshape(-1, 1)
 
     # Split the training set into two data sets less or greater then temperature a
-    max_temp_train_less_a = max_temp_train[np.where(max_temp_train < a)].reshape(-1, 1)
+    max_temp_train_less_a = max_temp_train[np.where(max_temp_train <= a)].reshape(-1, 1)
     max_temp_train_greater_a = max_temp_train[np.where(max_temp_train >= a)].reshape(-1, 1)
 
     # Do the same for the rainfall
-    rain_train_less_a = rain_train[np.where(max_temp_train < a)]
+    rain_train_less_a = rain_train[np.where(max_temp_train <= a)]
     rain_train_greater_a = rain_train[np.where(max_temp_train >= a)]
 
     # fill in code to assign values for the variables below.
@@ -71,8 +75,8 @@ def split_and_plot(a, max_temp_train, rain_train, max_temp_val, rain_val, grid):
                                 rain_train_greater_a_pred)
 
     # And we split the same way the validation dataset related to the temperatures
-    max_temp_val_less_a = max_temp_val[np.where(max_temp_val < a)].reshape(-1, 1)
-    rain_val_less_a = rain_val[np.where(max_temp_val < a)]
+    max_temp_val_less_a = max_temp_val[np.where(max_temp_val <= a)].reshape(-1, 1)
+    rain_val_less_a = rain_val[np.where(max_temp_val <= a)]
     rain_val_less_a_pred = reg_1.predict(max_temp_val_less_a)
 
     max_temp_val_greater_a = max_temp_val[np.where(max_temp_val >= a)].reshape(-1, 1)
@@ -117,7 +121,7 @@ def main():
     ### selecting the best model according to val accuracy
     a = 20  # best value of a from grid search above
 
-    grid_less_a = grid[grid < a].reshape(-1, 1)
+    grid_less_a = grid[grid <= a].reshape(-1, 1)
     grid_greater_a = grid[grid >= a].reshape(-1, 1)
 
     # regular linear regression on the entire train dataset
@@ -126,8 +130,8 @@ def main():
     linear_fit_rain = reg_model.predict(grid)
 
     best_model = create_model()
-    max_temp_less_a = max_temp_train[np.where(max_temp_train < a)].reshape(-1, 1)
-    rain_less_a = rain_train[np.where(max_temp_train < a)]
+    max_temp_less_a = max_temp_train[np.where(max_temp_train <= a)].reshape(-1, 1)
+    rain_less_a = rain_train[np.where(max_temp_train <= a)]
     # fit from your best model/best a
     best_model.fit(max_temp_less_a, rain_less_a)
     linear_fit_rain_less_a = best_model.predict(grid_less_a)
