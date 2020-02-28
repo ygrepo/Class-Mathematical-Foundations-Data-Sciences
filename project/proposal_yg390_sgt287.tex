@@ -1,0 +1,100 @@
+\documentclass[12pt,twoside]{article}
+\usepackage[dvipsnames]{xcolor}
+\usepackage{tikz,graphicx,amsmath,amsfonts,amscd,amssymb,bm,cite,epsfig,epsf,url}
+\usepackage[hang,flushmargin]{footmisc}
+\usepackage[colorlinks=true,urlcolor=blue,citecolor=blue]{hyperref}
+\usepackage{amsthm,multirow,wasysym,appendix}
+\usepackage{array,subcaption} 
+% \usepackage[small,bf]{caption}
+\usepackage{bbm}
+\usepackage{pgfplots}
+\usetikzlibrary{spy}
+\usepgfplotslibrary{external}
+\usepgfplotslibrary{fillbetween}
+\usetikzlibrary{arrows,automata}
+\usepackage{thmtools}
+\usepackage{blkarray} 
+\usepackage{textcomp}
+\usepackage[left=0.8in,right=1.0in,top=1.0in,bottom=1.0in]{geometry}
+
+\usepackage{times}
+\usepackage{amsfonts}
+\usepackage{amsmath}
+%\usepackage[psamsfonts]{amssymb}
+\usepackage{latexsym}
+\usepackage{color}
+\usepackage{graphics}
+\usepackage{enumerate}
+\usepackage{amstext}
+\usepackage{blkarray}
+\usepackage{url}
+\usepackage{epsfig}
+\usepackage{bm}
+\usepackage{hyperref}
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue,
+    filecolor=magenta,      
+    urlcolor=blue,
+}
+\usepackage{textcomp}
+\usepackage[left=0.8in,right=1.0in,top=1.0in,bottom=1.0in]{geometry}
+\usepackage{mathtools}
+\usepackage{minted}
+\usepackage{bm}
+
+\input{macros}
+
+\title{Learning to regularize, Experiments Using Neumann Networks on fastRMI datasets}
+\author{Soham Girish Tamba, Yves Greatti}
+\date{}
+
+\begin{document}
+\maketitle
+\textbf{Due on March $1^{\text{st}}$}
+
+\noindent\rule{\textwidth}{0.4pt}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% 3. Project proposal
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Purpose}
+To use Neumann networks  and set up experiments on the fastRMI open datasets, 
+to establish baselines in term of NMSE (normalized mean square error), PSNR (peak signal-to-noise ratio), SSIM(structural similarity) metrics and reconstruction time 
+which could be a critical factor compared to longer timers reported by more traditional  approach such as TV (total variation regularized least squares).
+To define modified versions of the Neumann network, or investigate alternative methods for inverting nonlinear operators leading to new neural network architectures.
+
+\section*{Introduction}
+Linear inverse problem in imaging can be formulated as: $\textbf{y} = \mathbf{X} \bm{\beta^*} + \epsilon$ where the objective in the context of MRI images is to recover the original image
+$\bm{\beta} \in \R^p$ from a set of undersampled k-space measuremnents  $\textbf{y} \in \R^m$,  which are corrupted by additive gaussian noise $\epsilon \in \R^p$.
+$ \mathbf{X} \in \R^{m \times p}$ represent a linear forward operator modeling the MR physics. In MR imaging, cross-sectional images of a person's anatomy are produced
+from a strong magnetic field and radio-frequency signal created by various coils. A receiver coil detects the patient body electromagnetic response fields. The measurements are points in
+a Fourier-space known as  \emph{k-space}. The overall scanning process can exceed $30$ minutes leading to low throughput of images, potential patient discomfort and artifacts
+from patient motion. To improve the processing time, less k-samples are captured within a given maximum frequency range producing lower resolution images. In order to recover the initial
+image $\bm{\beta^*}$, the original image must be reconstructed which in the case of a Neumann network includes a regularization  function $r(\bm{\beta})$ which enables to reconstruct an estimated image $\hat{\bm{\beta}}$ 
+as close as the original image $\bm{\beta^*}$. The fastRMI dataset contains four types of data from various Siemens MR scanners of knees and brain scans. The data identifies two type of tasks:
+ single-coil  and multi-coil reconstruction images. With enough data, a traditional machine learning approach learns directly a mapping $\bm{\hat{\beta}} = \mathcal{F}(\textbf{y})$ without any knowledge of $\mathbf{X}$.
+ A decoupled approach based on a generative model first learns the image space of interest $\bm{\beta_i}$ and then learns a mapping $\bm{\hat{\beta}} = \mathcal{F}(\textbf{y}, \mathbf{X})$.
+ A standard approach for solving this inverse problems is the regularized least-squares estimator:
+ $$ \bm{\hat{\beta}} = \arg \min_{\beta} \frac{1}{2} \| \textbf{y} - \mathbf{X} \bm{\beta} \|_2^2 + r(\bm{\beta})$$
+ The key feature of these approaches is that $ \mathbf{X}$ is never considered and the learning model can be used for other inverse problems with different operators $\mathbf{X}$.
+ This comes at the cost of $\mathcal{O}(N^{ \frac{2 \alpha + p} {\alpha} })$ by considering the whole sampling space
+  where $N$ is the number of training samples, $p$ the dimension of $\phi(\bm{\beta})$, the probability distribution of the images, $\alpha$ a smoothness term.
+  Incorporating $\mathbf{X}$ into the learning process reduces the dimension $p$ to $p'$, where $p' \ll p$, which corresponds to the subset of the image to which the operator $\mathbf{X}$ is applied.
+  Neumann networks directly incorporate the forward operator $\mathbf{X}$ and accomplishes an iterative optimization algorithm referred as unrolled gradient descent:
+  
+  $$ \bm{\beta}^{k+1} =  \bm{\beta}^{k} -\eta [\mat{X}^T (\mat{X} \vect{\beta}^{k} - \vect{y}) + R(\vect{\beta}^{(k)}], \eta > 0$$
+  The number of iterations is fixed and is denoted B for Blocks.
+  
+  
+\section{Related work} 
+
+
+\section{Our contribution}
+
+\section{Conclusion}
+
+\bibliography{bibliography} 
+\bibliographystyle{plain}
+
+\end{document}
