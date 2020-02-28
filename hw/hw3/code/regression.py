@@ -91,6 +91,9 @@ def split_and_plot(a, max_temp_train, rain_train, max_temp_val, rain_val, grid):
         'a = ' + str(a) + ' val error: ' + str(round(val_error, 3)) + ' train error: ' + str(round(train_error, 3)),
         fontsize=18)
     plt.savefig('a=' + str(a) + '.pdf')
+
+    #plt.figure(figsize=(9, 6))
+    #plt.plot(grid_less_a, linear_fit_rain_less_a, '-o', lw=3, color='purple', label="<a")
     # plt.show()
 
 
@@ -115,6 +118,7 @@ def main():
     grid = grid.reshape(-1, 1)
 
     # for a in [4]:
+    #for a in np.arange(4, 25, 2):
     for a in np.arange(4, 25, 4):
         split_and_plot(a, max_temp_train, rain_train, max_temp_val, rain_val, grid)
 

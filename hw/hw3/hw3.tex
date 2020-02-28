@@ -50,12 +50,16 @@ Homework 3 \\
 Yves Greatti - yg390\\
 
 \begin{enumerate}
-\item (PCA and linear regression) Consider a dataset of $n$ 2-dimensional data points $x_1,\ldots,x_n \in \R^2$. Assume that the dataset is centered. Our goal is to find a line in the 2D space that lies \emph{closest} to the data. First, we apply PCA and consider the line in the direction of the first principal direction. Second, we fit a linear regression model where $x_i[1]$ is a feature, and $x_i[2]$ the corresponding response. Are these lines the same? Describe each line in terms of the quantity it minimizes geometrically (e.g. sum of some distance from the points to the lines).
-	These lines are not the same. The linear regression model tries to reduce the sum of residual errors $\sum_{i=1}^n(x_i[2] - x_i[1]^T \beta)^2$, the residual errors are the distances between each datapoint $(x_i[1], x_i[2])$ and the hyperplane $y=x^T \beta$ following the direction parallel to the axis of the dependent variable: $x[2]$.
-	For a given point $x_i$, the total variance is $x_i x_i^T$, and we know that $\var(\mathcal{P}_{u_1} x_i) =  u_1^T x_i x_i^T u_1$, where the first principal direction is the direction of maximum sample variance, $u_1 = \arg \max_{\|v\|_2} \var(v^T x_i)$.
-	Applying the Pythagorean theorem shows that this total variance equals the sum of $\var(\mathcal{P}_{u_1} x_i)$ and the squared residual: 
-	$\|\var(x_i x_i^T)\|^2 = \| \var(\mathcal{P}_{u_1} x_i\|^2 + \|\var(x_i x_i^T) -  \var(\mathcal{P}_{u_1} x_i \|^2	$ .
-	The line in the direction of the first principal direction is the line which maximizes the variance or equivalently minimizes the loss variance.
+\item (PCA and linear regression) Consider a dataset of $n$ 2-dimensional data points $x_1,\ldots,x_n \in \R^2$. Assume that the dataset is centered. Our goal is to find a line in the 2D space that lies \emph{closest} to the data. First, we apply PCA and consider the line in the direction of the first principal direction. Second, we fit a linear regression model where $x_i[1]$ is a feature, and $x_i[2]$ the corresponding response. Are these lines the same? Describe each line in terms of the quantity it minimizes geometrically (e.g. sum of some distance from the points to the lines).\\
+
+	These lines are not the same. The linear regression model approximates the response $x_i[2]$ by  finding the feature point  $x_i[1]$  the closest to the response point $x_i[2]$ by projecting the response point $x_i[2]$
+	onto the hyperspace $x[1]^T \beta $. For the OLS estimator this projection is orthogonal: $\beta_{\text{OLS}} =  \arg \min_{\beta \in \R} \| x_i[2] - \beta x_i[1] \|_2$.
+	
+	PCA finds the principal directions by maximizing the total variance of the sample covariance matrix.
+	Let $u_1$ the first principal direction, $u_1 = \arg \max_{\|v\|_2} \var(\mathcal{P}_v \mathcal{X})$, where $ \mathcal{X}$ is the matrix of $n$ 2-dimensional data points $x_1,\ldots,x_n$. 
+	Applying the Pythagorean theorem we can show that the norm of the total variance squared is: 
+	$\|\mathcal{X} \mathcal{X}^T\|^2 = \| \mathcal{P}_{u_1}\mathcal{X}\|^2 + \| \mathcal{X} \mathcal{X}^T - \mathcal{P}_{u_1}\mathcal{X} \|^2$ .
+	For a given sample covariance  matrix $\mathcal{X} \mathcal{X}^T$, PCA tries to maximize the total variance or equivalently mimize the loss variance by projecting orthogonally the data  $\mathcal{X}$ onto the  line  in the direction of the first principal direction.
 	
 
  \item (Heartbeat) We are interested in computing the best linear estimate of the heartbeat of a fetus in the presence of strong interference in the form of the heartbeat of the baby's mother. To simplify matters, let us assume that we only want to estimate the heartbeat at a certain moment. We have available a measurement from a microphone situated near the mother's belly and another from a microphone that is away from her belly. We model the measurements as
@@ -171,8 +175,79 @@ f_a(x)=\begin{cases}
  $w_1, w_2, b_1$ and $b_2$ are estimated by minimizing the mean squared error on the training dataset. 
  \begin{enumerate}
  \item Complete \verb|split_and_plot()| in \verb|regression.py| to fit two different linear function for a given value of threshold $a$. The function will generate a plot of the fit overlaid on a scatter plot of the validation data. Report the plot generate by the function for different values of $a$ defined in \verb|main()|. You are welcome to try other values of $a$, but please make sure that you report the plots generated for all values of $a$ defined in \verb|main()|. 
+	In the function  \verb|split_and_plot()| in \verb|regression.py|
+	\begin{enumerate}[(1)]
+		\item Split the training set for maximum temperatures into two data sets less or greater then temperature a ($\le$ or $\ge$). 
+		We do the same for the rainfall datasets, splitting the rainfall dataset related to temperatures  less or greater then temperature a  ($\le$ or $\ge$). 
+		\item Fit two linear models, one with the data related to temperatures less or equal to $a$ and one with the training data corresponding to temperatures greater or equal to $a$. 
+		\item We obtain two sets of prediction values on relevant points on grid using linear fit with points max\_temp $\le a$ and max\_temps $\ge a$.
+		\item We then compute the training errors for the two linear models by using the relevant training data points (model 1 using max\_temp $\le a$ and  model 2 using max\_temps $\ge a$)
+		and comparing to the rainfall value split on $a$ with the same inequalities. 
+		The total training error is a weighted average the two training errors: 
+		\begin{align*}
+			& \frac{n1 * \text{training error 1} + n_2  * \text{training error 2}} {n_1 + n_2} \\
+			& n_1: \text{ number of samples in data set used by linear model 1} \\
+			& n_2: \text{ number of samples in data set used by linear model 2}
+		\end{align*}
+		\item  Following the same logic, we compute the total validation error using the two linear model and the max. temperatures and rainfall validation data points.
+		\item The lowest validation error is $1134.86$ and obtain with two models using two datasets divided by a temperature $a=20$.
+
+	\end{enumerate}	
+ 	We also tried various linear estimators: linear regression, stochastic gradient descent, and with $l2$ regularization ridge and Bayesian ridge regressors, using different values of $a$ as split points to train the estimators.
+	Out-of-the box the linear regression model had the best validation accuracy or the lowest validation error (see following plots for various $a$).
+	
+	\begin{figure}[H]
+		\centering
+		\includegraphics[width=200pt]{figures/a=4.pdf}
+		\caption{Linear regression of rain fall as response of max. temperatures with $a=4$}
+		\label{fig1}
+	\end{figure}
+
+	\begin{figure}[H]
+		\centering
+		\includegraphics[width=200pt]{figures/a=8.pdf}
+		\caption{Linear regression of rain fall as response of max. temperatures with $a=8$}
+		\label{fig2}
+	\end{figure}
+
+	\begin{figure}[H]
+		\centering
+		\includegraphics[width=200pt]{figures/a=12.pdf}
+		\caption{Linear regression of rain fall as response of max. temperatures with $a=12$}
+		\label{fig3}
+	\end{figure}
+
+	\begin{figure}[H]
+		\centering
+		\includegraphics[width=200pt]{figures/a=20.pdf}
+		\caption{Linear regression of rain fall as response of max. temperatures with $a=20$}
+		\label{fig4}
+	\end{figure}
+
+	\begin{figure}[H]
+		\centering
+		\includegraphics[width=200pt]{figures/a=24.pdf}
+		\caption{Linear regression of rain fall as response of max. temperatures with $a=24$}
+		\label{fig5}
+	\end{figure}
+	
  \item Choose the best estimator $f_{a'}(x)$ according to the validation error. Fill in the rest of \verb|main()| function to fit a single linear estimator on the entire dataset. Compare the fit and error values of $f_{a'}(x)$ with the single linear estimator fit on the training set on the held out test set.  Report the plot generated by this section. 
+ 
+ 	Having identified the best value $a$ to split the training data, we then train two linear models using this value of $a$ by splitting the entire training dataset between
+	max.temperatures $\le a$ and max. temperatures $\ge a$ and fitting with the split on the rainfalls using the same value of $a$.
+	We then train a linear model on the entire training set using the train maximum temperatures and train rainfall data.
+	
+ 
+ 	\begin{figure}[H]
+		\centering
+		\includegraphics[width=200pt]{figures/test_comparison.pdf}
+		\caption{Comparison between a single linear estimator fitted on the whole dataset and the  the best estimator $f_a'$}
+		\label{fig6}
+	\end{figure}
+
+
  \end{enumerate}
+ 	
  We do not require you to include your code in the report. You can choose to include it or not include it. 
 \end{enumerate}
 \end{document}
