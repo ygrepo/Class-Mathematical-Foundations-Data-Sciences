@@ -1,0 +1,107 @@
+\documentclass[12pt,twoside]{article}
+\usepackage[dvipsnames]{xcolor}
+\usepackage{tikz,graphicx,amsmath,amsfonts,amscd,amssymb,bm,cite,epsfig,epsf,url}
+\usepackage[hang,flushmargin]{footmisc}
+\usepackage[colorlinks=true,urlcolor=blue,citecolor=blue]{hyperref}
+\usepackage{amsthm,multirow,wasysym,appendix}
+\usepackage{array,subcaption} 
+% \usepackage[small,bf]{caption}
+\usepackage{bbm}
+\usepackage{pgfplots}
+\usetikzlibrary{spy}
+\usepgfplotslibrary{external}
+\usepgfplotslibrary{fillbetween}
+\usetikzlibrary{arrows,automata}
+\usepackage{thmtools}
+\usepackage{blkarray} 
+\usepackage{textcomp}
+\usepackage[left=0.8in,right=1.0in,top=1.0in,bottom=1.0in]{geometry}
+
+\input{macros}
+
+\begin{document}
+
+\begin{center}
+{\large{\textbf{Homework 4}} } \vspace{0.2cm}\\
+Due March 8 at 11 pm
+\end{center}
+
+\begin{enumerate}
+
+\item (Condition number) Let $A\in \R^{n\times n}$ be invertible, and let $x_{\op{true}},y\in \R^n$
+  satisfy $Ax_{\op{true}}=y$. We are interested in what happens if $y$ is perturbed additively by a vector $z\in \R^n$, i.e. if we solve 
+\begin{align}
+A w=y+z.
+\end{align}
+  \begin{enumerate}
+  \item The operator norm of a matrix $M$ is equal to 
+  \begin{align}
+  \norm{M} := \arg \max_{\normTwo{v} = 1} \normTwo{Mv},
+  \end{align}  
+  which we know is equal to the maximum singular value. What is the operator norm of $A^{-1}$?
+  \item Prove that $\|w-x_{\op{true}}\|\leq \|z\|/s_n$, where
+    $s_j$ denotes the $j$th singular value of $A$.
+  \item If $x_{\op{true}}\neq 0$ prove that
+    $$\frac{\|w-x_{\op{true}}\|}{\|x_{\op{true}}\|} \leq
+    \kappa(A)\frac{\|z\|}{\|y\|}.$$
+    Here $\kappa(A):=s_1/s_n$ is called the \textit{condition
+    number} of $A$.
+  \end{enumerate} 
+  
+  \item (Simple linear regression) We consider a linear model with one feature ($p:=1$). The data are given by
+\begin{align}
+\ry_i : = x_i \beta + \rnd{z}_i, \quad 1 \leq i \leq n,
+\end{align}
+where $\beta \in \R$, $x_i \in \R$, and $\rz_1$, \ldots, $\rz_n$ are iid Gaussian random variables with zero mean and variance $\sigma^2$. A reasonable definition of the \emph{energy} in the feature is its sample mean square $\gamma^2 :=\frac{1}{n}\sum_{i=1}^{n}x_i^2$. We define the signal-to-noise ratio in the data as SNR$:= \gamma^2/\sigma^2$.
+  \begin{enumerate}
+  \item What is the distribution of the OLS estimate $\rnd{\beta}_{OLS}$ as a function of the SNR?
+  \item If the SNR is fixed, how does the estimate behave as $n \rightarrow \infty$? If $n$ is fixed, how does the estimate behave as $\op{SNR} \rightarrow \infty$? Can this behavior change if the noise is iid, has zero mean and variance $\sigma^2$, but is not Gaussian? Prove that it doesn't or provide an example where it does.
+  \item Can the behavior of the estimator as $n \rightarrow \infty$ change if the noise is not iid? Prove that it doesn't or provide a counterexample.
+  \end{enumerate} 
+   
+\item (Best unbiased estimator) Consider the linear regression model
+  $$\ry = X^T\beta + \rz$$
+  where $\ry\in\R^n$, $X\in\R^{p \times n}$ has rank $p$,
+  $\beta\in\R^p$, and $\rz\in\R^n$ has mean
+  zero and covariance matrix $\Sigma_{z}=\sigma^2I$ for some
+  $\sigma^2>0$.  Here only $\rz$ and $\ry$ are random.  We observe
+  the values of $\ry$ and $X$ and must estimate $\beta$.
+  Consider a linear estimator of the form $C\ry$
+  where $C\in\R^{p\times n}$ (note that $X$ and $C$ are both
+  deterministic, i.e., not random).
+  \begin{enumerate}
+  \item What is the mean $\mu=\E[C\ry]$?
+  \item What is the covariance matrix of $C\ry$? That is, compute
+    $$\E[(C\ry)(C\ry)^T]-\mu\mu^T.$$
+  \item Write $C=(X^TX)^{-1}X^T+D$ for some $D\in\R^{p\times n}$.
+    What must be true of $D$ so that $C\ry$ is an unbiased estimator
+    of $\beta$ for all possible $\beta$?  That is, what must be true
+    so that $\E[C\ry]=\beta$ for all $\beta$? [Hint: Use part (a).
+    Your answer will be a property of $DX$.]
+  \item Let $\Sigma_C$ denote the covariance matrix of $C\ry$ and let
+    $\Sigma_{\text{OLS}}$ denote the covariance matrix of $(XX^T)^{-1}X \ry$.
+    Show that if $C\ry$ is an unbiased estimator of $\beta$ then
+    $$v^T\Sigma_Cv \geq v^T\Sigma_{\text{OLS}}v,$$
+    for all $v\in\R^p$.  That is, least squares yields
+    the estimator with smallest variance in any direction
+    $v$. [Hint: Use part (b) to compute the covariance of
+      $((XX^T)^{-1}X+D)\ry$.]
+  \item Now suppose that the true regression model has extra features:
+    $$\ry = X^T\beta + Z^T w + \rz,$$
+    where $Z\in \R^{n\times k}$ and $w\in\R^k$.  Not knowing
+    these features, you compute the least squares estimator
+    $$\hat{\beta} = (XX^T)^{-1}X\ry.$$
+    Under what conditions on $X,Z$ is $\hat{\beta}$ still unbiased for all
+    possible $w$?
+  \end{enumerate}   
+   
+\item (Distribution of $\beta$)  In this question, we will investigate how the coefficients of regression, $\beta$ is distributed. We will use the \href{https://archive.ics.uci.edu/ml/datasets/Combined+Cycle+Power+Plant}{combined cycle power plant data set} to regress for the net hourly electrical energy output as a function of the ambient temperature and exhaust vacuum. The support code loads the datasets and defines these subset of variables as $X$ and $y$ respectively. We will fit a regression to obtain $\beta_0, \beta$ which minimizes $y = \beta_0 + \beta^Tx$. 
+
+To study the distribution of $\beta$, we split our dataset into $500$ bootstrap samples, each with $100$ data points. We fit linear regression individually on each of these $500$ bootstrap samples to obtain $\beta^1, \beta^2, \dots, \beta^{500}$.
+\begin{enumerate}
+\item Plot a histogram of the distribution of $\beta_1^k$ and $\beta_2^k$ where $k$ refers to the $k^{th}$ bootstrap sample and $\beta_i$ refers to the $i^{th}$ component of $\beta$.  The support code handles the actual plotting part, you only have to compute the $\beta^k$s. 
+\item Make a scatter plot of $\beta_1^k$ vs $\beta_2^k$. Plot the principal directions of the actual data $X$ and the principal directions of $\beta^k$s. 
+\item Do the principal directions of $X$ datapoints and $\beta^k$ datapoints align? Give a condition on the data generation process under which these principal directions will align. 
+\end{enumerate}
+\end{enumerate}
+\end{document}
