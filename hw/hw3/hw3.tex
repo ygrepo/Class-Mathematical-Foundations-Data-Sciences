@@ -5,7 +5,6 @@
 \usepackage[colorlinks=true,urlcolor=blue,citecolor=blue]{hyperref}
 \usepackage{amsthm,multirow,wasysym,appendix}
 \usepackage{array,subcaption} 
-% \usepackage[small,bf]{caption}
 \usepackage{bbm}
 \usepackage{pgfplots}
 \usetikzlibrary{spy}
@@ -20,7 +19,6 @@
 \usepackage{times}
 \usepackage{amsfonts}
 \usepackage{amsmath}
-%\usepackage[psamsfonts]{amssymb}
 \usepackage{latexsym}
 \usepackage{color}
 \usepackage{graphics}
@@ -61,6 +59,7 @@ Yves Greatti - yg390\\
 	$\|x_i\|^2 = \| \mathcal{P}_{u_1} x_i\|^2 + \| x_i - \mathcal{P}_{u_1} x_i \|^2$ .
 	For the given sample covariance  matrix $\mathcal{X} \mathcal{X}^T$, PCA tries to maximize the total variance or equivalently mimize the loss variance by projecting orthogonally the data  $\mathcal{X}$ onto the  line  in the direction of the first principal direction.
 	
+\newpage
 
  \item (Heartbeat) We are interested in computing the best linear estimate of the heartbeat of a fetus in the presence of strong interference in the form of the heartbeat of the baby's mother. To simplify matters, let us assume that we only want to estimate the heartbeat at a certain moment. We have available a measurement from a microphone situated near the mother's belly and another from a microphone that is away from her belly. We model the measurements as
 \begin{align}
@@ -132,6 +131,8 @@ Hence MSE = $ 1 - \frac{11}{32} = \frac{21}{32} = 0.65$. The second estimator pr
 
 \end{enumerate}
 
+\newpage
+
 \item (Gaussian minimum MSE estimator) In this problem we derive the minimum MSE estimator of a random variable $\rnd{b}$ given another random variable $\rnd{a}$ when both are jointly Gaussian. To simplify matters we assume the mean of both random variables is zero. 
   \begin{enumerate}
   \item Let us define
@@ -176,6 +177,8 @@ Hence MSE = $ 1 - \frac{11}{32} = \frac{21}{32} = 0.65$. The second estimator pr
   
   \end{enumerate} 
   
+  \newpage
+
  \item (Oxford Dataset) In this problem, we will compute an estimator for rainfall in Oxford as a function of the maximum temperature. \verb|oxford.zip| contains the support code for the problem and the dataset. \verb|regression.py| within \verb|oxford.zip| reads the dataset and splits it into train, validation and test sets. We parameterize our estimator for rainfall($y$) from maximum temperature($x$) as 
   \begin{equation*}
 f_a(x)=\begin{cases}
@@ -266,7 +269,7 @@ f_a(x)=\begin{cases}
  	\begin{figure}[H]
 		\centering
 		\includegraphics[width=200pt]{figures/test_comparison.pdf}
-		\caption{Comparison between a single linear estimator fitted on the whole dataset and the  the best linear estimator $f_{a'}$}
+		\caption{Comparison between a single linear estimator fitted on the whole dataset and the best linear estimator $f_{a'}$}
 		\label{fig7}
 	\end{figure}
 
