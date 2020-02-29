@@ -56,10 +56,10 @@ Yves Greatti - yg390\\
 	onto the hyperspace $x[1]^T \beta $. For the OLS estimator this projection is orthogonal: $\beta_{\text{OLS}} =  \arg \min_{\beta \in \R} \| x_i[2] - \beta x_i[1] \|_2$.
 	
 	PCA finds the principal directions by maximizing the total variance of the sample covariance matrix.
-	Let $u_1$ the first principal direction, $u_1 = \arg \max_{\|v\|_2} \var(\mathcal{P}_v \mathcal{X})$, where $ \mathcal{X}$ is the matrix of $n$ 2-dimensional data points $x_1,\ldots,x_n$. 
+	Let $u_1$ the first principal direction, $u_1 = \arg \max_{\|v\|_2} \var(\mathcal{P}_v \mathcal{X})$, where $\mathcal{X}$ is the feature matrix: $\mathcal{X} \in \R^{2 \times n}, \mathcal{X} = [ x_1,\ldots,x_n ]$.
 	Consider one datapoint $x_i, i=1, \ldots,n$, applying the Pythagorean theorem we can show that the norm of the total variance squared is: 
 	$\|x_i\|^2 = \| \mathcal{P}_{u_1} x_i\|^2 + \| x_i - \mathcal{P}_{u_1} x_i \|^2$ .
-	For a given sample covariance  matrix $\mathcal{X} \mathcal{X}^T$, PCA tries to maximize the total variance or equivalently mimize the loss variance by projecting orthogonally the data  $\mathcal{X}$ onto the  line  in the direction of the first principal direction.
+	For the given sample covariance  matrix $\mathcal{X} \mathcal{X}^T$, PCA tries to maximize the total variance or equivalently mimize the loss variance by projecting orthogonally the data  $\mathcal{X}$ onto the  line  in the direction of the first principal direction.
 	
 
  \item (Heartbeat) We are interested in computing the best linear estimate of the heartbeat of a fetus in the presence of strong interference in the form of the heartbeat of the baby's mother. To simplify matters, let us assume that we only want to estimate the heartbeat at a certain moment. We have available a measurement from a microphone situated near the mother's belly and another from a microphone that is away from her belly. We model the measurements as
@@ -80,17 +80,24 @@ MSE = $\min_\beta \E[(\rb - \beta \rx[1])^2] = \beta^2 \var(\rx[1]) + \var(\rb) 
 	\cov(\rx[1], \rb)		&=	\E[\rx[1] \rb]	\\
 					&= 	\E[ (\rb + \rnd{m} + \rnd{z_1}) \rb] = \E[\rb^2] = 1
 \end{align*}
-Since $\rb$, $\rnd{m}$, $\rnd{z}_1$ are all zero mean and uncorrelated with each other.
+where we have used  that $\rb$, $\rnd{m}$, $\rnd{z}_1$ are all zero mean and uncorrelated with each other.
 
 MSE = $12 \beta^2 -2 \beta + 1$, it is a convex quadratic function with respect to $\beta$, so we can set the derivative to zero to find the minimum: $\beta^* = \frac{1}{12}$.
 MSE$_{\beta^*} = \frac{11}{12} = 0.91$. This estimator predicts the heartbeat of the baby using the measurement $\rx[1]$ from the microphone situated near  the mother's belly.
 
 \item Compute the best linear estimator of $\rb$ given $\rx$ in terms of MSE, and the corresponding MSE. Describe in words what the estimator does. 
-MSE of this estimator equals $\var(\rb) - \Sigma_{\rb\rx}^T \Sigma_{\rx}^{-1} \Sigma_{\rb\rx}$.
-$$\cov(\rx[1], \rx[2]) = \E[\rx[1]  \rx[2]] = \E[\rx[1]] \E[\rx[2]] =   \E[\rx[1] \rx[2]]$$ Since $\E[\rx[1]] = \E[\rx[2]] = 0$ by linearity of the expectation.
-And by assumptions 
+
+\begin{proof}
+
+$\E[\rb]=0$, $\E[\rx[1]] = \E[\rb + \rnd{m} + \rnd{z_1}] = \E[\rb] + \E[\rnd{m} ] + \E[\rnd{z_1}]  = 0$, $\E[\rx[2]] = \E[\rnd{m} + \rnd{z_2}] = \E[\rnd{m}] + \E[\rnd{z_2}] = 0$.
+$\rb$ is a zero-mean random variable and $\rx$ is a zero mean random vector with a full covariance matrix. 
+
+From theorem 2.3 of the linear regression notes, the MSE of this estimator is equal to $\var(\rb) - \Sigma_{\rb\rx}^T \Sigma_{\rx}^{-1} \Sigma_{\rb\rx}$.
+
+$\rb$, $\rnd{m}$, $\rnd{z}_1$, and $\rnd{z}_2$ are all zero mean and uncorrelated with each other thus
+
 \begin{align*}
-	\cov(\rx[1], \rx[2]) 	&= 	\E[\rx[1]]  \E[\rx[2]] = \E[\rnd{m}^2] = \var(\rnd{m}) = 10	\\
+	\cov(\rx[1], \rx[2]) 	&= 	\E[\rx[1]  \rx[2]] - \E[\rx[1]] \E[\rx[2]] = \E[\rx[1]]  \E[\rx[2]] = \E[\rnd{m}^2] = \var(\rnd{m}) = 10	\\
 	 \var(\rx[2])		&=	\var(\rnd{m} + \rnd{z_2}) = \var(\rnd{m}) + \var(\rnd{z_2}) 	\\
 	 				&=	10 + 1 = 11	\\
 	\cov(\rb, \rx)		&=	\E[\rb \rx] - \E[\rb] \E[\rx] = \E[\rb \rx] \\
@@ -119,7 +126,9 @@ This gives us:
 	\Sigma_{\rb\rx}^T \Sigma_{\rx}^{-1} \Sigma_{\rb\rx} &=
 	[1 \; 0] 	\begin{bmatrix} \frac{11}{32} \\ -\frac{5}{16} \end{bmatrix} = \frac{11}{32}
 \end{align*}
-Hence MSE = $ 1 - \frac{11}{32} = \frac{21}{32} = 0.65$. The second estimator provides a better estimation of the heartbeat of the baby by jointly using the two microphones.
+Hence MSE = $ 1 - \frac{11}{32} = \frac{21}{32} = 0.65$. The second estimator provides a better estimation of the heartbeat of the baby by using both microphones.
+
+\end{proof}
 
 \end{enumerate}
 
@@ -129,7 +138,7 @@ Hence MSE = $ 1 - \frac{11}{32} = \frac{21}{32} = 0.65$. The second estimator pr
   \begin{align}
   \rnd{c} := \frac{\cov(\ra,\rb)}{\var(\ra)}\ra.
   \end{align}
-  Consider the decomposition of $\rnd{b}$ into the sum of $\rnd{c} $ and $\rb - \rnd{c}$. Provide a geometric interpretation of this decomposition. 
+  Consider the decomposition of $\rnd{b}$ into the sum of $\rnd{c} $ and $\rb - \rnd{c}$. Provide a geometric interpretation of this decomposition. \\
   This decomposition is the orthogonal projection of $\rnd{b}$ into a vector in the span of $\rnd{a}$: $\rnd{c}$ and a vector orthogonal to this hyperspace:  $\rb - \rnd{c}$.
   
   \item Compute the conditional expectation of $\rnd{c} $ given $\ra=a$ for a fixed $a \in \R$.
@@ -144,8 +153,8 @@ Hence MSE = $ 1 - \frac{11}{32} = \frac{21}{32} = 0.65$. The second estimator pr
 	\E[\rb  - \rnd{c}]	&= 	 \E[ \rb  - \frac{\cov(\ra,\rb)}{\var(\ra)}\ra] \\
 				&=	 \E[ \rb] - \frac{\cov(\ra,\rb)}{\var(\ra)} \E[\ra] = 0 
   \end{align*}
-  Hence $$\cov(\rb  - \rnd{c}, \ra)   = \E[ \rb  \; \ra] -  \frac{\cov(\ra,\rb)}{\var(\ra)} \E[\ra^2]  = \cov(\ra, \rb) - \cov(\ra, \rb) = 0$$
-  Thus  $\rb  - \rnd{c}$ and $\ra$ are uncorrelated and $\E[ \rb - \frac{\cov(\ra,\rb)}{\var(\ra)} \ra | \ra= a ] = \E[ \rb - \frac{\cov(\ra,\rb)}{\var(\ra)} \ra] = \E[ \rb] -  \frac{\cov(\ra,\rb)}{\var(\ra)}  \E[\ra] = 0$.
+  Therefore $$\cov(\rb  - \rnd{c}, \ra)   = \E[ \rb  \; \ra] -  \frac{\cov(\ra,\rb)}{\var(\ra)} \E[\ra^2]  = \cov(\ra, \rb) - \cov(\ra, \rb) = 0$$
+  Thus  $\rb  - \rnd{c}$ and $\ra$ are uncorrelated thus $\E[ \rb - \frac{\cov(\ra,\rb)}{\var(\ra)} \ra | \ra= a ] = \E[ \rb - \frac{\cov(\ra,\rb)}{\var(\ra)} \ra] = \E[ \rb] -  \frac{\cov(\ra,\rb)}{\var(\ra)}  \E[\ra] = 0$.
   
   \item Prove that the minimum MSE estimator of $\rnd{b}$ given $\ra=a$ for a fixed $a \in \R$ is linear. 
   
@@ -155,10 +164,12 @@ Hence MSE = $ 1 - \frac{11}{32} = \frac{21}{32} = 0.65$. The second estimator pr
 					&=	\E[\rb-  \rnd{c} | \ra= a] + \E[\rnd{c} | \ra= a] \\
 					&=	\frac{\cov(\ra,\rb)}{\var(\ra)} \ra
   \end{align*}
+  which proves that the  minimum MSE estimator of $\rnd{b}$ given $\ra=a$ for a fixed $a \in \R$ is linear.
   
+  \item What step of the proof fails for non-Gaussian random variables?\\
+  The first step.
   
-  \item What step of the proof fails for non-Gaussian random variables?
-  Since $\ra$ and $\rb$ are gaussian random variables then $\ra$ and $\rb -  \rnd{c}$ are also jointly gaussian.
+  Since $\ra$ and $\rb$ are gaussian random variables then $\ra$ and $\rb -  \rnd{c}$, where $\rnd{c} := \frac{\cov(\ra,\rb)}{\var(\ra)}\ra$, are also jointly gaussian.
   Furthermore $\E[\ra (\rb-  \rnd{c})] = \E[\ra \rb] - \E[\ra \rnd{c}] = \cov(\ra,\rb) - \cov(\ra,\rb) = 0$. Thus $\ra$ and $\rb - \rnd{c}$ are uncorrelated and being gaussian are also independent.
   By linear combination of $\ra$, $\rnd{c} $ and $\rb - \rnd{c}$ are also independent.
   This allows in the first step, to decompose $\rb$ into two independent gaussian random variables: $\rb =\rnd{c}  + \rb -  \rnd{c}$.
@@ -175,17 +186,20 @@ f_a(x)=\begin{cases}
  $w_1, w_2, b_1$ and $b_2$ are estimated by minimizing the mean squared error on the training dataset. 
  \begin{enumerate}
  \item Complete \verb|split_and_plot()| in \verb|regression.py| to fit two different linear function for a given value of threshold $a$. The function will generate a plot of the fit overlaid on a scatter plot of the validation data. Report the plot generate by the function for different values of $a$ defined in \verb|main()|. You are welcome to try other values of $a$, but please make sure that you report the plots generated for all values of $a$ defined in \verb|main()|. 
-	In the function  \verb|split_and_plot()| in \verb|regression.py|
+
+ \medskip
+
+	In the function  \verb|split_and_plot()| of \verb|regression.py|, we follow these steps:
 	\begin{enumerate}[(1)]
-		\item Split the training set for maximum temperatures into two data sets less or greater then temperature a ($\le$ or $\ge$). 
-		We do the same for the rainfall datasets, splitting the rainfall dataset related to temperatures  less or greater then temperature a  ($\le$ or $\ge$). 
+		\item Split the training set for maximum temperatures into two data sets less or greater than temperature a ($\le$ or $\ge$). 
+		We do the same for the rainfall datasets, splitting the rainfall dataset related to temperatures  less or greater than temperature a  ($\le$ or $\ge$). 
 		\item Fit two linear models, one with the data related to temperatures less or equal to $a$ and the related rainfall data points, and one model 
 		with the training data corresponding to temperatures greater or equal to $a$ and related rainfall data points. 
-		\item We obtain two sets of prediction values on relevant points on grid using linear fit with points max\_temp $\le a$ and max\_temps $\ge a$.
-		\item We then compute the training mean squared errors for the two linear models 
-		by using the relevant training data points (model 1 using max\_temp $\le a$ and  model 2 using max\_temps $\ge a$)
-		and comparing to the rainfall value split on $a$ with the same inequalities. 
-		The total training mse is a weighted average the two training mean squared errors: 
+		\item We obtain two sets of prediction values on relevant points of the grid using linear fit with points max\_temp $\le a$ and max\_temps $\ge a$.
+		\item We then compute the training mean squared errors for the two linear models, 
+		using the relevant training data points (model 1 using max\_temp $\le a$ and  model 2 using max\_temps $\ge a$), between their predictions for rainfalls
+		and the relevant rainfall data split on $a$ with the same inequalities. 
+		The total training mse is a weighted average of the two training mean squared errors: 
 		\begin{align*}
 			& \frac{n1 * \text{training mse  1} + n_2  * \text{training mse 2}} {n_1 + n_2} \\
 			& n_1: \text{ number of samples in data set used by linear model 1} \\
@@ -238,12 +252,10 @@ f_a(x)=\begin{cases}
  
  	Having identified the best value $a$ ($a=20$) to split the training data, we then train two linear models using this value of $a$ by splitting the entire training dataset between
 	max.temperatures $\le a$ and max. temperatures $\ge a$ and fitting with the split on the rainfalls using the same value of $a$.
-	We then train a linear model on the entire training set using the train maximum temperatures and train rainfall data.
-	We observer that our best estimator $f_{a'}(x)$ has better accuracy or equivalently lower mean squared error: $1487.4$ vs. $1680$ for the single linear model,
-	Splitting the data into two datasets allowed to have better predictions improving the acuray by $11$\%.
+	We then train a linear model on the entire training set using the training sets of maximum temperatures and rainfall data.
+	We observe that our best estimator $f_{a'}(x)$ has better accuracy or equivalently lower mean squared error: $1487.4$ vs. $1680$ for the single linear model,
+	Splitting the data into two datasets allowed us to have better predictions reducing the mse by $11$\%.
 	
-	
- 
  	\begin{figure}[H]
 		\centering
 		\includegraphics[width=200pt]{figures/test_comparison.pdf}

@@ -54,7 +54,7 @@
 
 \begin{document}
 \maketitle
-\textbf{Due on March $1^{\text{st}}$}
+\textbf{Due on March $1^{\text{st}}$} - draft proposal
 
 \noindent\rule{\textwidth}{0.4pt}
 
@@ -74,33 +74,39 @@ $ \mathbf{X} \in \R^{m \times p}$ represent a linear forward operator modeling t
 from a strong magnetic field and radio-frequency signal created by various coils. A receiver coil detects the patient body electromagnetic response fields. The measurements are points in
 a Fourier-space known as  \emph{k-space}. The overall scanning process can exceed $30$ minutes leading to low throughput of images, potential patient discomfort and artifacts
 from patient motion. To improve the processing time, less k-samples are captured within a given maximum frequency range producing lower resolution images. In order to recover the initial
-image $\bm{\beta^*}$, the original image must be reconstructed, which in the case of a Neumann network, includes a regularization  function $r(\bm{\beta})$ 
+image $\bm{\beta^*}$, the original image must be reconstructed, and includes a regularization  function $r(\bm{\beta})$ 
 which permits to reconstruct an estimated image $\hat{\bm{\beta}}$ 
 as close as the original image $\bm{\beta^*}$. The fastRMI dataset contains four types of data from various Siemens MR scanners of knees and brain scans. The data identifies two type of tasks:
  single-coil  and multi-coil reconstruction images. With enough data, a traditional machine learning approach learns directly a mapping $\bm{\hat{\beta}} = \mathcal{F}(\textbf{y})$ without any knowledge of $\mathbf{X}$.
  A decoupled approach based on a generative model first learns the image space of interest $\bm{\beta_i}$, and then learns a mapping $\bm{\hat{\beta}} = \mathcal{F}(\textbf{y}, \mathbf{X})$.
- A standard approach for solving this inverse problems is the regularized least-squares estimator:
+ Given a generative model $G$, we can compute $\vect{\hat{\beta}}$ from $\vect{y}$:
+ $$\vect{\hat{\beta}} = \arg \min_{\vect{\beta} = G(\vect{z})} \| \vect{y} - \mat{X} \vect{\beta} \|_2^2 $$
+
+ 
+ Alternatively we might learn a denoising autoencoder that could be used as a proximal operator in an iterative reconstruction method.
+ A standard approach is to use a least-squares estimator:
  $$ \bm{\hat{\beta}} = \arg \min_{\beta} \frac{1}{2} \| \textbf{y} - \mathbf{X} \bm{\beta} \|_2^2 + r(\bm{\beta})$$
+ 
  The key feature of these approaches is that $ \mathbf{X}$ is never considered and the learning model can be used for other inverse problems with different $\mat{X}$ operators.
  This comes at the cost of $\mathcal{O}(N^{ \frac{2 \alpha + p} {\alpha} })$ by considering the whole sampling space
   where $N$ is the number of training samples, $p$ the dimension of $\phi(\bm{\beta})$, the probability distribution of the images, $\alpha$ a smoothness term.
-  Incorporating $\mathbf{X}$ into the learning process reduces the dimension $p$ to $p'$, where $p' \ll p$, which corresponds to the subset of the image to which the operator $\mathbf{X}$ is applied.
+  Incorporating $\mathbf{X}$ into the learning process reduces the dimension $p$ to $p'$, where $p' \ll p$, which consists in considering only the subset of the image to which the operator $\mathbf{X}$ is applied.
   Neumann networks directly incorporate the forward operator $\mathbf{X}$ and accomplishes an iterative optimization algorithm referred as unrolled gradient descent:
   
   $$ \bm{\beta}^{k+1} =  \bm{\beta}^{k} -\eta [\mat{X}^T (\mat{X} \vect{\beta}^{k} - \vect{y}) + R(\vect{\beta}^{(k)}], \eta > 0$$
   The number of iterations is fixed and is denoted B for Blocks.
   
 \section{Our contribution}
-We will set up the experiments to test Newman networks using the fastRMI datasets starting with single coil knee only data then multi-coil knee and brain k-space data.
+We will set up the experiments to test Newman networks on the fastRMI datasets starting with single coil knee pictures then multi-coil knee and brain k-space data.
 Our analysis will report three metric NMSE, PSNR and SSIM baselines for 4-fold and 8-fold acceleration (4\% or 8\% of all k-space lines).
 Neumann network architecture is motivated by the Neumann series expansion of few terms (B blocks) of a linear operator R representing the gradient of a regularizer.
 With this severe restriction, the authors of the Neumann network paper claim that their approach is still justified when the images belong to a single subspace of $\mathcal{S} \subset \R^p$
-proving that there exists a linear estimator that gives exact recovery of images belonging to the subspace. We will explore also this path by randomly choose three or more dimensional subspaces and
+providing that there exists a linear estimator that gives exact recovery of images belonging to the subspace. We will explore also this path by randomly choose three or more dimensional subspaces and
 projecting the training data into these subspaces. Depending on the structure of $\mat{X}$ and how easily $(\mat{X}^T \mat{X} + \lambda \mat{I})$ can be computed, 
 we will also eventually want to use preconditioning to permit fewer Newmann network blocks (B)
-to allow faster training and potentially faster reconstruction time. We will also investigate the effect of sample size (number of training images) and patching (patches of $3 \times 3$ , or $5 \times 5$ neighboring pixels)
+to allow faster training and potentially faster reconstruction time. We will also investigate the effect of sample size (number of training images) and patching (patches of $3 \times 3$ , or $5 \times 5$ neighboring pixels).
 \cite{DBLP:journals/corr/abs-1901-03707} Rebecca Willett et al. have reported favorable results when changing these parameters in favor to NN compared to other models and we will evaluate NN in these settings when applied to the fastMRI datasets.
-In parallel of our main task of evaluating Neumann networks on fastMRI tasks,  we will test flavors of the Neumann architecture like increasing the number of skip connections or other architecture modifications. 
+In parallel of our main task of evaluating Neumann networks on fastMRI tasks,  we will use flavors of the Neumann architecture like increasing the number of skip connections or other architecture modifications. 
 Lastly if time permits, we will explore different polynomial expansions or ODE techniques to improve training of Neumann networks.
 
 \section{Conclusion}
