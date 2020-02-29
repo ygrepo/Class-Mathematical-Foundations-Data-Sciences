@@ -123,7 +123,7 @@ def main():
         split_and_plot(a, max_temp_train, rain_train, max_temp_val, rain_val, grid)
 
     ### selecting the best model according to val accuracy
-    a = 20  # best value of a from grid search above
+    a = 12  # best value of a from grid search above
 
     grid_less_a = grid[grid <= a].reshape(-1, 1)
     grid_greater_a = grid[grid >= a].reshape(-1, 1)

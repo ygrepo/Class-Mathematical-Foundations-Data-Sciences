@@ -236,9 +236,16 @@ f_a(x)=\begin{cases}
 
 	\begin{figure}[H]
 		\centering
+		\includegraphics[width=200pt]{figures/a=16.pdf}
+		\caption{Linear regression of rain fall as response of max. temperatures with $a=16$}
+		\label{fig4}
+	\end{figure}
+
+	\begin{figure}[H]
+		\centering
 		\includegraphics[width=200pt]{figures/a=20.pdf}
 		\caption{Linear regression of rain fall as response of max. temperatures with $a=20$}
-		\label{fig4}
+		\label{fig5}
 	\end{figure}
 
 	\begin{figure}[H]
@@ -254,13 +261,13 @@ f_a(x)=\begin{cases}
 	max.temperatures $\le a$ and max. temperatures $\ge a$ and fitting with the split on the rainfalls using the same value of $a$.
 	We then train a linear model on the entire training set using the training sets of maximum temperatures and rainfall data.
 	We observe that our best estimator $f_{a'}(x)$ has better accuracy or equivalently lower mean squared error: $1487.4$ vs. $1680$ for the single linear model,
-	Splitting the data into two datasets allowed us to have better predictions reducing the mse by $11$\%.
+	Splitting the data into two datasets allowed us to make better predictions reducing the mse by $11$\%.
 	
  	\begin{figure}[H]
 		\centering
 		\includegraphics[width=200pt]{figures/test_comparison.pdf}
-		\caption{Comparison between a single linear estimator fitted on the whole dataset and the  the best estimator $f_a'$}
-		\label{fig6}
+		\caption{Comparison between a single linear estimator fitted on the whole dataset and the  the best linear estimator $f_{a'}$}
+		\label{fig7}
 	\end{figure}
 
 
