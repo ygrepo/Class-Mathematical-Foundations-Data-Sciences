@@ -5,7 +5,6 @@
 \usepackage[colorlinks=true,urlcolor=blue,citecolor=blue]{hyperref}
 \usepackage{amsthm,multirow,wasysym,appendix}
 \usepackage{array,subcaption} 
-% \usepackage[small,bf]{caption}
 \usepackage{bbm}
 \usepackage{pgfplots}
 \usetikzlibrary{spy}
@@ -17,14 +16,37 @@
 \usepackage{textcomp}
 \usepackage[left=0.8in,right=1.0in,top=1.0in,bottom=1.0in]{geometry}
 
+\usepackage{times}
+\usepackage{amsfonts}
+\usepackage{amsmath}
+\usepackage{latexsym}
+\usepackage{color}
+\usepackage{graphics}
+\usepackage{enumerate}
+\usepackage{amstext}
+\usepackage{blkarray}
+\usepackage{url}
+\usepackage{epsfig}
+\usepackage{bm}
+\usepackage{hyperref}
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue,
+    filecolor=magenta,      
+    urlcolor=blue,
+}
+\usepackage{textcomp}
+\usepackage[left=0.8in,right=1.0in,top=1.0in,bottom=1.0in]{geometry}
+\usepackage{mathtools}
+\usepackage{minted}
+
 \input{macros}
 
 \begin{document}
 
-\begin{center}
-{\large{\textbf{Homework 4}} } \vspace{0.2cm}\\
-Due March 8 at 11 pm
-\end{center}
+\noindent DS-GA.1013 Mathematical Tools for Data Science \\
+Homework 4\\
+Yves Greatti - yg390\\
 
 \begin{enumerate}
 
@@ -36,29 +58,112 @@ A w=y+z.
   \begin{enumerate}
   \item The operator norm of a matrix $M$ is equal to 
   \begin{align}
-  \norm{M} := \arg \max_{\normTwo{v} = 1} \normTwo{Mv},
+  \norm{M} := \max_{\normTwo{v} = 1} \normTwo{Mv},
   \end{align}  
-  which we know is equal to the maximum singular value. What is the operator norm of $A^{-1}$?
-  \item Prove that $\|w-x_{\op{true}}\|\leq \|z\|/s_n$, where
-    $s_j$ denotes the $j$th singular value of $A$.
+  which we know is equal to the maximum singular value. What is the operator norm of $A^{-1}$?\\
+  
+  \medskip
+  First A is invertible if and only if $A x = 0$ admits the only solution $x=0$ (if not $Ker(A) \neq {0}$ and A is not full row rank). 
+  $A$ being symmetric by the spectral theorem, we have $A=U S U^T$ and we can compute an SVD of A by $A=U |S| U^T$.
+  Then 0 cannot be an eigenvalue or a singular value, and A has only positive singular values, let $s_1 \ge \ldots \ge s_n > 0$, these singular values.
+  A is invertible so $A A^{-1} = I$, let the SVD of A be $U S V^T$ then $A A^{-1} = U S V^T A^{-1} = I$.
+  $U, V$ being orthonormal matrices, and multiplying on both sides by $U^T, S^{-1}, V$, we have $A^{-1} =  V S^{-1} U^T$.
+  Therefore the singular values of $A^{-1}$ are $\frac{1}{s_n} \ge \ldots \ge \frac{1}{s_1}$ thus $\norm{A^{-1}} =  \max_{\normTwo{v} = 1} \normTwo{A^{-1}v} = \frac{1}{s_n}$.
+  \medskip
+    
+  \item Prove that $\|w-x_{\op{true}}\|_2 \leq \|z\|_2/s_n$, where
+    $s_j$ denotes the $j$th singular value of $A$. \\
+    
+  \begin{proof}
+  	$A (w - x_{\op{true}}) = A w - A x_{\op{true}} = y + z - y = z$. Hence
+	$$ \| A ^{-1} A (w - x_{\op{true}}) \|_2 = \| w - x_{\op{true}} \|_2 = \| A^{-1} z \|_2 $$
+	$L_2$ norm being consistent $\| A^{-1} z \|_2 \| \le \norm{A^{-1}} \| z \|_2 \le \|z\|_2/s_n$.
+
+  \end{proof}
+  
   \item If $x_{\op{true}}\neq 0$ prove that
-    $$\frac{\|w-x_{\op{true}}\|}{\|x_{\op{true}}\|} \leq
-    \kappa(A)\frac{\|z\|}{\|y\|}.$$
+    $$\frac{\|w-x_{\op{true}}\|_2}{\|x_{\op{true}}\|_2} \leq
+    \kappa(A)\frac{\|z\|_2}{\|y\|_2}.$$
     Here $\kappa(A):=s_1/s_n$ is called the \textit{condition
-    number} of $A$.
+    number} of $A$. \\
+
+  \medskip  
+  Similarly to part (b), we have 
+	
+	\begin{align*}
+		\| A ^{-1}  A x_{\op{true}} \|_2 	&=	\|  A ^{-1} y \|_2 \\
+				\|x_{\op{true}} \|_2	&=  	\|  A ^{-1} y \|_2 \\
+				\|x_{\op{true}} \|_2	&\le 	\norm{A^{-1}}  \| y \|_2 \\
+								&=  \frac{\| y \|_2} {s_n}	
+	\end{align*}    
+	So for $x_{\op{true}}\neq 0$, we now have
+	\begin{align*}
+		\frac{\|w-x_{\op{true}}\|_2}{\|x_{\op{true}}\|_2} 	&\leq \frac {\|z\|_2}{s_n} \; \frac{s_n} {\| y \|_2}	\\
+											&\leq \frac{\|z\|_2}{s_n} \; \frac{s_1} {\| y \|_2} \text{ ~ since } s_n \le s_1 \\
+											&=   \kappa(A)\frac{\|z\|_2}{\|y\|_2}
+	\end{align*}   
+
   \end{enumerate} 
   
+ \newpage
+   
   \item (Simple linear regression) We consider a linear model with one feature ($p:=1$). The data are given by
 \begin{align}
 \ry_i : = x_i \beta + \rnd{z}_i, \quad 1 \leq i \leq n,
 \end{align}
 where $\beta \in \R$, $x_i \in \R$, and $\rz_1$, \ldots, $\rz_n$ are iid Gaussian random variables with zero mean and variance $\sigma^2$. A reasonable definition of the \emph{energy} in the feature is its sample mean square $\gamma^2 :=\frac{1}{n}\sum_{i=1}^{n}x_i^2$. We define the signal-to-noise ratio in the data as SNR$:= \gamma^2/\sigma^2$.
   \begin{enumerate}
-  \item What is the distribution of the OLS estimate $\rnd{\beta}_{OLS}$ as a function of the SNR?
-  \item If the SNR is fixed, how does the estimate behave as $n \rightarrow \infty$? If $n$ is fixed, how does the estimate behave as $\op{SNR} \rightarrow \infty$? Can this behavior change if the noise is iid, has zero mean and variance $\sigma^2$, but is not Gaussian? Prove that it doesn't or provide an example where it does.
-  \item Can the behavior of the estimator as $n \rightarrow \infty$ change if the noise is not iid? Prove that it doesn't or provide a counterexample.
+  \item What is the distribution of the OLS estimate $\rnd{\beta}_{OLS}$ as a function of the SNR?\\
+
+  \medskip 
+ The OLS estimate $\rnd{\beta}_{OLS}$ is given by $\rnd{\beta}_{OLS} = \argmin_\beta \sum_{i=1}^n (\ry_i - \beta x_i)^2 = f(\beta)$.
+ The function $f$ is a quadratic form. Its first derivative and second derivative are:
+ $$f'(\beta) = \frac{d}{d\beta}  \sum_{i=1}^n (\ry_i - \beta x_i)^2 = -2 \sum_{i=1}^n x_i (\ry_i - \beta x_i) = -2  \sum_{i=1}^n  x_i \ry_i + 2 \beta  \sum_{i=1}^n x_i^2$$
+ $$f''(\beta) = 2  \sum_{i=1}^n x_i^2$$
+ if $f'(\beta) = 0$ means $\beta = \rnd{\beta}_{OLS}$ and  $f'(\beta) =0 \Rightarrow \rnd{\beta}_{OLS} = \frac{ \sum_{i=1}^n x_i \ry_i } {  \sum_{i=1}^n  x_i^2}$.
+ 
+ \begin{align*}
+	 \rnd{\beta}_{OLS}	&=	\frac{ \sum_{i=1}^n x_i \ry_i } {  \sum_{i=1}^n  x_i^2} \\
+	 				&= 	\frac{ \sum_{i=1}^n x_i  (x_i \beta + \rnd{z}_i) } {  \sum_{i=1}^n  x_i^2} \\
+					&=	\beta \frac{ \sum_{i=1}^n x_i^2} { \sum_{i=1}^n x_i^2}  + \frac{ \sum_{i=1}^n x_i  \rnd{z}_i} { \sum_{i=1}^n x_i^2} \\
+					&=	\beta +  \frac{ \sum_{i=1}^n x_i  \rnd{z}_i} { \sum_{i=1}^n x_i^2} 
+\end{align*}  
+ $\rnd{\beta}_{OLS}$ is a Gaussian random variable (being a linear of a Gaussian variable) with mean, using linearity of the expectation:
+ $$\E[\rnd{\beta}_{OLS}] = \E[\beta +  \frac{ \sum_{i=1}^n x_i  \rnd{z}_i} { \sum_{i=1}^n x_i^2}] = \E[\beta] + \E[ \frac{ \sum_{i=1}^n x_i  \rnd{z}_i} { \sum_{i=1}^n x_i^2}] = \beta + \frac{ \sum_{i=1}^n x_i  \E[\rnd{z}_i]} { \sum_{i=1}^n x_i^2} = \beta$$
+  where for the last equality we have used that $\rz_n=i, i=1, \dots, n$ are Gaussian random variables with zero mean.
+ And the variance is:
+ \begin{align*}  
+ 	\Var{(\rnd{\beta}_{OLS})}	&=	\Var{	(\beta +  \frac{ \sum_{i=1}^n x_i  \rnd{z}_i} { \sum_{i=1}^n x_i^2} ) } \\
+						&= 	\Var{ (\frac{ \sum_{i=1}^n x_i  \rnd{z}_i} { \sum_{i=1}^n x_i^2} ) } \text{~since variance is invariant to change to the location parameter } \\
+						&=	\frac{1} { (\sum_{i=1}^n x_i^2)^2} \Var{( \sum_{i=1}^n x_i  \rnd{z}_i )} \\
+						&=	\frac{1} { (\sum_{i=1}^n x_i^2)^2} \sum_{i=1}^n \Var{(x_i   \rnd{z}_i)} \text{ ~ $z_i$ being iid} \\
+						&=	\frac{1} { (\sum_{i=1}^n x_i^2)^2} \sum_{i=1}^n x_i^2 \Var{( \rnd{z}_i )} \\
+						&= 	\frac{ \sigma^2} { (\sum_{i=1}^n x_i^2)} = \frac{ \sigma^2} {n \gamma^2 } = \frac{1} {n \op{SNR}}
+ \end{align*}  
+  
+  \item If the SNR is fixed, how does the estimate behave as $n \rightarrow \infty$? If $n$ is fixed, how does the estimate behave as $\op{SNR} \rightarrow \infty$? Can this behavior change if the noise is iid, has zero mean and variance $\sigma^2$, but is not Gaussian? Prove that it doesn't or provide an example where it does.\\
+  
+  \medskip
+If the SNR is fixed then $\Var{(\rnd{\beta}_{OLS})} \rightarrow_{n \rightarrow \infty} 0$ and similarly for $n$ fixed, $\Var{(\rnd{\beta}_{OLS})} \rightarrow_{\op{SNR}\rightarrow \infty} 0$, which means that we have an infinite number of samples or there is considerably more signal into the data than noise, the estimate becomes unbiased and is equal to true $\beta$. In our proof above there was no reference to the specifics of the Gaussian like the pdf or cdf only that we have a deterministic mean and variance. The behavior does not change if the noise is iid, has zero mean and variance $\sigma^2$ but is not Gaussian.
+  \medskip
+
+  \item Can the behavior of the estimator as $n \rightarrow \infty$ change if the noise is not iid? Prove that it doesn't or provide a counterexample.\\
+  
+  \medskip
+  In our proof above each of the noise $z_i, i=1, \ldots, n$ variable being independent was essential when we expanded the sum of the variances related to the noise.
+   As a counter-example:
+  "Imagine that you wanted to learn about abilities of children in a classroom, so you give them some tests. 
+  You could use the test results as an indicator of the abilities of kids only if they did them by themselves, independently of each other. 
+  If they interacted then you'd probably measure abilities of the most clever kid, or the most influential one.
+  The kids also need to be "identically distributed", so they cannot come from different countries, speak different languages, be in different ages since it will make it hard to interpret the results
+   (maybe they did not understand the questions and answered randomly). You can deal with non-i.i.d. data but then you have to worry about "noise" in your data much more."
+
+  
+  
   \end{enumerate} 
    
+ \newpage
+ 
 \item (Best unbiased estimator) Consider the linear regression model
   $$\ry = X^T\beta + \rz$$
   where $\ry\in\R^n$, $X\in\R^{p \times n}$ has rank $p$,
@@ -71,29 +176,110 @@ where $\beta \in \R$, $x_i \in \R$, and $\rz_1$, \ldots, $\rz_n$ are iid Gaussia
   deterministic, i.e., not random).
   \begin{enumerate}
   \item What is the mean $\mu=\E[C\ry]$?
+
+\begin{proof}
+  
+  	By linearity of the expectation and using the assumption that  $\rz\in\R^n$ has mean
+  zero, we have:
+  	\begin{align*}
+		\E[C\ry]	&=	\E[C X^T \beta + C \rz]	\\
+				&= 	C X^T \beta  + C \E[\rz]	\\
+				&=	C X^T \beta = \mu
+	\end{align*}
+  \end{proof}  
+  
+  
   \item What is the covariance matrix of $C\ry$? That is, compute
     $$\E[(C\ry)(C\ry)^T]-\mu\mu^T.$$
-  \item Write $C=(X^TX)^{-1}X^T+D$ for some $D\in\R^{p\times n}$.
+
+\begin{proof}
+ 	First by linearity of the expectation applied to each row of the matrix $C$ we write:
+	$$\E([C \ry) (C\ry)^T] = C \E[\ry \ry^T] C^T$$
+	And expanding the covariance of $\ry$, we note that:
+  	\begin{align*}
+		 \E[\ry^T \ry] 	&= 	\E[(X^T\beta + \rz)^T (X^T\beta + \rz)] \\
+		 			&=	\E[(\beta^T X + \rz^T) (X^T\beta + \rz)] \\
+					&=	\E[\beta^T X X^T \beta I + 2 \beta^T X \rz + \rz^T \rz] \\
+					&=	\E[\beta^T X X^T \beta I] + 2 \beta^T X \E[\rz] + E[\rz^T \rz] \\
+					&=	\beta^T X X^T \beta I + \sigma^2 I \\
+					&= 	(\|\beta^T X\|_2^2 + \sigma^2) I
+	\end{align*}
+	where we used on the third line linearity of the expectation and the assumption that $\E[\rz]=0$.
+	Thus $\E([C \ry) (C\ry)^T] = (\|\beta^T X\|_2^2 + \sigma^2) C C^T$ and $\Cov(C\ry, C\ry) =  (\|\beta^T X\|_2^2 + \sigma^2) C C^T - \mu\mu^T$.
+\end{proof}  	    
+    
+  \item Write $C=(XX^T)^{-1}X+D$ for some $D\in\R^{p\times n}$.
     What must be true of $D$ so that $C\ry$ is an unbiased estimator
     of $\beta$ for all possible $\beta$?  That is, what must be true
     so that $\E[C\ry]=\beta$ for all $\beta$? [Hint: Use part (a).
-    Your answer will be a property of $DX$.]
-  \item Let $\Sigma_C$ denote the covariance matrix of $C\ry$ and let
+    Your answer will be a property of $DX^T$.]\\
+    \medskip
+    
+    $C\ry$ is an unbiased estimator of $\beta$ if  $\E[C\ry]=\beta, \forall \beta$. Using part (a)
+    $\E[C\ry] =C X^T \beta$ and this has to be verified for any $\beta$, let $\beta =\vect{1} \in \R^p$ then we want $C X^T \vect{1}_{\R^p} = \vect{1}_{\R^p} $.
+    Substituting the value of $C$, we obtain:
+    \begin{align*}
+    	  C X^T \vect{1}_{\R^p}	&=	[(XX^T)^{-1}X+D] X^T \vect{1}_{\R^p}\\
+	  					&=	(XX^T)^{-1} X X^T \vect{1}_{\R^p} + D X^T \vect{1}_{\R^p}\\
+						&=	\vect{1}_{\R^p} + D X^T \vect{1}_{\R^p}
+    \end{align*}
+    For $C\ry$ to be an unbiased estimator of $\beta$, 
+    we need $\vect{1}_{\R^p} + D X^T \vect{1}_{\R^p} =  \vect{1}_{\R^p} \Rightarrow D X^T \vect{1}_{\R^p}  = 0_{\R^p} \Rightarrow D X^T= 0_{p \times p}$ or $X D^T = 0$. 
+    The span of column space of $D^T$ has to be orthogonal to the row space of $X$ (which is the feature space).
+
+    
+   \item Let $\Sigma_C$ denote the covariance matrix of $C\ry$ and let
     $\Sigma_{\text{OLS}}$ denote the covariance matrix of $(XX^T)^{-1}X \ry$.
     Show that if $C\ry$ is an unbiased estimator of $\beta$ then
     $$v^T\Sigma_Cv \geq v^T\Sigma_{\text{OLS}}v,$$
     for all $v\in\R^p$.  That is, least squares yields
     the estimator with smallest variance in any direction
     $v$. [Hint: Use part (b) to compute the covariance of
-      $((XX^T)^{-1}X+D)\ry$.]
+      $((XX^T)^{-1}X+D)\ry$.]\\
+      
+   \medskip
+   Using part (b) we first compute $CC^T$:
+   \begin{align*}
+   	CC^T	&=	[(XX^T)^{-1}X+D] [(XX^T)^{-1}X+D]^T	\\
+			&=	(XX^T)^{-1}X X^T (XX^T)^{-1} + 2 D X^T (XX^T)^{-1} + DD^T \\
+			&=	(XX^T)^{-1}X X^T (XX^T)^{-1}  + DD^T 
+   \end{align*}
+    where we have used the assumption that $C\ry$ is an unbiased estimator of $\beta$ for the last equality.
+    Using part (b) we know that $\Sigma_{\text{OLS}} =  (\|\beta^T X\|_2^2 + \sigma^2)  (XX^T)^{-1}X X^T (XX^T)^{-1} - \mu\mu^T$.
+    Putting all together:
+    \begin{align*}
+    	v^T\Sigma_Cv 	&=	v^T (XX^T)^{-1}X X^T (XX^T)^{-1} v + v^T DD^T v - v^T \mu\mu^T v \\
+				&=	v^T (XX^T)^{-1}X X^T (XX^T)^{-1} v - v^T \mu\mu^T v + \|D^T v\|_2^2 \\
+				&=	 v^T\Sigma_{\text{OLS}}v + \|D^T v\|_2^2 \\
+				&\ge	 v^T\Sigma_{\text{OLS}}v \text{ ~ since } \|D^T v\|_2^2 \ge 0
+   \end{align*}
+      
+      
   \item Now suppose that the true regression model has extra features:
     $$\ry = X^T\beta + Z^T w + \rz,$$
-    where $Z\in \R^{n\times k}$ and $w\in\R^k$.  Not knowing
+    where $Z\in \R^{k\times n}$ and $w\in\R^k$.  Not knowing
     these features, you compute the least squares estimator
     $$\hat{\beta} = (XX^T)^{-1}X\ry.$$
     Under what conditions on $X,Z$ is $\hat{\beta}$ still unbiased for all
-    possible $w$?
+    possible $w$?\\
+    
+    \medskip
+     $\hat{\beta}, \forall w$ is unbiased estimator of $\beta$ if $\E[\hat{\beta}] = \beta, \forall \beta$, which means that
+     $\E[ (XX^T)^{-1}X\ry ] = \beta$, however be substitution $\ry$, we work out that: 
+      \begin{align*}
+      	\E[ (XX^T)^{-1}X  (X^T \beta + \rz) + (XX^T)^{-1}X  Z^T w]	&=	\E[ (XX^T)^{-1}X  (X^T \beta + \rz)] + \E[(XX^T)^{-1}X  Z^T w] \\
+												&=	 \beta + (XX^T)^{-1}X \E[\rz]	+  (XX^T)^{-1}X  Z^T w \\
+												&=	\beta + (XX^T)^{-1}X \; 0 + (XX^T)^{-1}X  Z^T w \\
+												&= 	\beta + (XX^T)^{-1}X  Z^T w 
+      \end{align*}
+      which implies that $(XX^T)^{-1}X  Z^T w = 0_{\R^p}, \forall w \in \R^k$.
+      Since this has to be verified for any $w$,
+      by selecting a vector $w_i$ where $i, i=1, \ldots, k$ is the only non zero coordinate equal to 1, we find that we have an unbiased estimator $\hat{\beta}$ for $\ry$ 
+      if the span of column space of $Z^T$ is orthogonal to the row space of $X$ (which is the feature space).
+    
   \end{enumerate}   
+
+ \newpage
    
 \item (Distribution of $\beta$)  In this question, we will investigate how the coefficients of regression, $\beta$ is distributed. We will use the \href{https://archive.ics.uci.edu/ml/datasets/Combined+Cycle+Power+Plant}{combined cycle power plant data set} to regress for the net hourly electrical energy output as a function of the ambient temperature and exhaust vacuum. The support code loads the datasets and defines these subset of variables as $X$ and $y$ respectively. We will fit a regression to obtain $\beta_0, \beta$ which minimizes $y = \beta_0 + \beta^Tx$. 
 
