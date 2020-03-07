@@ -119,8 +119,8 @@ where $\beta \in \R$, $x_i \in \R$, and $\rz_1$, \ldots, $\rz_n$ are iid Gaussia
  The OLS estimate $\rnd{\beta}_{OLS}$ is given by $\rnd{\beta}_{OLS} = \argmin_\beta \sum_{i=1}^n (\ry_i - \beta x_i)^2 = f(\beta)$.
  The function $f$ is a quadratic form. Its first derivative and second derivative are:
  $$f'(\beta) = \frac{d}{d\beta}  \sum_{i=1}^n (\ry_i - \beta x_i)^2 = -2 \sum_{i=1}^n x_i (\ry_i - \beta x_i) = -2  \sum_{i=1}^n  x_i \ry_i + 2 \beta  \sum_{i=1}^n x_i^2$$
- $$f''(\beta) = 2  \sum_{i=1}^n x_i^2$$
- if $f'(\beta) = 0$ means $\beta = \rnd{\beta}_{OLS}$ and  $f'(\beta) =0 \Rightarrow \rnd{\beta}_{OLS} = \frac{ \sum_{i=1}^n x_i \ry_i } {  \sum_{i=1}^n  x_i^2}$.
+ $$f''(\beta) = 2  \sum_{i=1}^n x_i^2 \ge 0$$
+ thus $f'(\beta) = 0$ means $\beta = \rnd{\beta}_{OLS}$ and  $f'(\beta) =0 \Rightarrow \rnd{\beta}_{OLS} = \frac{ \sum_{i=1}^n x_i \ry_i } {  \sum_{i=1}^n  x_i^2}$.
  
  \begin{align*}
 	 \rnd{\beta}_{OLS}	&=	\frac{ \sum_{i=1}^n x_i \ry_i } {  \sum_{i=1}^n  x_i^2} \\
@@ -144,7 +144,9 @@ where $\beta \in \R$, $x_i \in \R$, and $\rz_1$, \ldots, $\rz_n$ are iid Gaussia
   \item If the SNR is fixed, how does the estimate behave as $n \rightarrow \infty$? If $n$ is fixed, how does the estimate behave as $\op{SNR} \rightarrow \infty$? Can this behavior change if the noise is iid, has zero mean and variance $\sigma^2$, but is not Gaussian? Prove that it doesn't or provide an example where it does.\\
   
   \medskip
-If the SNR is fixed then $\Var{(\rnd{\beta}_{OLS})} \rightarrow_{n \rightarrow \infty} 0$ and similarly for $n$ fixed, $\Var{(\rnd{\beta}_{OLS})} \rightarrow_{\op{SNR}\rightarrow \infty} 0$, which means that we have an infinite number of samples or there is considerably more signal into the data than noise, the estimate becomes unbiased and is equal to true $\beta$. In our proof above there was no reference to the specifics of the Gaussian like the pdf or cdf only that we have a deterministic mean and variance. The behavior does not change if the noise is iid, has zero mean and variance $\sigma^2$ but is not Gaussian.
+If the SNR is fixed then $\Var{(\rnd{\beta}_{OLS})} \rightarrow_{n \rightarrow \infty} 0$ and similarly for $n$ fixed, $\Var{(\rnd{\beta}_{OLS})} \rightarrow_{\op{SNR}\rightarrow \infty} 0$. This behavior is as expected since when we have an infinite number of samples or there is considerably more signal into the data than noise, the estimate becomes unbiased and is equal to true $\beta$. 
+	In our proof above there was no reference to the specifics of the Gaussian like the pdf or cdf only that we have specific mean and variance and iid noise.
+	The behavior does not change if the noise is iid, has zero mean and variance $\sigma^2$ but is not Gaussian.
   \medskip
 
   \item Can the behavior of the estimator as $n \rightarrow \infty$ change if the noise is not iid? Prove that it doesn't or provide a counterexample.\\
@@ -204,7 +206,7 @@ If the SNR is fixed then $\Var{(\rnd{\beta}_{OLS})} \rightarrow_{n \rightarrow \
 					&=	\beta^T X X^T \beta I + \sigma^2 I \\
 					&= 	(\|\beta^T X\|_2^2 + \sigma^2) I
 	\end{align*}
-	where we used on the third line linearity of the expectation and the assumption that $\E[\rz]=0$.
+	where we used on the fourth equality the linearity of the expectation and the assumption that $\E[\rz]=0$.
 	Thus $\E([C \ry) (C\ry)^T] = (\|\beta^T X\|_2^2 + \sigma^2) C C^T$ and $\Cov(C\ry, C\ry) =  (\|\beta^T X\|_2^2 + \sigma^2) C C^T - \mu\mu^T$.
 \end{proof}  	    
     
@@ -242,16 +244,18 @@ If the SNR is fixed then $\Var{(\rnd{\beta}_{OLS})} \rightarrow_{n \rightarrow \
    \begin{align*}
    	CC^T	&=	[(XX^T)^{-1}X+D] [(XX^T)^{-1}X+D]^T	\\
 			&=	(XX^T)^{-1}X X^T (XX^T)^{-1} + 2 D X^T (XX^T)^{-1} + DD^T \\
-			&=	(XX^T)^{-1}X X^T (XX^T)^{-1}  + DD^T 
+			&=	(XX^T)^{-1}X X^T (XX^T)^{-1}  + DD^T  \\
+			&=	(XX^T)^{-1} + DD^T \\
+	\Sigma_C	&= 	(\|\beta^T X\|_2^2 + \sigma^2) ((XX^T)^{-1} + DD^T) - \mu\mu^T
    \end{align*}
     where we have used the assumption that $C\ry$ is an unbiased estimator of $\beta$ for the last equality.
-    Using part (b) we know that $\Sigma_{\text{OLS}} =  (\|\beta^T X\|_2^2 + \sigma^2)  (XX^T)^{-1}X X^T (XX^T)^{-1} - \mu\mu^T$.
+    Using part (b) we know that $\Sigma_{\text{OLS}} =  (\|\beta^T X\|_2^2 + \sigma^2)  (XX^T)^{-1}X X^T (XX^T)^{-1} - \mu\mu^T =  (\|\beta^T X\|_2^2 + \sigma^2)  (XX^T)^{-1}  - \mu\mu^T$.
     Putting all together:
     \begin{align*}
-    	v^T\Sigma_Cv 	&=	v^T (XX^T)^{-1}X X^T (XX^T)^{-1} v + v^T DD^T v - v^T \mu\mu^T v \\
-				&=	v^T (XX^T)^{-1}X X^T (XX^T)^{-1} v - v^T \mu\mu^T v + \|D^T v\|_2^2 \\
-				&=	 v^T\Sigma_{\text{OLS}}v + \|D^T v\|_2^2 \\
-				&\ge	 v^T\Sigma_{\text{OLS}}v \text{ ~ since } \|D^T v\|_2^2 \ge 0
+    	v^T\Sigma_Cv 	&=	v^T ((\|\beta^T X\|_2^2 + \sigma^2)  ((XX^T)^{-1} + DD^T) - \mu\mu^T) v \\
+				&=	v^T ((\|\beta^T X\|_2^2 + \sigma^2)  (XX^T)^{-1}  - \mu\mu^T) v +  (\|\beta^T X\|_2^2 + \sigma^2)  v^T DD^T v \\ 
+				&=	 v^T\Sigma_{\text{OLS}}v + (\|\beta^T X\|_2^2 + \sigma^2) \|D^T v\|_2^2 \\
+				&\ge	 v^T\Sigma_{\text{OLS}}v \text{ ~ since } (\|\beta^T X\|_2^2 + \sigma^2) \|D^T v\|_2^2 \ge 0
    \end{align*}
       
       
@@ -265,17 +269,17 @@ If the SNR is fixed then $\Var{(\rnd{\beta}_{OLS})} \rightarrow_{n \rightarrow \
     
     \medskip
      $\hat{\beta}, \forall w$ is unbiased estimator of $\beta$ if $\E[\hat{\beta}] = \beta, \forall \beta$, which means that
-     $\E[ (XX^T)^{-1}X\ry ] = \beta$, however be substitution $\ry$, we work out that: 
+     $\E[ (XX^T)^{-1}X\ry ] = \beta$, however by substitution of $\ry$, we work out that: 
       \begin{align*}
       	\E[ (XX^T)^{-1}X  (X^T \beta + \rz) + (XX^T)^{-1}X  Z^T w]	&=	\E[ (XX^T)^{-1}X  (X^T \beta + \rz)] + \E[(XX^T)^{-1}X  Z^T w] \\
 												&=	 \beta + (XX^T)^{-1}X \E[\rz]	+  (XX^T)^{-1}X  Z^T w \\
 												&=	\beta + (XX^T)^{-1}X \; 0 + (XX^T)^{-1}X  Z^T w \\
 												&= 	\beta + (XX^T)^{-1}X  Z^T w 
       \end{align*}
-      which implies that $(XX^T)^{-1}X  Z^T w = 0_{\R^p}, \forall w \in \R^k$.
+      which implies that for unbiased estimator we need $(XX^T)^{-1}X  Z^T w = 0_{\R^p}, \forall w \in \R^k$.
       Since this has to be verified for any $w$,
       by selecting a vector $w_i$ where $i, i=1, \ldots, k$ is the only non zero coordinate equal to 1, we find that we have an unbiased estimator $\hat{\beta}$ for $\ry$ 
-      if the span of column space of $Z^T$ is orthogonal to the row space of $X$ (which is the feature space).
+      if the span of column space of $Z^T$ is orthogonal to the row space of $X$.
     
   \end{enumerate}   
 
@@ -285,9 +289,52 @@ If the SNR is fixed then $\Var{(\rnd{\beta}_{OLS})} \rightarrow_{n \rightarrow \
 
 To study the distribution of $\beta$, we split our dataset into $500$ bootstrap samples, each with $100$ data points. We fit linear regression individually on each of these $500$ bootstrap samples to obtain $\beta^1, \beta^2, \dots, \beta^{500}$.
 \begin{enumerate}
-\item Plot a histogram of the distribution of $\beta_1^k$ and $\beta_2^k$ where $k$ refers to the $k^{th}$ bootstrap sample and $\beta_i$ refers to the $i^{th}$ component of $\beta$.  The support code handles the actual plotting part, you only have to compute the $\beta^k$s. 
-\item Make a scatter plot of $\beta_1^k$ vs $\beta_2^k$. Plot the principal directions of the actual data $X$ and the principal directions of $\beta^k$s. 
-\item Do the principal directions of $X$ datapoints and $\beta^k$ datapoints align? Give a condition on the data generation process under which these principal directions will align. 
+\item Plot a histogram of the distribution of $\beta_1^k$ and $\beta_2^k$ where $k$ refers to the $k^{th}$ bootstrap sample and $\beta_i$ refers to the $i^{th}$ component of $\beta$.  The support code handles the actual plotting part, you only have to compute the $\beta^k$s. \\
+\medskip
+The marginal distributions of $\beta_1^k$ and $\beta_2^k$ are close to Gaussian distributions:
+
+
+	\begin{figure}[H]
+		\centering
+		\includegraphics[width=200pt]{figures/marginal_beta_1.pdf}
+		\caption{Marginal of $\beta_1$.}
+		\label{fig1}
+	\end{figure}
+	
+	
+	\begin{figure}[H]
+		\centering
+		\includegraphics[width=200pt]{figures/marginal_beta_2.pdf}
+		\caption{Marginal of $\beta_2$.}
+		\label{fig2}
+	\end{figure}
+
+
+\item Make a scatter plot of $\beta_1^k$ vs $\beta_2^k$. Plot the principal directions of the actual data $X$ and the principal directions of $\beta^k$s. \\
+\medskip
+
+
+	\begin{figure}[H]
+		\centering
+		\includegraphics[width=200pt]{figures/scatter_plot.pdf}
+		\caption{The two principal directions of $X$ are along the two red arrows while the two principal directions of the cloud of $\beta$ coefficients are along the purple arrows.}
+		\label{fig3}
+	\end{figure}
+	
+\item Do the principal directions of $X$ datapoints and $\beta^k$ datapoints align? Give a condition on the data generation process under which these principal directions will align. \\
+
+\medskip
+The principal directions of $X$ datapoints and $\beta^k$ datapoints do not align (even when running different samplings of the bootstrap process). 
+The principal directions align when the cloud of $\beta$ coefficients is distributed along the principal directions of the datapoints $X$. The principal directions align when,
+like proved in theorem 4.3 of the linear regression notes, the covariance of the $\beta$ coefficients is $\sigma^2 U S^{-2} U^T$ where SVD of $X$ is $U S V^T$.
+
+ 	\begin{figure}[H]
+		\centering
+		\includegraphics[width=200pt]{figures/scatter_plot_2.pdf}
+		\caption{The two principal directions of $X$ are aligned with the two principal directions of the cloud of $\beta$ coefficients.}
+		\label{fig3}
+	\end{figure}
+
 \end{enumerate}
 \end{enumerate}
 \end{document}
