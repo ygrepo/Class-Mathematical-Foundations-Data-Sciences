@@ -324,10 +324,11 @@ The marginal distributions of $\beta_1^k$ and $\beta_2^k$ are close to Gaussian 
 \item Do the principal directions of $X$ datapoints and $\beta^k$ datapoints align? Give a condition on the data generation process under which these principal directions will align. \\
 
 \medskip
-The principal directions of $X$ datapoints and $\beta^k$ datapoints do not align (even when running different samplings of the bootstrap process). 
-The principal directions align when the cloud of $\beta$ coefficients is distributed along the principal directions of the datapoints $X$. The principal directions align when,
+The principal directions of $X$ datapoints and $\beta^k$ datapoints do not always align. $X$ is full rank column (2) and based on  part (a) $\beta$ coefficients follow 
+a Gaussian distribution with mean $\beta_{\text{true}}$. Therefore the principal directions align when,
 like proved in theorem 4.3 of the linear regression notes, the covariance of the $\beta$ coefficients is $\sigma^2 U S^{-2} U^T$ where SVD of $X$ is $U S V^T$.
-
+This happens when most of the bootstrap samples have the same principal directions as the principal directions of the data $X$.
+ 
  	\begin{figure}[H]
 		\centering
 		\includegraphics[width=200pt]{figures/scatter_plot_2.pdf}
