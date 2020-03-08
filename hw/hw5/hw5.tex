@@ -110,10 +110,11 @@ Substituting each of the previous terms back into the expression of $\beta_{\op{
 	\beta_{\op{OLS}}		&=	\frac{1}{1-\alpha^2} \MAT{1 & -\alpha \\ -\alpha  & 1}  \MAT{\beta_{\op{true}} + 0.1 \\ \alpha \beta_{\op{true}} + 0.1} \\
 						&= 	\frac{1}{1-\alpha^2}  \MAT{\beta_{\op{true}} + 0.1 -\alpha^2 \beta_{\op{true}} -0.1 \alpha \\ -\alpha \beta_{\op{true}} -0.1 \alpha + \alpha \beta_{\op{true}}  + 0.1} \\
 						&=	\frac{1}{1-\alpha^2}  \MAT{(1-\alpha^2)  \beta_{\op{true}} + 0.1 (1-\alpha) \\ 0.1 (1 - \alpha)} \\
-						&=  \MAT{\beta_{\op{true}} + \frac{0.1} {1 + \alpha} \\ \frac{0.1} {1 + \alpha}}
+						&=  	\MAT{\beta_{\op{true}} + \frac{0.1} {1 + \alpha} \\ \frac{0.1} {1 + \alpha}}
 \end{align*}
 When $\alpha \rightarrow 1$ , $\beta_{\op{OLS}} \rightarrow   \MAT{\beta_{\op{true}} + 0.05  \\ 0.05}$.
-The OLS estimator ignore the correlated feature $w_2$ and adds a fixed bias $0.05$ to the true $\beta_{\op{true}}$ coefficient. 
+The OLS estimator ignore the correlated feature $w_2$ and adds a fixed bias $0.05$ to the true $\beta_{\op{true}}$ coefficient which could be significant compared to
+ $\beta_{\op{true}}$. Notice that in this case $XX^T$ is rank 1.
     
    \item  What does the corresponding estimate of the response $y_{\op{OLS}} := X^T\beta_{\op{OLS}}$ equal to when $\alpha \rightarrow 1$? Is it collinear with the true feature $w_1$ when $\alpha \rightarrow 1$? Explain what is happening.\\
    
@@ -132,9 +133,21 @@ The OLS estimator ignore the correlated feature $w_2$ and adds a fixed bias $0.0
   \medskip
   By definition the ridge regression estimator of the coefficients $\beta_{\op{RR}}$ is:
  \begin{align*}
- 	\beta_{\op{RR}}		&=	(X X^T + \lambda I)^{-1}	X y	\; \lambda > 0
+ 	\beta_{\op{RR}}				&=	(X X^T + \lambda I)^{-1}	X y	\; \lambda > 0	\\
+	X X^T + \lambda I			&=	\MAT{1+ \lambda & \alpha \\ \alpha  &1+ \lambda} \\
+	(X X^T + \lambda I)^{-1}		&=	\frac{1}{(1 + \lambda)^2 - \alpha^2} \MAT{1+ \lambda & -\alpha \\ -\alpha & 1+ \lambda} \\	
+	\Rightarrow \beta_{\op{RR}}	&=	\frac{1}{(1 + \lambda)^2 - \alpha^2} \MAT{1+ \lambda & -\alpha \\ -\alpha & 1+ \lambda} \MAT{\beta_{\op{true}} + 0.1 \\ \alpha \beta_{\op{true}} + 0.1} \\
+							&=	\frac{1}{(1 + \lambda)^2 - \alpha^2}  \MAT{(1+ \lambda) (\beta_{\op{true}} + 0.1) -\alpha^2  \beta_{\op{true}} -0.1 \alpha \\
+																-\alpha \beta_{\op{true}}  -0.1 \alpha + \alpha (1+\lambda) \beta_{\op{true}}  + 0.1 (1 + \lambda) } \\
+							&=	\frac{1}{(1 + \lambda)^2 - \alpha^2}  \MAT{(1+ \lambda  -\alpha^2) \beta_{\op{true}}  + 0.1 (1+ \lambda  -\alpha) \\ 			
+																\alpha \lambda \beta_{\op{true}} + 0.1 (1+ \lambda  -\alpha)} \\
+							&=	 \MAT{\frac{(1+ \lambda  -\alpha^2) \beta_{\op{true}}} {(1 + \lambda)^2 - \alpha^2} + \frac{0.1} {1 + \lambda + \alpha} \\
+									\frac{ \lambda \alpha  \beta_{\op{true}}} {(1 + \lambda)^2 - \alpha^2} + \frac{0.1} {1 + \lambda + \alpha} } \\
+							&_{\alpha \rightarrow 1}\rightarrow \frac{ \beta_{\op{true}} + 0.1}{ 2 + \lambda} \MAT{1  \\ 1} 
  \end{align*} 
-
+If we compare to $\beta_{\op{OLS}}$ estimator,  the ridge regression estimator has coefficients on both $w_1$ and $w_2$ and this coefficient can be regularized using $\lambda$. Even if $XX^T$ is singular (rank $1$), the l$_2$ regularization 
+using $\lambda$ makes the matrix $XX^T$ non singular and we are still able to find a solution which includes both features.
+ 
   \item  What does the corresponding estimate of the response $y_{\op{RR}} := X^T\beta_{\op{RR}}$ equal to when $\alpha \rightarrow 1$? Is it collinear with the true feature $w_1$?
   \end{enumerate} 
   
