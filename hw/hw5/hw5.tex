@@ -195,17 +195,27 @@ governs the trade-off between a model that has good fit on the training set (low
   and invertible. The unique minimum can be found by setting the gradient to zero, which gives that the ridge regression estimator is:
   
   $$\beta_{\op{RR}}  =   (X X^T  +  \lambda I)^{-1} (X y + \lambda \beta_{\op{prior}} I )$$
-  with mean
+  with mean:
 \begin{align*}
   	\E[\beta_{\op{RR}} ]		&= 		\E[ (X X^T  +  \lambda I)^{-1} (X X^T \beta_{\op{true}} + X \rnd{z} +  \lambda \beta_{\op{prior}} I )] \\
 						&=		 (X X^T  +  \lambda I)^{-1} (X X^T \beta_{\op{true}}  + \lambda \beta_{\op{prior}} I) \\
 						&	\text{ ~ by linearity of the expectation and } \rnd{z} \text{ has zero mean}
 \end{align*} 
-Let the SVD of X be $X=U S V^T$, we can expand the previous expression:
+Let $X=U S V^T$ the SVD of X, we can then expand the previous expression:
 \begin{align*}
 	\E[\beta_{\op{RR}} ]		&=	(U S^2 U^T + \lambda U \; U^T)^{-1}	(U S^2 U^T \beta_{\op{true}}  + \lambda \beta_{\op{prior}}) \\
 						&=	U (S^2 + \lambda I)^{-1} S^2 U^T  \beta_{\op{true}}  +  \lambda \beta_{\op{prior}} U (S^2 + \lambda I)^{-1} U^T
-\end{align*} 						
+\end{align*} 
+
+and variance:	
+\begin{align*}
+	\Var(\beta_{\op{RR}})	&=	\Var( (X X^T  +  \lambda I)^{-1} (X y + \lambda \beta_{\op{prior}} I )) \\
+						&=	\Var( (X X^T  +  \lambda I)^{-1}  X y + \lambda  \beta_{\op{prior}} (X X^T  +  \lambda I)^{-1} ) \\
+						&=	\Var( (X X^T  +  \lambda I)^{-1}  X y) \\
+						&=	(X X^T  +  \lambda I)^{-1}  X \var(y)	((X X^T  +  \lambda I)^{-1}  X)^T \\
+						&=	\sigma^2 (X X^T  +  \lambda I)^{-1}  X X^T (X X^T  +  \lambda I)^{-1} \\
+						&=	\sigma^2 U (S^2 + \lambda I)^{-1} S^2 (S^2 + \lambda I)^{-1} U^T		
+\end{align*}					
 						
 %\end{proof}	
 
