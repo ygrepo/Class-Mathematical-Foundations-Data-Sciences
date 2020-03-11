@@ -168,8 +168,48 @@ governs the trade-off between a model that has good fit on the training set (low
  
  \item (Prior knowledge) Consider a linear regression problem where we have prior information indicating that the coefficients should be close to a certain value $\beta_{\op{prior}}$. 
  \begin{enumerate}
-   \item How can you incorporate this prior knowledge if you are using ridge regression? Write the corresponding optimization problem. 
-   \item Assume that the data are generated according to a linear model $\rnd{y}:= X^T \beta_{\op{true}} + \rnd{z}$, where $\beta_{true}\in \R^{p}$ and $X  \in \R^{p \times n}$ are fixed and $\rnd{z}$ is an iid Gaussian random vector with zero mean and variance $\sigma^2$. Does the modification change the mean or the covariance matrix of the estimator? If so, report the new value.
+   \item How can you incorporate this prior knowledge if you are using ridge regression? Write the corresponding optimization problem.\\
+ 
+  \medskip
+   If we want to include that the coefficients should be close to a  $\beta_{\op{prior}}$, the ridge-regression estimator is the minimizer of the optimization problem:
+   $$\beta_{\op{RR}} := \argmin_\beta \| y - X^T \beta \|_2^2 + \lambda \| \beta - \beta_{\op{prior}} \|_2^2$$
+   where $\lambda > 0$ is a fixed regularization parameter.
+   
+   \item Assume that the data are generated according to a linear model $\rnd{y}:= X^T \beta_{\op{true}} + \rnd{z}$, where $\beta_{true}\in \R^{p}$ and $X  \in \R^{p \times n}$ are fixed and $\rnd{z}$ is an iid Gaussian random vector with zero mean and variance $\sigma^2$. Does the modification change the mean or the covariance matrix of the estimator? If so, report the new value.\\
+   
+\medskip
+%\begin{proof}
+ 
+ \begin{align*}
+ 	\| y - X^T \beta \|_2^2		&=	(y - X^T \beta)^T (y - X^T \beta) + \lambda (\beta - \beta_{\op{prior}})^T (\beta - \beta_{\op{prior}}) \\
+							&=	(y^T - \beta^T X)  (y - X^T \beta) + \lambda (\beta^T - \beta_{\op{prior}}^T) (\beta - \beta_{\op{prior}}) \\
+							&=	\beta^T X X^T \beta -2 (X y)^T \beta + y^T y + \lambda \big( \beta^T \beta -2  \beta_{\op{prior}}^T \beta +  \beta_{\op{prior}}^T \beta_{\op{prior}} \big) \\
+							&=	\beta^T X X^T \beta -2 (X y)^T \beta + \lambda \big( \beta^T \beta -2  \beta_{\op{prior}}^T \beta) +  y^T y +  \lambda  \beta_{\op{prior}}^T \beta_{\op{prior}} := f(\beta)
+ \end{align*}    
+ $f$ is a quadratic form in $\beta$ and its gradient and Hessian equal:
+ \begin{align*}
+ 	\nabla_{\beta} f(\beta)		&=	2 (X X^T \beta - X y +  \lambda (\beta - \beta_{\op{prior}})) I \\
+	\nabla_{\beta}^2 f(\beta)		&=	2 (X X^T  +  \lambda I) 
+ \end{align*}    
+  $v^T (X X^T  +  \lambda I) v  = v^T X X^T v + \lambda v^T v = \|X^T v \|_2^2 + \lambda \| v \|_2^2 \ge 0$ and it is zero only when $v$ is the zero vector (by property of the norm operator), thus the matrix $X X^T  +  \lambda I$ is positive definite
+  and invertible. The unique minimum can be found by setting the gradient to zero, which gives that the ridge regression estimator is:
+  
+  $$\beta_{\op{RR}}  =   (X X^T  +  \lambda I)^{-1} (X y + \lambda \beta_{\op{prior}} I )$$
+  with mean
+\begin{align*}
+  	\E[\beta_{\op{RR}} ]		&= 		\E[ (X X^T  +  \lambda I)^{-1} (X X^T \beta_{\op{true}} + X \rnd{z} +  \lambda \beta_{\op{prior}} I )] \\
+						&=		 (X X^T  +  \lambda I)^{-1} (X X^T \beta_{\op{true}}  + \lambda \beta_{\op{prior}} I) \\
+						&	\text{ ~ by linearity of the expectation and } \rnd{z} \text{ has zero mean}
+\end{align*} 
+Let the SVD of X be $X=U S V^T$, we can expand the previous expression:
+\begin{align*}
+	\E[\beta_{\op{RR}} ]		&=	(U S^2 U^T + \lambda U \; U^T)^{-1}	(U S^2 U^T \beta_{\op{true}}  + \lambda \beta_{\op{prior}}) \\
+						&=	U (S^2 + \lambda I)^{-1} S^2 U^T  \beta_{\op{true}}  +  \lambda \beta_{\op{prior}} U (S^2 + \lambda I)^{-1} U^T
+\end{align*} 						
+						
+%\end{proof}	
+
+   
     \item How can you incorporate this prior knowledge if you are using gradient descent with early stopping? Write the corresponding update equation as a function of $\beta_{\op{prior}}$.
     \item Assume that the data are generated according to the linear model described above. Does the modification change the mean or the covariance matrix of the estimator? If so, report the new value.
  \end{enumerate}
