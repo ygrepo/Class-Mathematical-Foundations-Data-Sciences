@@ -168,6 +168,7 @@ governs the trade-off between a model that has good fit on the training set (low
  
  \item (Prior knowledge) Consider a linear regression problem where we have prior information indicating that the coefficients should be close to a certain value $\beta_{\op{prior}}$. 
  \begin{enumerate}
+ 
    \item How can you incorporate this prior knowledge if you are using ridge regression? Write the corresponding optimization problem.\\
  
   \medskip
@@ -178,7 +179,6 @@ governs the trade-off between a model that has good fit on the training set (low
    \item Assume that the data are generated according to a linear model $\rnd{y}:= X^T \beta_{\op{true}} + \rnd{z}$, where $\beta_{true}\in \R^{p}$ and $X  \in \R^{p \times n}$ are fixed and $\rnd{z}$ is an iid Gaussian random vector with zero mean and variance $\sigma^2$. Does the modification change the mean or the covariance matrix of the estimator? If so, report the new value.\\
    
 \medskip
-%\begin{proof}
  
  \begin{align*}
  	\| y - X^T \beta \|_2^2		&=	(y - X^T \beta)^T (y - X^T \beta) + \lambda (\beta - \beta_{\op{prior}})^T (\beta - \beta_{\op{prior}}) \\
@@ -188,17 +188,17 @@ governs the trade-off between a model that has good fit on the training set (low
  \end{align*}    
  $f$ is a quadratic form in $\beta$ and its gradient and Hessian equal:
  \begin{align*}
- 	\nabla_{\beta} f(\beta)		&=	2 (X X^T \beta - X y +  \lambda (\beta - \beta_{\op{prior}})) I \\
+ 	\nabla_{\beta} f(\beta)		&=	2 (X X^T \beta - X y +  \lambda (\beta - \beta_{\op{prior}}))  \\
 	\nabla_{\beta}^2 f(\beta)		&=	2 (X X^T  +  \lambda I) 
  \end{align*}    
   $v^T (X X^T  +  \lambda I) v  = v^T X X^T v + \lambda v^T v = \|X^T v \|_2^2 + \lambda \| v \|_2^2 \ge 0$ and it is zero only when $v$ is the zero vector (by property of the norm operator), thus the matrix $X X^T  +  \lambda I$ is positive definite
   and invertible. The unique minimum can be found by setting the gradient to zero, which gives that the ridge regression estimator is:
   
-  $$\beta_{\op{RR}}  =   (X X^T  +  \lambda I)^{-1} (X y + \lambda \beta_{\op{prior}} I )$$
+  $$\beta_{\op{RR}}  =   (X X^T  +  \lambda I)^{-1} (X y + \lambda \beta_{\op{prior}})$$
   with mean:
 \begin{align*}
-  	\E[\beta_{\op{RR}} ]		&= 		\E[ (X X^T  +  \lambda I)^{-1} (X X^T \beta_{\op{true}} + X \rnd{z} +  \lambda \beta_{\op{prior}} I )] \\
-						&=		 (X X^T  +  \lambda I)^{-1} (X X^T \beta_{\op{true}}  + \lambda \beta_{\op{prior}} I) \\
+  	\E[\beta_{\op{RR}} ]		&= 		\E[ (X X^T  +  \lambda I)^{-1} (X X^T \beta_{\op{true}} + X \rnd{z} +  \lambda \beta_{\op{prior}})] \\
+						&=		 (X X^T  +  \lambda I)^{-1} (X X^T \beta_{\op{true}}  + \lambda \beta_{\op{prior}}) \\
 						&	\text{ ~ by linearity of the expectation and } \rnd{z} \text{ has zero mean}
 \end{align*} 
 Let $X=U S V^T$ the SVD of X, we can then expand the previous expression:
@@ -209,19 +209,76 @@ Let $X=U S V^T$ the SVD of X, we can then expand the previous expression:
 
 and variance:	
 \begin{align*}
-	\Var(\beta_{\op{RR}})	&=	\Var( (X X^T  +  \lambda I)^{-1} (X y + \lambda \beta_{\op{prior}} I )) \\
+	\Var(\beta_{\op{RR}})	&=	\Var( (X X^T  +  \lambda I)^{-1} (X y + \lambda \beta_{\op{prior}})) \\
 						&=	\Var( (X X^T  +  \lambda I)^{-1}  X y + \lambda  \beta_{\op{prior}} (X X^T  +  \lambda I)^{-1} ) \\
 						&=	\Var( (X X^T  +  \lambda I)^{-1}  X y) \\
 						&=	(X X^T  +  \lambda I)^{-1}  X \var(y)	((X X^T  +  \lambda I)^{-1}  X)^T \\
 						&=	\sigma^2 (X X^T  +  \lambda I)^{-1}  X X^T (X X^T  +  \lambda I)^{-1} \\
 						&=	\sigma^2 U (S^2 + \lambda I)^{-1} S^2 (S^2 + \lambda I)^{-1} U^T		
 \end{align*}					
-						
-%\end{proof}	
-
    
-    \item How can you incorporate this prior knowledge if you are using gradient descent with early stopping? Write the corresponding update equation as a function of $\beta_{\op{prior}}$.
-    \item Assume that the data are generated according to the linear model described above. Does the modification change the mean or the covariance matrix of the estimator? If so, report the new value.
+    \item How can you incorporate this prior knowledge if you are using gradient descent with early stopping? Write the corresponding update equation as a function of $\beta_{\op{prior}}$.\\
+\medskip
+
+For $X  \in \R^{p \times n}$ and a response vector $y \in \R^n$, from part (a) we know that the gradient equals $$\nabla_{\beta} f(\beta) =	2 (X X^T \beta - X y +  \lambda (\beta - \beta_{\op{prior}}))$$
+The gradient-descent updates are:
+\begin{align*}
+		\beta^{(k+1)}	&=	\beta^{(k)} - \; \alpha_k \nabla_{\beta} f(\beta^{(k)})	\\
+					&=	\beta^{(k)}  - \alpha_k (X X^T \beta^{(k)} - X y +  \lambda (\beta^{(k)} - \beta_{\op{prior}})) \text{ ~ absorbing the constant } 2 \text{ in the } \alpha _k \text{ parameter } \\
+					&=    ((1- \lambda \alpha_k) I  - \alpha_k X X^T) \beta^{(k)}  +  \alpha_k  X y  + \lambda  \alpha_k  \beta_{\op{prior}} \\
+					&=	 \beta^{(k)}  +  \alpha_k  \big( \sum_{i=1}^n (y[i] - \PROD{x_i}{\beta^{(k)}}) x_i - \lambda ( \beta^{(k)}  -   \beta_{\op{prior}}) \big)
+\end{align*}
+   where $\beta^{(k)} \in \R^p$ and $ \alpha_k > 0$ which are the estimated step size at iteration $k$. Note that contrary to the linear regression update at step $k$, we now have an extra term 
+   which includes the prior $\beta_{\op{true}}$ scaled by the regularization parameter $\lambda$.
+    
+    \item Assume that the data are generated according to the linear model described above. Does the modification change the mean or the covariance matrix of the estimator? If so, report the new value.\\
+    
+\medskip
+
+Expressing the previous expression as:
+\begin{align*}
+		\beta^{(k+1)}	&=	\big( (1 - \lambda \alpha)  I - \alpha X X^T \big) \beta^{(k)}		+  	\alpha (X y + \lambda \beta_{\op{prior}}) \\
+					&=	\big(I - \alpha (\lambda I + X X^T)  \big)^{k+1} \beta^{(0)}		+	\sum_{i=0}^k \big(I - \alpha (\lambda I + X X^T)  \big)^i \alpha (X y + \lambda \beta_{\op{prior}} I )
+\end{align*}
+
+Assuming $X$ full rank and p $\le$ n, $UU^T = U^TU = I$, let $X = USV^T$, we have then:
+\begin{align*}
+		\beta^{(k+1)}	&=	U (I - \alpha (S^2 + \lambda I))^{k+1} U^T \beta^{(0)}		+ \alpha \sum_{i=0}^k 	U (I - \alpha (S^2 + \lambda I))^ i U^T (U S V^T y +  \lambda \beta_{\op{prior}} I) \\
+					&=	U (I - \alpha (S^2 + \lambda I))^{k+1} U^T \beta^{(0)}		+ \alpha \sum_{i=0}^k 	U (I - \alpha (S^2 + \lambda I))^ i (S V^T y + \lambda \beta_{\op{prior}}  U^T) \\
+					&=	U \text{diag}_{j=1}^p \bigg( (1 - \alpha (s_j^2 + \lambda))^{k+1} \bigg)U^T \beta^{(0)}	\\
+					&+ \alpha \; U  \;  \text{diag}_{j=1}^p \bigg( \sum_{i=0}^k (1 - \alpha (s_j^2 + \lambda))^i \bigg)  (S V^T y + \lambda \beta_{\op{prior}}  U^T) \\
+					&= U \text{diag}_{j=1}^p \bigg( (1 - \alpha (s_j^2 + \lambda))^{k+1} \bigg)U^T \beta^{(0)}	\\
+					&+ U  \;  \text{diag}_{j=1}^p \bigg( \frac{ 1 - (1 - \alpha (s_j^2 + \lambda))^{k+1}} {s_j^2 + \lambda} \bigg)  (S V^T y + \lambda \beta_{\op{prior}}  U^T)
+\end{align*}
+If step size $\alpha$ is small enough $0 < \alpha < \frac{2} {\lambda + s_j^2} \rightarrow |1 - (1 - \alpha (s_j^2 + \lambda)| < 1 \rightarrow \lim_{k \rightarrow \infty} (1 - (1 - \alpha (s_j^2 + \lambda))^k =0, j=1, \dots,p $ then gradient descent converges to:
+$$\lim_{k \rightarrow \infty} \beta^{(k+1)} = U  \;  \text{diag}_{j=1}^p \bigg( \frac{1} {s_j^2 + \lambda} \bigg)  (S V^T y + \lambda \beta_{\op{prior}}  U^T)$$
+
+%\begin{align*}
+%	\lim_{k \rightarrow \infty} \beta^{(k)}	&=  U  \;  \text{diag}_{j=1}^p \bigg(  \frac{s_j} {s_j^2 + \lambda}  \bigg)  (V^T y + \lambda \beta_{\op{prior}}  U^T) \\
+%								&=  U  \;  \text{diag}_{j=1}^p \bigg(  \frac{s_j} {s_j^2 + \lambda}  \bigg)  (V^T V S U^T \beta_{\op{true}} + V^T \rnd{z} +   \lambda \beta_{\op{prior}}  U^T) \\
+%								&=  U \;    \text{diag}_{j=1}^p \bigg(  \frac{s_j^2} {s_j^2 + \lambda}  \bigg) U^T  \beta_{\op{true}} + U  \lambda \beta_{\op{prior}}  U^T \\
+%								&+  U \;    \text{diag}_{j=1}^p \bigg(  \frac{s_j} {s_j^2 + \lambda}  \bigg) V^T  \rnd{z}
+%\end{align*}	
+
+Let $\nu_j := 1 - \alpha (s_j^2 + \lambda)$, then we now have
+\begin{align*}
+	\rnd{\beta}^{(k)} 	&= 	 U \;    \text{diag}_{j=1}^p \bigg(  \frac{ 1 - \nu_j^k} {s_j^2 + \lambda}  \bigg) (S V^T X^T  \beta_{\op{true}}  + S V^T  \rnd{z} +  \lambda \beta_{\op{prior}}  U^T)\\
+					&=	 U \;    \text{diag}_{j=1}^p \bigg(  \frac{ 1 - \nu_j^k} {s_j^2 + \lambda}  \bigg) (S^2 U^T  \beta_{\op{true}}  +  \lambda \beta_{\op{prior}}  U^T  + S V^T  \rnd{z}) \\	
+					&=	 U \;    \text{diag}_{j=1}^p \bigg(  \frac{s_j^2  (1 - \nu_j^k)} {s_j^2 + \lambda} \bigg) U^T \beta_{\op{true}}  + \lambda U \;    \text{diag}_{j=1}^p \bigg(  \frac{1 - \nu_j^k} {s_j^2 + \lambda} \bigg) \beta_{\op{prior}} U^T \\
+					&+  	 U \;    \text{diag}_{j=1}^p \bigg(  \frac{ s_j  (1 - \nu_j^k)} {s_j^2 + \lambda} \bigg) V^T  \rnd{z} 
+\end{align*}	
+ Then using Theorem 8.6 in the PCA lecture notes, we have the mean:
+\begin{align*}
+	\beta_{\text{bias}} 	&= \sum_{i=1}^p \frac{1 - \nu_j^k}{s_i^2 + \lambda} \PROD{u_i} {s_i^2 \beta_{\op{true}}+ \lambda  \beta_{\op{prior}} } u_i \\
+					&= \sum_{i=1}^p \frac{1 - (1 - \alpha (s_i^2 + \lambda))^k} {s_i^2 + \lambda} \PROD{u_i} {s_i^2 \beta_{\op{true}}+ \lambda  \beta_{\op{prior}} } u_i \
+\end{align*}
+The variance is 
+\begin{align*}
+	\Sigma			&= \sigma^2 U  \text{diag}_{j=1}^p \bigg(  \frac{ s_j  (1 - \nu_j^k)} {s_j^2 + \lambda} \bigg) V^T V  \text{diag}_{j=1}^p \bigg(  \frac{ s_j  (1 - \nu_j^k)} {s_j^2 + \lambda} \bigg) U^T \\
+					&= \sigma^2 U  \text{diag}_{j=1}^p \bigg(  \frac{ s_j^2  (1 - (1 - \alpha (s_i^2 + \lambda))^k)} {(s_j^2 + \lambda)^2} \bigg) U
+\end{align*}
+
+ 
  \end{enumerate}
  
 \item The code you will implement in this question is located in the
