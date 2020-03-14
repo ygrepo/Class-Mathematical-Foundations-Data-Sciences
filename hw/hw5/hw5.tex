@@ -117,7 +117,7 @@ Substituting each of the previous terms back into the expression of $\beta_{\op{
 When $\alpha \rightarrow 1$ , $\beta_{\op{OLS}} \rightarrow   \MAT{\beta_{\op{true}} + 0.05  \\ 0.05}$.
 Depending of the value of $\beta_{\op{true}}$ compared to $0.05$, the OLS estimator could consider only the feature $w_1$ and not the correlated feature $w_2$.
 It also  adds a fixed constant $0.05$ to the true $\beta_{\op{true}}$ coefficient which could be significant compared to
- $\beta_{\op{true}}$.However this could be inferred and corrected during the validation step. 
+ $\beta_{\op{true}}$. If we omit this constant  $0.05$ ,  the OLS estimator is unbiased. 
  Notice also that in this case $XX^T$ is rank 1 and not invertible, and in some cases, the algorithm used to find the OLS estimator may be unable to find a solution.
     
    \item  What does the corresponding estimate of the response $y_{\op{OLS}} := X^T\beta_{\op{OLS}}$ equal to when $\alpha \rightarrow 1$? Is it collinear with the true feature $w_1$ when $\alpha \rightarrow 1$? Explain what is happening.\\
@@ -130,7 +130,8 @@ It also  adds a fixed constant $0.05$ to the true $\beta_{\op{true}}$ coefficien
 									&\rightarrow ( \beta_{\op{true}} + 0.1) w_1
   \end{align*}
   When $\alpha \rightarrow 1$, the correlated feature $w_2 \rightarrow w_1$, and the response variable is collinear with the true feature $w_1$, the OLS estimator estimates $y_{\op{OLS}}$ as a linear scaling of $w_1$ 
-  up to a factor of $0.1$ which could lead to an important error depending the magnitude of the linear coefficient  $\beta_{\op{true}}$ compared to 0.1.
+  up to a factor of $0.1$ which could lead to an important error depending the magnitude of the linear coefficient  $\beta_{\op{true}}$ compared to 0.1. If it is not the case ($0.1$ could be ignored) 
+  then the OLS estimator will fit perfectly the training data.
     
   \item What does the ridge regression estimator of the coefficients $\beta_{\op{RR}}$ equal to when $\alpha \rightarrow 1$ and the regularization parameter $\lambda >0$ is fixed? Describe the difference with the OLS estimate.\\
  
@@ -151,11 +152,10 @@ It also  adds a fixed constant $0.05$ to the true $\beta_{\op{true}}$ coefficien
  \end{align*} 
 If we compare to $\beta_{\op{OLS}}$ estimator,  the ridge regression estimator has coefficients on both $w_1$ and $w_2$ and this coefficient can be regularized using $\lambda$. 
 When the data gives no reason to choose between different linear combinations of colinear features (we did not that know they are correlated) , ridge estimator chooses equal weighting. 
-Also even if $XX^T$ is singular (rank $1$), the L$_2$ regularization 
-using $\lambda$ makes the matrix $XX^T$ non singular and we are still able to find a solution which includes both features. In addition we have a new set of coefficients each time we tune $\lambda$:
-when $\lambda \rightarrow 0, \beta_{\op{RR}} \rightarrow (\frac{\beta_{\op{OLS}}} {2} + 0.05) [ 1 \; 1]^T$ and when $\lambda \rightarrow \infty, \beta_{\op{RR}} \rightarrow [0 \; 0]^T$. 
-%The ridge regression estimator with the regularization parameter, $\lambda$,
-% governs the trade-off between a model that has low bias and a model which reduces the test error (low variance). 
+Also even if $XX^T$ is singular (rank $1$), the l$_2$ regularization 
+using $\lambda$ makes the matrix $XX^T  + \lambda I$ non singular (with a value of $\lambda$ which prevents its determinant to be zero)
+and we are still able to find a solution which includes both features. In addition we have a new set of coefficients each time we tune $\lambda$:
+when $\lambda \rightarrow 0, \beta_{\op{RR}} \rightarrow (\frac{\beta_{\op{OLS}}} {2} + 0.05) [ 1 \; 1]^T$ up to $\lambda \rightarrow \infty, \beta_{\op{RR}} \rightarrow [0 \; 0]^T$. 
  
   \item  What does the corresponding estimate of the response $y_{\op{RR}} := X^T\beta_{\op{RR}}$ equal to when $\alpha \rightarrow 1$? Is it collinear with the true feature $w_1$?\\
   \medskip
@@ -166,7 +166,8 @@ when $\lambda \rightarrow 0, \beta_{\op{RR}} \rightarrow (\frac{\beta_{\op{OLS}}
 								&\rightarrow 	2 \;  \frac{\beta_{\op{true}} + 0.1}{ 2 + \lambda} \; w_1
  \end{align*}    
   $y_{\op{RR}}$ is collinear with the true feature $w_1$.
-  Compared to $y_{\op{OLS}}$, the parameter $\lambda$ allows to control the amount of linearity between the response and control variable (when $\lambda=0, y_{\op{RR}} = y_{\op{OLS}}$), which might be desirable if the test data points, not known in advance, are not totally dependent on the feature $w_1$.
+  Compared to $y_{\op{OLS}}$, the parameter $\lambda$ allows to control the amount of linearity between the response and control variable 
+  (when $\lambda=0, y_{\op{RR}} = y_{\op{OLS}}$), which might be desirable if the test data points, not known in advance, are not totally dependent on the feature $w_1$.
   
   \end{enumerate} 
  
@@ -210,8 +211,9 @@ when $\lambda \rightarrow 0, \beta_{\op{RR}} \rightarrow (\frac{\beta_{\op{OLS}}
 Let $X=U S V^T$ the SVD of X, if $X$ is full rank, and $p \le n$, $U$ is square, $UU^T= U^TU = I$,we can then expand the previous expression:
 \begin{align*}
 	\E[\beta_{\op{RR}} ]		&=	(U S^2 U^T + \lambda U \; U^T)^{-1}	(U S^2 U^T \beta_{\op{true}}  + \lambda \beta_{\op{prior}}) \\
-						&=	U (S^2 + \lambda I)^{-1} S^2 U^T  \beta_{\op{true}}  +  \lambda \beta_{\op{prior}} U (S^2 + \lambda I)^{-1} U^T \\
-						&= 	\frac{S^2  \beta_{\op{true}}  +  \lambda \beta_{\op{prior}}} {(S^2 + \lambda I)^{-1}}
+						&=	U (S^2 + \lambda I)^{-1} S^2 U^T  \beta_{\op{true}}  + U (S^2 + \lambda I)^{-1}  \lambda \beta_{\op{prior}} U^T \\
+						&=	\sum_{i=1}^p \bigg( \frac{s_i^2 \PROD{u_i} {\beta_{\op{true}} } + \PROD{u_i} { \lambda \beta_{\op{prior}}}} {s_i^2 + \lambda} \bigg) u_i \\
+						&=	\sum_{i=1}^p \bigg(   \frac{ \PROD{u_i} {s_i^2 \beta_{\op{true}} +  \lambda \beta_{\op{prior}} }}  {s_i^2 + \lambda} \bigg) u_i
 \end{align*} 
 
 and variance:	
@@ -222,11 +224,13 @@ and variance:
 						&=	(X X^T  +  \lambda I)^{-1}  X \var(y)	((X X^T  +  \lambda I)^{-1}  X)^T \\
 						&=	\sigma^2 (X X^T  +  \lambda I)^{-1}  X X^T (X X^T  +  \lambda I)^{-1} \\
 						&=	\sigma^2 (S^2 + \lambda I)^{-1} U S^2 U^T (S^2 + \lambda I)^{-1} \\
-						&= 	\sigma^2 	 \text{diag}_{i=1}^p \bigg( \frac{s_i^2} {(s_i^2 + \lambda)^2} \bigg) 	
+						&= 	\sigma^2 	U  \text{diag}_{i=1}^p \bigg( \frac{s_i^2} {(s_i^2 + \lambda)^2} \bigg) 	U^T
 \end{align*}					
    
    Note that when $\lambda = 0$ then $\E[\beta_{\op{RR}} ] = \beta_{\op{true}}$ and $\Var(\beta_{\op{RR}}) = \sigma^2 I$,
    and when $\lambda \rightarrow \infty$, $\E[\beta_{\op{RR}} ] \rightarrow  \beta_{\op{prior}}$ and $\Var(\beta_{\op{RR}}) \rightarrow 0_{p \times p}$.
+   Also note that compare to the OLS estimator we have the regularization parameter $\lambda$ which can cancel out the high variance due to very small singular values
+   (in addition $\lambda$ also controls how much prior $\beta_{\op{prior}}$ we want to consider).
    
     \item How can you incorporate this prior knowledge if you are using gradient descent with early stopping? Write the corresponding update equation as a function of $\beta_{\op{prior}}$.\\
 \medskip
@@ -237,6 +241,8 @@ The gradient-descent updates are:
 		\beta^{(k+1)}	&=	\beta^{(k)} - \; \alpha_k \nabla_{\beta} f(\beta^{(k)})	\\
 					&=	\beta^{(k)}  - \alpha_k (X X^T \beta^{(k)} - X y +  \lambda (\beta^{(k)} - \beta_{\op{prior}})) \\
 					&=    ((1- \lambda \alpha_k) I  - \alpha_k X X^T) \beta^{(k)}  +  \alpha_k  X y  + \lambda  \alpha_k  \beta_{\op{prior}} \\
+					&=	(I -  \alpha_k (\lambda +  X X^T)) \beta^{(k)}  +  \alpha_k  X y  + \lambda  \alpha_k  \beta_{\op{prior}} \\
+					&=	\beta^{(k)}  + \alpha_k  \big( X y  - X X^T \beta^{(k)}   + \lambda (\beta_{\op{prior}} - \beta^{(k)}) \big) \\
 					&=	 \beta^{(k)}  +  \alpha_k  \big( \sum_{i=1}^n (y[i] - \PROD{x_i}{\beta^{(k)}}) x_i - \lambda ( \beta^{(k)}  -   \beta_{\op{prior}}) \big)
 \end{align*}
    where $\beta^{(k)} \in \R^p$ and $ \alpha_k > 0$ which are the estimated step size at iteration $k$. Note that for the term corresponding to $\alpha_k$, at  step $k$, for the next $\beta^{(k+1)}$ 
@@ -261,15 +267,8 @@ Assuming $X$ full rank and p $\le$ n, $U$ is square and, $UU^T = U^TU = I$, let 
 					&= U \text{diag}_{j=1}^p \bigg( (1 - \alpha (s_j^2 + \lambda))^{k+1} \bigg)U^T \beta^{(0)}	\\
 					&+ U  \;  \text{diag}_{j=1}^p \bigg( \frac{ 1 - (1 - \alpha (s_j^2 + \lambda))^{k+1}} {s_j^2 + \lambda} \bigg)  (S V^T y + \lambda \beta_{\op{prior}}  U^T)
 \end{align*}
-If step size $\alpha$ is small enough $0 < \alpha < \frac{2} {\lambda + s_1^2} \le \frac{2} {\lambda + s_j^2} \rightarrow |1 - \alpha (s_j^2 + \lambda)| < 1 \rightarrow \lim_{k \rightarrow \infty} (1 - \alpha (s_j^2 + \lambda))^k =0, j=1, \dots ,p $ then gradient descent converges to:
+If step size $\alpha$ is small enough: $0 < \alpha < \frac{2} {\lambda + s_1^2} \le \frac{2} {\lambda + s_j^2} \rightarrow |1 - \alpha (s_j^2 + \lambda)| < 1 \rightarrow \lim_{k \rightarrow \infty} (1 - \alpha (s_j^2 + \lambda))^k =0, j=1, \dots ,p $ then gradient descent converges to:
 $$\lim_{k \rightarrow \infty} \beta^{(k+1)} = U  \;  \text{diag}_{j=1}^p \bigg( \frac{1} {s_j^2 + \lambda} \bigg)  (S V^T y + \lambda \beta_{\op{prior}}  U^T)$$
-
-%\begin{align*}
-%	\lim_{k \rightarrow \infty} \beta^{(k)}	&=  U  \;  \text{diag}_{j=1}^p \bigg(  \frac{s_j} {s_j^2 + \lambda}  \bigg)  (V^T y + \lambda \beta_{\op{prior}}  U^T) \\
-%								&=  U  \;  \text{diag}_{j=1}^p \bigg(  \frac{s_j} {s_j^2 + \lambda}  \bigg)  (V^T V S U^T \beta_{\op{true}} + V^T \rnd{z} +   \lambda \beta_{\op{prior}}  U^T) \\
-%								&=  U \;    \text{diag}_{j=1}^p \bigg(  \frac{s_j^2} {s_j^2 + \lambda}  \bigg) U^T  \beta_{\op{true}} + U  \lambda \beta_{\op{prior}}  U^T \\
-%								&+  U \;    \text{diag}_{j=1}^p \bigg(  \frac{s_j} {s_j^2 + \lambda}  \bigg) V^T  \rnd{z}
-%\end{align*}	
 
 Let $\nu_j := 1 - \alpha (s_j^2 + \lambda)$, then we now have
 \begin{align*}
@@ -284,11 +283,12 @@ Let $\nu_j := 1 - \alpha (s_j^2 + \lambda)$, then we now have
 					&= \sum_{i=1}^p \frac{1 - (1 - \alpha (s_i^2 + \lambda))^k} {s_i^2 + \lambda} \PROD{u_i} {s_i^2 \beta_{\op{true}}+ \lambda  \beta_{\op{prior}} } u_i \
 \end{align*}
 and variance:
-\begin{align*}
+\begin{align*} 
 	\Sigma_{\text{GD}}			&= \sigma^2 U  \text{diag}_{j=1}^p \bigg(  \frac{ s_j  (1 - \nu_j^k)} {s_j^2 + \lambda} \bigg) V^T V  \text{diag}_{j=1}^p \bigg(  \frac{ s_j  (1 - \nu_j^k)} {s_j^2 + \lambda} \bigg) U^T \\
 							&= \sigma^2 U  \text{diag}_{j=1}^p \bigg(  \frac{ s_j^2  (1 - (1 - \alpha (s_i^2 + \lambda))^k)^2} {(s_j^2 + \lambda)^2} \bigg) U^T
 \end{align*}
- Note that we find the same limiting behaviors with the regularization parameter $\lambda$ (and number of iterations $k$), that we found for the ridge regression estimator in part (b). 
+ Note that for large $k$ enough we find the same expressions for the mean and variance that we had  for the ridge regression estimator in part (b) ($k \rightarrow \infty, \nu_j \rightarrow 0$) .
+ And in these cases, we have the same limiting behaviors with the regularization parameter $\lambda$. 
  
  \end{enumerate}
  
@@ -324,16 +324,100 @@ and variance:
     your square loss on the validation set in your submission.
     [Hint: If computed correctly your training loss should be larger
       than 30 and your validation loss should be larger than 10.]
+      
+   Using least squares we obtain for $\vbeta$:
+   \begin{center}
+    		\begin{tabular}{ | c | c | c | c | c | c | }
+		\hline
+			9.506 & 39.07 & -8.181 & -23.083 &  -4.189\\ 
+		\hline
+    	\end{tabular}
+    \end{center}
+    And the square losses are:
+    \begin{enumerate}[(a)]
+	\item Training square loss:34.743
+	\item Validation square loss:11.283
+    \end{enumerate}
+
   \item Compute the singular values of the training data matrix
-    $X\in\RR^{n\times 5}$.
+    $X\in\RR^{n\times 5}$.\\
+    
+   The singular value of the data ($n \times 5$) are:
+   \begin{center}
+    		\begin{tabular}{ | c | c | c | c | c | c | }
+		\hline
+			24.812 & 5.573 & 0.102 & 0.059 & 0.038\\ 
+		\hline
+    	\end{tabular}
+    \end{center}
+    
+   The singular value of the training data ($n_\text{train} \times 5$) are: 
+   \begin{center}
+    		\begin{tabular}{ | c | c | c | c | c | c | }
+		\hline
+			21.104 & 4.558 & 0.092 & 0.048 &  0.034\\ 
+		\hline
+    	\end{tabular}
+    \end{center}
+
+In both cases we notice that there is a large difference in amplitude between the first singular value and the rest of the singular values.
+And this reflects the data generation process, the four data points in a row are strongly correlated each other, and as we move up the column for a specific row, 
+the data point is more and more correlated with the previous ones:
+the second datapoint is the first one and some noise, the third datapoint is the second one with some noise, and so until the fifth datapoint.
+
   \item The true value of $\vbeta$ can be found at the top of
     \verb|regress.py|.  Give an explanation as to why the least squares
     estimates aren't close to the true $\vbeta$-values.
+    
+   True $\vbeta$
+   \begin{center}
+    		\begin{tabular}{ | c | c | c | c | c | c | }
+		\hline
+			9 & 1 & 1 & 1 &  1\\ 
+		\hline
+    	\end{tabular}
+    \end{center}
+
+  OLS $\vbeta$:
+   \begin{center}
+    		\begin{tabular}{ | c | c | c | c | c | c | }
+		\hline
+			9.506 & 39.07 & -8.181 & -23.083 &  -4.189\\ 
+		\hline
+    	\end{tabular}
+    \end{center}
+
+We just saw that some of the singular values of the training data matrix are minuscule. 
+Estimating the contribution of low-variance components requires to amplify the linear coefficients ($\vbeta$ ).
+    
   \item Use ridge regression to produce a new estimate of $\vbeta$
     and report the resulting estimate of $\vbeta$, and
     your square loss on the training and validation sets.  Here
     $\hat{\beta}$ should solve
     $$\text{minimize}_{\veta}\quad \|X\veta-\vy\|_2^2 + 0.5\|\veta\|_2^2.$$
+    
+    Using ridge regression and a regularization parameter of $\lambda=0.5$ we obtain for $\vbeta$:
+     \begin{center}
+    		\begin{tabular}{ | c | c | c | c | c | c | }
+		\hline
+			9.259 & 1.240 & 0.992 & 0.818 &  0.71 \\ 
+		\hline
+    	\end{tabular}
+    \end{center}
+    And the square losses are:
+    \begin{enumerate}[(a)]
+	\item Training square loss:43.280
+	\item Validation square loss:6.075
+    \end{enumerate}
+  
+  These results are expected as ridge-regression estimator controls the magnitude of the coefficients with the regularization parameter $\lambda$ (equals to $0.5$),
+  it neutralizes the contribution of the small singular values: $\lambda >> $ small singular values (canceling the variance in the direction of the corresponding singular vectors).
+  We could have selected $\lambda$ using cross-validation (trying different values of $\lambda$ and select the best value), 
+  but  when we compare the ridge-regression estimator performance to the least-squares estimator (part a),
+  it seems this particular value of $\lambda$ is somewhat optimal providing a good estimation of the true coefficients
+   $\vbeta$ and at same time improving the validation error (reducing the square loss validation error).
+  
+
   \end{enumerate}
 You're not required to include your code in your submission, but you are free to do so. 
  \end{enumerate}

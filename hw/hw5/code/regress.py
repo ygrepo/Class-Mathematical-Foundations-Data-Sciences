@@ -30,8 +30,8 @@ def get_data():
            w[num_train:]
 
 
-def compute_loss_square_with_true_betas(X, y, intercept, beta):
-    loss = (((X @ beta) + intercept) - y) ** 2
+def compute_loss_square_with_true_betas(X, y, beta):
+    loss = (np.dot(X, beta) - y) ** 2
     loss = np.sum(loss, axis=0)
     return loss
     # return ((np.matmul(X, beta) - y) ** 2).sum()
@@ -46,7 +46,7 @@ def main():
     train_X, train_y, valid_X, valid_y, train_w, val_w = get_data()
 
     print("********* Linear Regression *********")
-    linear_regression = LinearRegression()
+    linear_regression = LinearRegression(fit_intercept=False)
     linear_regression.fit(train_X, train_y)
     train_y_predictions = linear_regression.predict(train_X)
     valid_y_predictions = linear_regression.predict(valid_X)
@@ -56,8 +56,8 @@ def main():
     print("True betas:{}\nEstimated linear regression betas:{}\n".format(_beta, linear_reg_beta))
 
     print("Training loss with true beta:{:.3f}\nValidation loss with true beta:{:.3f}"
-          .format(compute_loss_square_with_true_betas(train_X, train_y, 0, _beta),
-                  compute_loss_square_with_true_betas(valid_X, valid_y, 0, _beta)))
+          .format(compute_loss_square_with_true_betas(train_X, train_y, _beta),
+                  compute_loss_square_with_true_betas(valid_X, valid_y, _beta)))
     print("Training square loss:{:.3f}\nValidation square loss:{:.3f}"
           .format(compute_square_loss(train_y, train_y_predictions),
                   compute_square_loss(valid_y, valid_y_predictions)))
@@ -73,6 +73,7 @@ def main():
     U, S, V = np.linalg.svd(X, full_matrices=False)
     X_SVD = U @ np.diag(S) @ V
     print("Is X close to X_SVD?", np.isclose(X, X_SVD).all())
+    print("Singular values:{}".format(S))
     w = np.hstack([train_w, val_w])
     Inv_S = np.linalg.inv(np.diag(S))
     print("True betas:{}".format(_beta))
@@ -92,7 +93,7 @@ def main():
     print("Test mean square error:{}\n".format(test_mean_square_error))
 
     print("********* Ridge Regression *********")
-    ridge_regression = Ridge(alpha=0.5)
+    ridge_regression = Ridge(alpha=0.5,fit_intercept=False)
     ridge_regression.fit(train_X, train_y)
     train_y_predictions = ridge_regression.predict(train_X)
     valid_y_predictions = ridge_regression.predict(valid_X)
@@ -102,8 +103,8 @@ def main():
     print("True beta:{}\nRidge betas:{}\n".format(_beta, ridge_beta))
 
     print("Training loss with true beta:{:.3f}\nValidation loss with true beta:{:.3f}"
-          .format(compute_loss_square_with_true_betas(train_X, train_y, 0, _beta),
-                  compute_loss_square_with_true_betas(valid_X, valid_y, 0, _beta)))
+          .format(compute_loss_square_with_true_betas(train_X, train_y, _beta),
+                  compute_loss_square_with_true_betas(valid_X, valid_y, _beta)))
 
     print("Training square loss:{:.3f}\nValidation square loss:{:.3f}"
           .format(compute_square_loss(train_y, train_y_predictions),
@@ -114,6 +115,10 @@ def main():
           .format(mean_squared_error(train_y, train_y_predictions),
                   mean_squared_error(valid_y, valid_y_predictions)))
 
+    U, S, V = np.linalg.svd(train_X, full_matrices=False)
+    X_SVD = U @ np.diag(S) @ V
+    print("Is X close to X_SVD?", np.isclose(train_X, X_SVD).all())
+    print("Singular values:{}".format(S))
     # print(S * np.ones(5))
     # Plot outputs
     # plt.scatter(train_X, train_y, color='black')
