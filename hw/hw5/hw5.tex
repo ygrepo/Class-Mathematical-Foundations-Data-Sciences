@@ -244,19 +244,21 @@ and variance:
     \item How can you incorporate this prior knowledge if you are using gradient descent with early stopping? Write the corresponding update equation as a function of $\beta_{\op{prior}}$.\\
 
 \medskip				
+We will follow the reasoning of the linear regression notes with one difference, the starting point for $\beta^{(0)}$ is $\beta_{\op{prior}}$.
+For an alternate version using the initial quadratic form of part (a) please see at the end of this homework, one reason to follow this path is that we obtain an algorithm achieving somehow similar
+objectives but easier to analyze.
 
-For $X  \in \R^{p \times n}$ and a response vector $y \in \R^n, \beta \in \R^p$, from part (b) we know that the gradient equals $$\nabla_{\beta} f(\beta) =	2 (X X^T \beta - X y +  \lambda (\beta - \beta_{\op{prior}}))$$
+
+For $X  \in \R^{p \times n}$ and a response vector $y \in \R^n, \beta \in \R^p$, from part (b) we know that the gradient equals $$\nabla_{\beta} f(\beta) =	2 (X X^T \beta - X y )$$
 The gradient-descent updates are:
 \begin{align*}
 		\beta^{(k+1)}	&=	\beta^{(k)} - \; \alpha_k \nabla_{\beta} f(\beta^{(k)})	\\
-					&=	\beta^{(k)}  - \alpha_k (X X^T \beta^{(k)} - X y +  \lambda (\beta^{(k)} - \beta_{\op{prior}})) \\
-					&=    ((1- \lambda \alpha_k) I  - \alpha_k X X^T) \beta^{(k)}  +  \alpha_k  X y  + \lambda  \alpha_k  \beta_{\op{prior}} \\
-					&=	(I -  \alpha_k (\lambda +  X X^T)) \beta^{(k)}  +  \alpha_k  X y  + \lambda  \alpha_k  \beta_{\op{prior}} \\
-					&=	\beta^{(k)}  + \alpha_k  \big( X y  - X X^T \beta^{(k)}   + \lambda (\beta_{\op{prior}} - \beta^{(k)}) \big) \\
-					&=	 \beta^{(k)}  +  \alpha_k  \big( \sum_{i=1}^n (y[i] - \PROD{x_i}{\beta^{(k)}}) x_i - \lambda ( \beta^{(k)}  -   \beta_{\op{prior}}) \big)
+					&=	\beta^{(k)}  - \alpha_k (X X^T \beta^{(k)} - X y) \\
+					&=    \beta^{(k)}  +  \alpha_k  X (y   - X^T  \beta^{(k)})\\
+					&=	 \beta^{(k)}  +  \alpha_k  \sum_{i=1}^n (y[i] - \PROD{x_i}{\beta^{(k)}}) x_i)
 \end{align*}
    where $\beta^{(k)} \in \R^p$ and $ \alpha_k > 0$ which are the estimated step size at iteration $k$. Note that for the term corresponding to $\alpha_k$, at  step $k$, for the next $\beta^{(k+1)}$ 
-   we want to reduce the error with the response variable $y$  and at the same time to be close to the prior $\beta_{\op{prior}}$, the last term being controlled by the regularization parameter $\lambda$.
+   we want to reduce the error with the response variable $y$, so we add or subtract a small multiple of $x^{(i)}$ accordingly. 
    
     \item Assume that the data are generated according to the linear model described above. Does the modification change the mean or the covariance matrix of the estimator? If so, report the new value.\\
     
@@ -264,38 +266,39 @@ The gradient-descent updates are:
 
 Assuming constant step size, we can express the previous expression as:
 \begin{align*}
-		\beta^{(k+1)}	&=	\big( (1 - \lambda \alpha)  I - \alpha X X^T \big) \beta^{(k)}		+  	\alpha (X y + \lambda \beta_{\op{prior}}) \\
-					&=	\big(I - \alpha (\lambda I + X X^T)  \big)^{k+1} \beta^{(0)}		+	\sum_{i=0}^k \big(I - \alpha (\lambda I + X X^T)  \big)^i \alpha (X y + \lambda \beta_{\op{prior}})
+		\beta^{(k+1)}	&=	( I - \alpha X X^T ) \beta^{(k)} +  \alpha X y \\
+					&=	(I - \alpha X X^T)^{k+1} \beta_{\op{prior}}	+ \sum_{i=0}^k (I - \alpha X X^T)^i \alpha X y 
 \end{align*}
 
 Assuming $X$ full rank and p $\le$ n, $U$ is square and, $UU^T = U^TU = I$, let $X = USV^T$, we have then:
 \begin{align*}
-		\beta^{(k+1)}	&=	U (I - \alpha (S^2 + \lambda I))^{k+1} U^T \beta^{(0)}		+ \alpha \sum_{i=0}^k 	U (I - \alpha (S^2 + \lambda I))^ i U^T (U S V^T y +  \lambda \beta_{\op{prior}}) \\
-					&=	U (I - \alpha (S^2 + \lambda I))^{k+1} U^T \beta^{(0)}		+ \alpha \sum_{i=0}^k 	U (I - \alpha (S^2 + \lambda I))^ i (S V^T y + \lambda \beta_{\op{prior}}  U^T) \\
-					&=	U \text{diag}_{j=1}^p \bigg( (1 - \alpha (s_j^2 + \lambda))^{k+1} \bigg)U^T \beta^{(0)}	\\
-					&+ \alpha \; U  \;  \text{diag}_{j=1}^p \bigg( \sum_{i=0}^k (1 - \alpha (s_j^2 + \lambda))^i \bigg)  (S V^T y + \lambda \beta_{\op{prior}}  U^T) \\
-					&= U \text{diag}_{j=1}^p \bigg( (1 - \alpha (s_j^2 + \lambda))^{k+1} \bigg)U^T \beta^{(0)}	\\
-					&+ U  \;  \text{diag}_{j=1}^p \bigg( \frac{ 1 - (1 - \alpha (s_j^2 + \lambda))^{k+1}} {s_j^2 + \lambda} \bigg)  (S V^T y + \lambda \beta_{\op{prior}}  U^T)
+		\beta^{(k+1)}	&=	(UU^T - \alpha US^2 U^T)^{k+1} \beta_{\op{prior}}	+ \alpha \sum_{i=0}^k      (UU^T - \alpha US^2U^T)^i U S V^T y \\
+					&=    U (I - \alpha S^2)^{k+1}  U^T  \beta_{\op{prior}}		+ \alpha U \sum_{i=0}^k  (I - \alpha S^2)^i S V^T y \\
+					&=	U \text{diag}_{j=1}^p  (1 - \alpha s_j^2)^{k+1} U^T   \beta_{\op{prior}} + \alpha \; U  \;  \text{diag}_{j=1}^p \bigg( \sum_{i=0}^k (1 - \alpha s_j^2 )^i \bigg)  S V^T y \\
+					& \text{ ~ using the geometric-sum formula: } \\
+					&= 	U \text{diag}_{j=1}^p  (1 - \alpha s_j^2)^{k+1} U^T   \beta_{\op{prior}} + \alpha \; U  \;  \text{diag}_{j=1}^p \bigg( \frac{ 1 - (1 - \alpha s_j^2 )^{k+1}} {\alpha s_j^2} \bigg)  S V^T y \\
+					&=    U \text{diag}_{j=1}^p  (1 - \alpha s_j^2)^{k+1} U^T   \beta_{\op{prior}} + U  \;  \text{diag}_{j=1}^p \bigg( \frac{ 1 - (1 - \alpha s_j^2 )^{k+1}} {s_j} \bigg)  V^T y \\
 \end{align*}
 If step size $\alpha$ is small enough: $0 < \alpha < \frac{2} {\lambda + s_1^2} \le \frac{2} {\lambda + s_j^2} \rightarrow |1 - \alpha (s_j^2 + \lambda)| < 1 \rightarrow \lim_{k \rightarrow \infty} (1 - \alpha (s_j^2 + \lambda))^k =0, j=1, \dots ,p $ then gradient descent converges to:
 $$\lim_{k \rightarrow \infty} \beta^{(k+1)} = U  \;  \text{diag}_{j=1}^p \bigg( \frac{1} {s_j^2 + \lambda} \bigg)  (S V^T y + \lambda \beta_{\op{prior}}  U^T)$$
 
-Let $\nu_j := 1 - \alpha (s_j^2 + \lambda)$, and starting at $\beta^{(0)}=0$, then we now have
+Let $\nu_j := 1 - \alpha s_j^2$, and starting at $ \beta_{\op{prior}}$, then we now have
 \begin{align*}
-	\rnd{\beta}^{(k)} 	&= 	 U \;    \text{diag}_{j=1}^p \bigg(  \frac{ 1 - \nu_j^k} {s_j^2 + \lambda}  \bigg) (S V^T X^T  \beta_{\op{true}}  + S V^T  \rnd{z} +  \lambda \beta_{\op{prior}}  U^T)\\
-					&=	 U \;    \text{diag}_{j=1}^p \bigg(  \frac{ 1 - \nu_j^k} {s_j^2 + \lambda}  \bigg) (S^2 U^T  \beta_{\op{true}}  +  \lambda \beta_{\op{prior}}  U^T  + S V^T  \rnd{z}) \\	
-					&=	 U \;    \text{diag}_{j=1}^p \bigg(  \frac{s_j^2  (1 - \nu_j^k)} {s_j^2 + \lambda} \bigg) U^T \beta_{\op{true}}  + \lambda U \;    \text{diag}_{j=1}^p \bigg(  \frac{1 - \nu_j^k} {s_j^2 + \lambda} \bigg) \beta_{\op{prior}} U^T \\
-					&+  	 U \;    \text{diag}_{j=1}^p \bigg(  \frac{ s_j  (1 - \nu_j^k)} {s_j^2 + \lambda} \bigg) V^T  \rnd{z} 
+	\rnd{\beta}^{(k)} 	&= 	  U \text{diag}_{j=1}^p   \nu_j^k \; U^T   \beta_{\op{prior}} + U \;    \text{diag}_{j=1}^p \big(  \frac{ 1 - \nu_j^k} {s_j}  \big) (V^T X^T  \beta_{\op{true}}  + V^T  \rnd{z})\\
+					&= 	  U \text{diag}_{j=1}^p   \nu_j^k \; U^T   \beta_{\op{prior}} + U \;    \text{diag}_{j=1}^p \big(  \frac{ 1 - \nu_j^k} {s_j}  \big) (V^T V S U^T \beta_{\op{true}}  + V^T  \rnd{z})\\
+					&= 	  U \text{diag}_{j=1}^p   \nu_j^k \; U^T   \beta_{\op{prior}} + U \;    \text{diag}_{j=1}^p \big(  \frac{ 1 - \nu_j^k} {s_j}  \big) (S U^T \beta_{\op{true}}  + V^T  \rnd{z})\\
+					&= 	  U \text{diag}_{j=1}^p   \nu_j^k \; U^T   \beta_{\op{prior}} + U \;      \text{diag}_{j=1}^p \big( 1 - \nu_j^k \big)  U^T \beta_{\op{true}} + U  \text{diag}_{j=1}^p \frac{ 1 - \nu_j^k} {s_j}  V^T  \rnd{z}
 \end{align*}	
  Then using Theorem 8.6 in the PCA lecture notes, we have a Gaussian random vector  with mean:
 \begin{align*}
-	\beta_{\text{bias\_GD}} 	&= \sum_{i=1}^p \frac{1 - \nu_j^k}{s_i^2 + \lambda} \PROD{u_i} {s_i^2 \beta_{\op{true}}+ \lambda  \beta_{\op{prior}} } u_i \\
-						&= \sum_{i=1}^p \frac{1 - (1 - \alpha (s_i^2 + \lambda))^k} {s_i^2 + \lambda} \PROD{u_i} {s_i^2 \beta_{\op{true}}+ \lambda  \beta_{\op{prior}} } u_i \
+	\beta_{\text{GD}} 		&= \sum_{j=1}^p \PROD{u_j} {(1 - \nu_j^k)  \beta_{\op{true}} + \nu_j^k \beta_{\op{prior}} } u_j \\
+						&= \sum_{j=1}^p \PROD{u_j} {(1 - (1 - \alpha s_j^2)^k) \beta_{\op{true}} + (1 - \alpha s_j^2)^k \beta_{\op{prior}} } u_j \\
 \end{align*}
 and variance:
 \begin{align*} 
-	\Sigma_{\text{GD}}			&= \sigma^2 U  \text{diag}_{j=1}^p \bigg(  \frac{ s_j  (1 - \nu_j^k)} {s_j^2 + \lambda} \bigg) V^T V  \text{diag}_{j=1}^p \bigg(  \frac{ s_j  (1 - \nu_j^k)} {s_j^2 + \lambda} \bigg) U^T \\
-							&= \sigma^2 U  \text{diag}_{j=1}^p \bigg(  \frac{ s_j^2  (1 - (1 - \alpha (s_j^2 + \lambda))^k)^2} {(s_j^2 + \lambda)^2} \bigg) U^T
+	\Sigma_{\text{GD}}			&= \sigma^2 U  \text{diag}_{j=1}^p \frac{1 - \nu_j^k} {s_j}  V^T V  \text{diag}_{j=1}^p \frac{ 1 - \nu_j^k} {s_j}  U^T \\
+							&= \sigma^2 U   \text{diag}_{j=1}^p \frac{(1 - \nu_j^k)^2} {s_j^2} \; U^T \\
+							&= \sigma^2 U   \text{diag}_{j=1}^p \frac{ (1 - (1 - \alpha s_j^2)^k)^2}  {s_j^2} \; U^T \\
 \end{align*}
  Note that for small step size $\alpha$ (see previous condition depending on $\lambda$ and $s_i$) and large $k$  enough, 
  we find the same expressions for the mean and variance that we had  for the ridge regression estimator in part (b) (since for $k >> 1: \nu_j \rightarrow 0$) .
@@ -432,4 +435,69 @@ Estimating the contribution of low-variance components requires to amplify the l
   \end{enumerate}
 You're not required to include your code in your submission, but you are free to do so. 
  \end{enumerate}
+ 
+ Other answers to question 3 c) and d):
+ \begin{enumerate}
+ 
+     \item How can you incorporate this prior knowledge if you are using gradient descent with early stopping? Write the corresponding update equation as a function of $\beta_{\op{prior}}$.\\
+
+\medskip				
+
+For $X  \in \R^{p \times n}$ and a response vector $y \in \R^n, \beta \in \R^p$, from part (b) we know that the gradient equals $$\nabla_{\beta} f(\beta) =	2 (X X^T \beta - X y +  \lambda (\beta - \beta_{\op{prior}}))$$
+The gradient-descent updates are:
+\begin{align*}
+		\beta^{(k+1)}	&=	\beta^{(k)} - \; \alpha_k \nabla_{\beta} f(\beta^{(k)})	\\
+					&=	\beta^{(k)}  - \alpha_k (X X^T \beta^{(k)} - X y +  \lambda (\beta^{(k)} - \beta_{\op{prior}})) \\
+					&=    ((1- \lambda \alpha_k) I  - \alpha_k X X^T) \beta^{(k)}  +  \alpha_k  X y  + \lambda  \alpha_k  \beta_{\op{prior}} \\
+					&=	(I -  \alpha_k (\lambda +  X X^T)) \beta^{(k)}  +  \alpha_k  X y  + \lambda  \alpha_k  \beta_{\op{prior}} \\
+					&=	\beta^{(k)}  + \alpha_k  \big( X y  - X X^T \beta^{(k)}   + \lambda (\beta_{\op{prior}} - \beta^{(k)}) \big) \\
+					&=	 \beta^{(k)}  +  \alpha_k  \big( \sum_{i=1}^n (y[i] - \PROD{x_i}{\beta^{(k)}}) x_i - \lambda ( \beta^{(k)}  -   \beta_{\op{prior}}) \big)
+\end{align*}
+   where $\beta^{(k)} \in \R^p$ and $ \alpha_k > 0$ which are the estimated step size at iteration $k$. Note that for the term corresponding to $\alpha_k$, at  step $k$, for the next $\beta^{(k+1)}$ 
+   we want to reduce the error with the response variable $y$  and at the same time to be close to the prior $\beta_{\op{prior}}$, the last term being controlled by the regularization parameter $\lambda$.
+   
+    \item Assume that the data are generated according to the linear model described above. Does the modification change the mean or the covariance matrix of the estimator? If so, report the new value.\\
+    
+\medskip
+
+Assuming constant step size, we can express the previous expression as:
+\begin{align*}
+		\beta^{(k+1)}	&=	\big( (1 - \lambda \alpha)  I - \alpha X X^T \big) \beta^{(k)}		+  	\alpha (X y + \lambda \beta_{\op{prior}}) \\
+					&=	\big(I - \alpha (\lambda I + X X^T)  \big)^{k+1} \beta^{(0)}		+	\sum_{i=0}^k \big(I - \alpha (\lambda I + X X^T)  \big)^i \alpha (X y + \lambda \beta_{\op{prior}})
+\end{align*}
+
+Assuming $X$ full rank and p $\le$ n, $U$ is square and, $UU^T = U^TU = I$, let $X = USV^T$, we have then:
+\begin{align*}
+		\beta^{(k+1)}	&=	U (I - \alpha (S^2 + \lambda I))^{k+1} U^T \beta^{(0)}		+ \alpha \sum_{i=0}^k 	U (I - \alpha (S^2 + \lambda I))^ i U^T (U S V^T y +  \lambda \beta_{\op{prior}}) \\
+					&=	U (I - \alpha (S^2 + \lambda I))^{k+1} U^T \beta^{(0)}		+ \alpha \sum_{i=0}^k 	U (I - \alpha (S^2 + \lambda I))^ i (S V^T y + \lambda \beta_{\op{prior}}  U^T) \\
+					&=	U \text{diag}_{j=1}^p \bigg( (1 - \alpha (s_j^2 + \lambda))^{k+1} \bigg)U^T \beta^{(0)}	\\
+					&+ \alpha \; U  \;  \text{diag}_{j=1}^p \bigg( \sum_{i=0}^k (1 - \alpha (s_j^2 + \lambda))^i \bigg)  (S V^T y + \lambda \beta_{\op{prior}}  U^T) \\
+					&= U \text{diag}_{j=1}^p \bigg( (1 - \alpha (s_j^2 + \lambda))^{k+1} \bigg)U^T \beta^{(0)}	\\
+					&+ U  \;  \text{diag}_{j=1}^p \bigg( \frac{ 1 - (1 - \alpha (s_j^2 + \lambda))^{k+1}} {s_j^2 + \lambda} \bigg)  (S V^T y + \lambda \beta_{\op{prior}}  U^T)
+\end{align*}
+If step size $\alpha$ is small enough: $0 < \alpha < \frac{2} {\lambda + s_1^2} \le \frac{2} {\lambda + s_j^2} \rightarrow |1 - \alpha (s_j^2 + \lambda)| < 1 \rightarrow \lim_{k \rightarrow \infty} (1 - \alpha (s_j^2 + \lambda))^k =0, j=1, \dots ,p $ then gradient descent converges to:
+$$\lim_{k \rightarrow \infty} \beta^{(k+1)} = U  \;  \text{diag}_{j=1}^p \bigg( \frac{1} {s_j^2 + \lambda} \bigg)  (S V^T y + \lambda \beta_{\op{prior}}  U^T)$$
+
+Let $\nu_j := 1 - \alpha (s_j^2 + \lambda)$, and starting at $\beta^{(0)}=0$, then we now have
+\begin{align*}
+	\rnd{\beta}^{(k)} 	&= 	 U \;    \text{diag}_{j=1}^p \bigg(  \frac{ 1 - \nu_j^k} {s_j^2 + \lambda}  \bigg) (S V^T X^T  \beta_{\op{true}}  + S V^T  \rnd{z} +  \lambda \beta_{\op{prior}}  U^T)\\
+					&=	 U \;    \text{diag}_{j=1}^p \bigg(  \frac{ 1 - \nu_j^k} {s_j^2 + \lambda}  \bigg) (S^2 U^T  \beta_{\op{true}}  +  \lambda \beta_{\op{prior}}  U^T  + S V^T  \rnd{z}) \\	
+					&=	 U \;    \text{diag}_{j=1}^p \bigg(  \frac{s_j^2  (1 - \nu_j^k)} {s_j^2 + \lambda} \bigg) U^T \beta_{\op{true}}  + \lambda U \;    \text{diag}_{j=1}^p \bigg(  \frac{1 - \nu_j^k} {s_j^2 + \lambda} \bigg) \beta_{\op{prior}} U^T \\
+					&+  	 U \;    \text{diag}_{j=1}^p \bigg(  \frac{ s_j  (1 - \nu_j^k)} {s_j^2 + \lambda} \bigg) V^T  \rnd{z} 
+\end{align*}	
+ Then using Theorem 8.6 in the PCA lecture notes, we have a Gaussian random vector  with mean:
+\begin{align*}
+	\beta_{\text{bias\_GD}} 	&= \sum_{i=1}^p \frac{1 - \nu_j^k}{s_i^2 + \lambda} \PROD{u_i} {s_i^2 \beta_{\op{true}}+ \lambda  \beta_{\op{prior}} } u_i \\
+						&= \sum_{i=1}^p \frac{1 - (1 - \alpha (s_i^2 + \lambda))^k} {s_i^2 + \lambda} \PROD{u_i} {s_i^2 \beta_{\op{true}}+ \lambda  \beta_{\op{prior}} } u_i \
+\end{align*}
+and variance:
+\begin{align*} 
+	\Sigma_{\text{GD}}			&= \sigma^2 U  \text{diag}_{j=1}^p \bigg(  \frac{ s_j  (1 - \nu_j^k)} {s_j^2 + \lambda} \bigg) V^T V  \text{diag}_{j=1}^p \bigg(  \frac{ s_j  (1 - \nu_j^k)} {s_j^2 + \lambda} \bigg) U^T \\
+							&= \sigma^2 U  \text{diag}_{j=1}^p \bigg(  \frac{ s_j^2  (1 - (1 - \alpha (s_j^2 + \lambda))^k)^2} {(s_j^2 + \lambda)^2} \bigg) U^T
+\end{align*}
+ Note that for small step size $\alpha$ (see previous condition depending on $\lambda$ and $s_i$) and large $k$  enough, 
+ we find the same expressions for the mean and variance that we had  for the ridge regression estimator in part (b) (since for $k >> 1: \nu_j \rightarrow 0$) .
+ Therefore  we reach the same conclusion for limiting behavior and the usage of the regularization parameter $\lambda$ that we obtained in part (b).
+ \end{enumerate}
+
 \end{document}
