@@ -279,8 +279,6 @@ Assuming $X$ full rank and p $\le$ n, $U$ is square and, $UU^T = U^TU = I$, let 
 					&= 	U \text{diag}_{j=1}^p  (1 - \alpha s_j^2)^{k+1} U^T   \beta_{\op{prior}} + \alpha \; U  \;  \text{diag}_{j=1}^p \bigg( \frac{ 1 - (1 - \alpha s_j^2 )^{k+1}} {\alpha s_j^2} \bigg)  S V^T y \\
 					&=    U \text{diag}_{j=1}^p  (1 - \alpha s_j^2)^{k+1} U^T   \beta_{\op{prior}} + U  \;  \text{diag}_{j=1}^p \bigg( \frac{ 1 - (1 - \alpha s_j^2 )^{k+1}} {s_j} \bigg)  V^T y \\
 \end{align*}
-If step size $\alpha$ is small enough: $0 < \alpha < \frac{2} {\lambda + s_1^2} \le \frac{2} {\lambda + s_j^2} \rightarrow |1 - \alpha (s_j^2 + \lambda)| < 1 \rightarrow \lim_{k \rightarrow \infty} (1 - \alpha (s_j^2 + \lambda))^k =0, j=1, \dots ,p $ then gradient descent converges to:
-$$\lim_{k \rightarrow \infty} \beta^{(k+1)} = U  \;  \text{diag}_{j=1}^p \bigg( \frac{1} {s_j^2 + \lambda} \bigg)  (S V^T y + \lambda \beta_{\op{prior}}  U^T)$$
 
 Let $\nu_j := 1 - \alpha s_j^2$, and starting at $ \beta_{\op{prior}}$, then we now have
 \begin{align*}
@@ -300,9 +298,14 @@ and variance:
 							&= \sigma^2 U   \text{diag}_{j=1}^p \frac{(1 - \nu_j^k)^2} {s_j^2} \; U^T \\
 							&= \sigma^2 U   \text{diag}_{j=1}^p \frac{ (1 - (1 - \alpha s_j^2)^k)^2}  {s_j^2} \; U^T \\
 \end{align*}
- Note that for small step size $\alpha$ (see previous condition depending on $\lambda$ and $s_i$) and large $k$  enough, 
- we find the same expressions for the mean and variance that we had  for the ridge regression estimator in part (b) (since for $k >> 1: \nu_j \rightarrow 0$) .
- Therefore  we reach the same conclusion for limiting behavior and the usage of the regularization parameter $\lambda$ that we obtained in part (b).
+For small $k$ and $\alpha s_j, (1 - \alpha s_j^2)^k \approx 1 - \alpha k s_j^2, 1 - (1 - \alpha s_j^2)^k \approx  \alpha k s_j^2$ (since $x \approx 0, (1-x)^k \approx 1 -k x$)
+thus $\beta_{\text{GD}} \approx  \sum_{j=1}^p \PROD{u_j} {(1 - \alpha k s_j^2) \beta_{\op{prior}}}$, the bias is closer to $\beta_{\op{prior}}$, which we may prefer.
+And if we select a step size $\alpha$ mall enough: $0 < \alpha < \frac{2} {s_1^2} \le \frac{2} {s_j^2} \rightarrow |1 - \alpha s_j^2| < 1 \rightarrow \lim_{k \rightarrow \infty} (1 - \alpha s_j^2)^k =0, j=1, \dots ,p $ then
+the mean estimate $\beta_{\text{GD}}$ converges to $\beta_{\op{true}}$ as k increases.
+At the same time, at iteration $k$, the variance in the direction of the $j$th left singular vector equals:
+	$$\frac{\sigma^2 (1 - (1 - \alpha s_j^2)^k)^2}  {s_j^2}$$
+Then as $k$ increases, the variance approaches eventually $\frac{\sigma^2}{s_j^2}$, as in OLS also increases.
+Like in ridge regression there is an optimal value of $k$ which optimizes the bias-variance tradeoff (usually identified during cross-validation).
  
  \end{enumerate}
  
