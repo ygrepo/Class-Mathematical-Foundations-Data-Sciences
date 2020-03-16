@@ -57,8 +57,12 @@ Yves Greatti - yg390\\
 
 The ridge regression estimate is defined as $\beta_{\op{RR}} = (X X^T + \lambda I)^{-1} X y$, where $X \in \R^{p \times n}, y \in \R^n, \beta \in \R^p$, which can be reformulated as a modified least-square problem
 $$\beta_{\op{RR}} = \argmin_\beta \big\| \begin{bmatrix} y   \\ 0 \end{bmatrix} - \begin{bmatrix} X^T   \\ \sqrt{\lambda} I_{n \times p} \end{bmatrix} \beta \big\|_2^2$$
-It is like we have added $p$ vectors to the original $n$ datapoints $[x_i, \ldots, x_n], x_i \in \R^p, i=1, \ldots, n$. By doing so, Ridge regression embedded the original problem in $\R^n$ into a larger space $\R^{n+p}$ by moving into $p$ different 
-directions with a small amount $\sqrt{\lambda}$ which could decrease any collinearity present in the original data points $X$. As we have seen in the notes of linear regression, when the number of training data is small, $\lambda$ neutralizes the large variance of the errors between the true  $\beta$ coefficients and the ridge regression coefficients due to small singular values  of the sample covariance matrix.
+It is like we have added $p$ vectors to the original $n$ datapoints $[x_1, \ldots, x_n]$. 
+These rows are constructed using 0 for the dependent variables and the square root of k or zero for the independent variables.
+By doing so, Ridge regression embedded the original problem in $\R^n$ into a larger space $\R^{n+p}$ by moving into $p$ different 
+directions with a small amount $\sqrt{\lambda}$ which could decrease any collinearity present in the original data points $X$. 
+ As we have seen in the notes of linear regression, when the number of training data is small, 
+$\lambda$ neutralizes the large variance of the errors between the true  $\beta$ coefficients and the ridge regression coefficients due to small singular values  of the sample covariance matrix.
  
  \newpage
  
@@ -210,30 +214,36 @@ when $\lambda \rightarrow 0, \beta_{\op{RR}} \rightarrow (\frac{\beta_{\op{OLS}}
 \end{align*} 
 Let $X=U S V^T$ the SVD of X, if $X$ is full rank, and $p \le n$, $U$ is square, $UU^T= U^TU = I$,we can then expand the previous expression:
 \begin{align*}
-	\E[\beta_{\op{RR}} ]		&=	(U S^2 U^T + \lambda U \; U^T)^{-1}	(U S^2 U^T \beta_{\op{true}}  + \lambda \beta_{\op{prior}}) \\
-						&=	U (S^2 + \lambda I)^{-1} S^2 U^T  \beta_{\op{true}}  + U (S^2 + \lambda I)^{-1}  \lambda \beta_{\op{prior}} U^T \\
-						&=	\sum_{i=1}^p \bigg( \frac{s_i^2 \PROD{u_i} {\beta_{\op{true}} } + \PROD{u_i} { \lambda \beta_{\op{prior}}}} {s_i^2 + \lambda} \bigg) u_i \\
-						&=	\sum_{i=1}^p \bigg(   \frac{ \PROD{u_i} {s_i^2 \beta_{\op{true}} +  \lambda \beta_{\op{prior}} }}  {s_i^2 + \lambda} \bigg) u_i
+	\E[\tilde{\beta}_{\op{RR}} ]		&=	(U S^2 U^T + \lambda U \; U^T)^{-1}	(U S^2 U^T \beta_{\op{true}}  + \lambda \beta_{\op{prior}}) \\
+							&=	U (S^2 + \lambda I)^{-1} S^2 U^T  \beta_{\op{true}}  + U (S^2 + \lambda I)^{-1}  \lambda \beta_{\op{prior}} U^T \\
+							&=	\sum_{i=1}^p \bigg( \frac{s_i^2 \PROD{u_i} {\beta_{\op{true}} } + \PROD{u_i} { \lambda \beta_{\op{prior}}}} {s_i^2 + \lambda} \bigg) u_i \\
+							&=	\sum_{i=1}^p \bigg(   \frac{ \PROD{u_i} {s_i^2 \beta_{\op{true}} +  \lambda \beta_{\op{prior}} }}  {s_i^2 + \lambda} \bigg) u_i
 \end{align*} 
 
 and variance:	
 \begin{align*}
-	\Var(\beta_{\op{RR}})	&=	\Var( (X X^T  +  \lambda I)^{-1} (X y + \lambda \beta_{\op{prior}})) \\
+	\Var(\tilde{\beta}_{\op{RR}})	&=	\Var( (X X^T  +  \lambda I)^{-1} (X y + \lambda \beta_{\op{prior}})) \\
 						&=	\Var( (X X^T  +  \lambda I)^{-1}  X y + \lambda  \beta_{\op{prior}} (X X^T  +  \lambda I)^{-1} ) \\
 						&=	\Var( (X X^T  +  \lambda I)^{-1}  X y) \\
 						&=	(X X^T  +  \lambda I)^{-1}  X \var(y)	((X X^T  +  \lambda I)^{-1}  X)^T \\
 						&=	\sigma^2 (X X^T  +  \lambda I)^{-1}  X X^T (X X^T  +  \lambda I)^{-1} \\
-						&=	\sigma^2 (S^2 + \lambda I)^{-1} U S^2 U^T (S^2 + \lambda I)^{-1} \\
+						&=	U \sigma^2 (S^2 + \lambda I)^{-1} S^2 (S^2 + \lambda I)^{-1} U^T \\
 						&= 	\sigma^2 	U  \text{diag}_{i=1}^p \bigg( \frac{s_i^2} {(s_i^2 + \lambda)^2} \bigg) 	U^T
 \end{align*}					
    
-   Note that when $\lambda = 0$ then $\E[\beta_{\op{RR}} ] = \beta_{\op{true}}$ and $\Var(\beta_{\op{RR}}) = \sigma^2 I$,
-   and when $\lambda \rightarrow \infty$, $\E[\beta_{\op{RR}} ] \rightarrow  \beta_{\op{prior}}$ and $\Var(\beta_{\op{RR}}) \rightarrow 0_{p \times p}$.
-   Also note that compare to the OLS estimator we have the regularization parameter $\lambda$ which can cancel out the high variance due to very small singular values
-   (in addition $\lambda$ also controls how much prior $\beta_{\op{prior}}$ we want to consider).
+   The mean has a systematic bias which is proportional to $\lambda$ and  $\beta_{\op{prior}}$. 
+   If $\lambda >> s_i^2$ then $\frac{\lambda}{s_i^2} >> 1$ and $\E[\tilde{\beta}_{\op{RR}} ]	$ is proportional to $\beta_{\op{prior}} $, 
+   on the other hand if $\frac{\lambda}{s_i^2} << 1$ then $\E[\tilde{\beta}_{\op{RR}} ]	$ is proportional to $\beta_{\op{true}}$.
+   When $\lambda = 0$ then $\E[\tilde{\beta}_{\op{RR}} ] = \beta_{\op{true}}$ and $\Var(\tilde{\beta}_{\op{RR}}) = \sigma^2 I$,
+   and when $\lambda \rightarrow \infty$, $\E[\tilde{\beta}_{\op{RR}} ] \rightarrow  \beta_{\op{prior}}$ and $\Var(\tilde{\beta}_{\op{RR}}) \rightarrow 0_{p \times p}$.
+   $\lambda$ controls how much prior $\beta_{\op{prior}}$ we want to consider.
+   The variance has the same expression as the ridge regression estimator without $\beta_{\op{prior}}$ thus the same behavior in regard of the action of the parameter $\lambda$ 
+   (see linear regression notes, from equation 139 to the end of the chapter about ridge regression).
+   Compare to the OLS estimator the regularization parameter $\lambda$ can cancel out the high variance due to very small singular values.
    
     \item How can you incorporate this prior knowledge if you are using gradient descent with early stopping? Write the corresponding update equation as a function of $\beta_{\op{prior}}$.\\
-\medskip
+
+\medskip				
 
 For $X  \in \R^{p \times n}$ and a response vector $y \in \R^n, \beta \in \R^p$, from part (b) we know that the gradient equals $$\nabla_{\beta} f(\beta) =	2 (X X^T \beta - X y +  \lambda (\beta - \beta_{\op{prior}}))$$
 The gradient-descent updates are:
@@ -270,7 +280,7 @@ Assuming $X$ full rank and p $\le$ n, $U$ is square and, $UU^T = U^TU = I$, let 
 If step size $\alpha$ is small enough: $0 < \alpha < \frac{2} {\lambda + s_1^2} \le \frac{2} {\lambda + s_j^2} \rightarrow |1 - \alpha (s_j^2 + \lambda)| < 1 \rightarrow \lim_{k \rightarrow \infty} (1 - \alpha (s_j^2 + \lambda))^k =0, j=1, \dots ,p $ then gradient descent converges to:
 $$\lim_{k \rightarrow \infty} \beta^{(k+1)} = U  \;  \text{diag}_{j=1}^p \bigg( \frac{1} {s_j^2 + \lambda} \bigg)  (S V^T y + \lambda \beta_{\op{prior}}  U^T)$$
 
-Let $\nu_j := 1 - \alpha (s_j^2 + \lambda)$, then we now have
+Let $\nu_j := 1 - \alpha (s_j^2 + \lambda)$, and starting at $\beta^{(0)}=0$, then we now have
 \begin{align*}
 	\rnd{\beta}^{(k)} 	&= 	 U \;    \text{diag}_{j=1}^p \bigg(  \frac{ 1 - \nu_j^k} {s_j^2 + \lambda}  \bigg) (S V^T X^T  \beta_{\op{true}}  + S V^T  \rnd{z} +  \lambda \beta_{\op{prior}}  U^T)\\
 					&=	 U \;    \text{diag}_{j=1}^p \bigg(  \frac{ 1 - \nu_j^k} {s_j^2 + \lambda}  \bigg) (S^2 U^T  \beta_{\op{true}}  +  \lambda \beta_{\op{prior}}  U^T  + S V^T  \rnd{z}) \\	
@@ -279,16 +289,17 @@ Let $\nu_j := 1 - \alpha (s_j^2 + \lambda)$, then we now have
 \end{align*}	
  Then using Theorem 8.6 in the PCA lecture notes, we have a Gaussian random vector  with mean:
 \begin{align*}
-	\beta_{\text{GD}} 	&= \sum_{i=1}^p \frac{1 - \nu_j^k}{s_i^2 + \lambda} \PROD{u_i} {s_i^2 \beta_{\op{true}}+ \lambda  \beta_{\op{prior}} } u_i \\
-					&= \sum_{i=1}^p \frac{1 - (1 - \alpha (s_i^2 + \lambda))^k} {s_i^2 + \lambda} \PROD{u_i} {s_i^2 \beta_{\op{true}}+ \lambda  \beta_{\op{prior}} } u_i \
+	\beta_{\text{bias\_GD}} 	&= \sum_{i=1}^p \frac{1 - \nu_j^k}{s_i^2 + \lambda} \PROD{u_i} {s_i^2 \beta_{\op{true}}+ \lambda  \beta_{\op{prior}} } u_i \\
+						&= \sum_{i=1}^p \frac{1 - (1 - \alpha (s_i^2 + \lambda))^k} {s_i^2 + \lambda} \PROD{u_i} {s_i^2 \beta_{\op{true}}+ \lambda  \beta_{\op{prior}} } u_i \
 \end{align*}
 and variance:
 \begin{align*} 
 	\Sigma_{\text{GD}}			&= \sigma^2 U  \text{diag}_{j=1}^p \bigg(  \frac{ s_j  (1 - \nu_j^k)} {s_j^2 + \lambda} \bigg) V^T V  \text{diag}_{j=1}^p \bigg(  \frac{ s_j  (1 - \nu_j^k)} {s_j^2 + \lambda} \bigg) U^T \\
-							&= \sigma^2 U  \text{diag}_{j=1}^p \bigg(  \frac{ s_j^2  (1 - (1 - \alpha (s_i^2 + \lambda))^k)^2} {(s_j^2 + \lambda)^2} \bigg) U^T
+							&= \sigma^2 U  \text{diag}_{j=1}^p \bigg(  \frac{ s_j^2  (1 - (1 - \alpha (s_j^2 + \lambda))^k)^2} {(s_j^2 + \lambda)^2} \bigg) U^T
 \end{align*}
- Note that for large $k$ enough we find the same expressions for the mean and variance that we had  for the ridge regression estimator in part (b) ($k \rightarrow \infty, \nu_j \rightarrow 0$) .
- And in these cases, we have the same limiting behaviors with the regularization parameter $\lambda$. 
+ Note that for small step size $\alpha$ (see previous condition depending on $\lambda$ and $s_i$) and large $k$  enough, 
+ we find the same expressions for the mean and variance that we had  for the ridge regression estimator in part (b) (since for $k >> 1: \nu_j \rightarrow 0$) .
+ Therefore  we reach the same conclusion for limiting behavior and the usage of the regularization parameter $\lambda$ that we obtained in part (b).
  
  \end{enumerate}
  
