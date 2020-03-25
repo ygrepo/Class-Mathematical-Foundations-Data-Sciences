@@ -129,9 +129,9 @@ It also  adds a fixed constant $0.05$ to the true $\beta_{\op{true}}$ coefficien
   \medskip
   Taking $\alpha \rightarrow 1$, $w_2 \rightarrow w_1$ and we have 
   \begin{align*}
-	  y_{\op{OLS}} := X^T\beta_{\op{OLS}}	&\rightarrow [w_1 \; w_2]  \MAT{\beta_{\op{true}} + 0.05  \\ 0.05} \\
-	  								&\rightarrow [w_1 \; w_1] \MAT{\beta_{\op{true}} + 0.05  \\ 0.05} \\
-									&\rightarrow ( \beta_{\op{true}} + 0.1) w_1
+	  y_{\op{OLS}} := X^T\beta_{\op{OLS}}	&= [w_1 \; w_2]  \MAT{\beta_{\op{true}} + 0.05  \\ 0.05} \\
+	  								&= [w_1 \; w_1] \MAT{\beta_{\op{true}} + 0.05  \\ 0.05} \\
+									&= ( \beta_{\op{true}} + 0.1) w_1
   \end{align*}
   When $\alpha \rightarrow 1$, the correlated feature $w_2 \rightarrow w_1$, and the response variable is collinear with the true feature $w_1$, the OLS estimator estimates $y_{\op{OLS}}$ as a linear scaling of $w_1$ 
   up to a factor of $0.1$ which could lead to an important error depending the magnitude of the linear coefficient  $\beta_{\op{true}}$ compared to 0.1. If it is not the case ($0.1$ could be ignored) 
@@ -165,9 +165,9 @@ when $\lambda \rightarrow 0, \beta_{\op{RR}} \rightarrow (\frac{\beta_{\op{OLS}}
   \medskip
   When  $\alpha \rightarrow 1, w_2 \rightarrow w_1$, which leads to
  \begin{align*}
- 	y_{\op{RR}} := X^T\beta_{\op{RR}}	&\rightarrow	\frac{ \beta_{\op{true}} + 0.1}{ 2 + \lambda} [w_1 w_2]  \MAT{1  \\ 1} \\
-								&\rightarrow 	\frac{ \beta_{\op{true}} + 0.1}{ 2 + \lambda} [w_1 w_1] \MAT{1  \\ 1} \\
-								&\rightarrow 	2 \;  \frac{\beta_{\op{true}} + 0.1}{ 2 + \lambda} \; w_1
+ 	y_{\op{RR}} := X^T\beta_{\op{RR}}	&=	\frac{ \beta_{\op{true}} + 0.1}{ 2 + \lambda} [w_1 w_2]  \MAT{1  \\ 1} \\
+								&= 	\frac{ \beta_{\op{true}} + 0.1}{ 2 + \lambda} [w_1 w_1] \MAT{1  \\ 1} \\
+								&= 	2 \;  \frac{\beta_{\op{true}} + 0.1}{ 2 + \lambda} \; w_1
  \end{align*}    
   $y_{\op{RR}}$ is collinear with the true feature $w_1$.
   Compared to $y_{\op{OLS}}$, the parameter $\lambda$ allows to control the amount of linearity between the response and control variable 
@@ -244,9 +244,9 @@ and variance:
     \item How can you incorporate this prior knowledge if you are using gradient descent with early stopping? Write the corresponding update equation as a function of $\beta_{\op{prior}}$.\\
 
 \medskip				
-We will follow the reasoning of the linear regression notes with one difference, the starting point for $\beta^{(0)}$ is $\beta_{\op{prior}}$.
-For an alternate version using the initial quadratic form of part (a) please see at the end of this homework, one reason to follow this path is that we obtain an algorithm achieving somehow similar
-objectives but easier to analyze.
+We will follow the reasoning of the linear regression notes with one difference, the starting point for $\beta^{(0)}$ is $\beta_{\op{prior}}$
+(for an alternate version using the initial quadratic form of part (a), if interested, please see at the end of this homework, one reason to follow this path is that we obtain an algorithm achieving similar
+objectives but easier to analyze).
 
 
 For $X  \in \R^{p \times n}$ and a response vector $y \in \R^n, \beta \in \R^p$, from part (b) we know that the gradient equals $$\nabla_{\beta} f(\beta) =	2 (X X^T \beta - X y )$$
@@ -299,13 +299,13 @@ and variance:
 							&= \sigma^2 U   \text{diag}_{j=1}^p \frac{ (1 - (1 - \alpha s_j^2)^k)^2}  {s_j^2} \; U^T \\
 \end{align*}
 For small $k$ and $\alpha s_j, (1 - \alpha s_j^2)^k \approx 1 - \alpha k s_j^2, 1 - (1 - \alpha s_j^2)^k \approx  \alpha k s_j^2$ (since $x \approx 0, (1-x)^k \approx 1 -k x$)
-thus $\beta_{\text{GD}} \approx  \sum_{j=1}^p \PROD{u_j} {(1 - \alpha k s_j^2) \beta_{\op{prior}}}$, the bias is closer to $\beta_{\op{prior}}$, which we may prefer.
+thus $\beta_{\text{GD}} \approx  \sum_{j=1}^p \PROD{u_j} {(1 - \alpha k s_j^2) \beta_{\op{prior}}} u_j$, the bias is closer to $\beta_{\op{prior}}$, which we may prefer.
 And if we select a step size $\alpha$ mall enough: $0 < \alpha < \frac{2} {s_1^2} \le \frac{2} {s_j^2} \rightarrow |1 - \alpha s_j^2| < 1 \rightarrow \lim_{k \rightarrow \infty} (1 - \alpha s_j^2)^k =0, j=1, \dots ,p $ then
 the mean estimate $\beta_{\text{GD}}$ converges to $\beta_{\op{true}}$ as k increases.
 At the same time, at iteration $k$, the variance in the direction of the $j$th left singular vector equals:
 	$$\frac{\sigma^2 (1 - (1 - \alpha s_j^2)^k)^2}  {s_j^2}$$
-Then as $k$ increases, the variance approaches eventually $\frac{\sigma^2}{s_j^2}$, as in OLS also increases.
-Like in ridge regression there is an optimal value of $k$ which optimizes the bias-variance tradeoff (usually identified during cross-validation).
+Then as $k$ increases, the variance approaches eventually $\frac{\sigma^2}{s_j^2}$, as in OLS, it also increases.
+Like in ridge regression there is an optimal value of $k$ which optimizes the bias-variance tradeoff (this value of $k$ is identified during cross-validation and using early stopping).
  
  \end{enumerate}
  
@@ -438,6 +438,8 @@ Estimating the contribution of low-variance components requires to amplify the l
   \end{enumerate}
 You're not required to include your code in your submission, but you are free to do so. 
  \end{enumerate}
+ 
+ \newpage
  
  Other answers to question 3 c) and d):
  \begin{enumerate}
