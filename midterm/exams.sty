@@ -1,0 +1,118 @@
+\usepackage{amsmath}
+\usepackage{version,fancyhdr,lastpage}
+
+% Page layout: fullpage with reduced margins
+
+\textheight 9.3in
+\topmargin -0.3in
+\textwidth 6.9in
+\oddsidemargin -0.2in
+\evensidemargin -0.2in
+\headheight 0in
+\headsep 0in
+\footskip 0.6in
+\raggedbottom
+\parskip 8pt
+\parindent 0pt
+\raggedbottom
+\parskip 8pt
+\parindent 0pt
+
+\newcommand{\examheadings}[3]{
+  \def\examdate{#1}
+  \def\solutiondate{#2}
+  \def\examtitle{#3}
+  \ifsolution
+    \def\handoutdate{\solutiondate}
+    \def\handouttitle{\examtitle\ Solutions}
+  \else
+    \def\handouttitle{\examtitle }
+    \def\handoutdate{\examdate}
+  \fi
+}
+
+% Calendar parameters
+
+\def\thisyear{2020}
+\def\thisquarter{Spring}
+
+\newcommand{\examheader}{
+\begin{minipage}{\textwidth}
+\noindent
+Mathematical Tools for Data Science \hfill \thisquarter\ \thisyear % \\
+%Statistical and Mathematical Methods\hfill 
+{\vspace*{-0.3\baselineskip}\center\bfseries \handouttitle
+\endcenter}
+\end{minipage}
+}
+
+\pagestyle{fancy}
+\renewcommand{\headrulewidth}{0pt}
+\renewcommand{\footrulewidth}{0.3pt}
+\newcommand{\hffont}{\fontfamily{phv}\fontsize{9}{11}\selectfont}
+\def\hfsize{\footnotesize}
+\def\pagenumber{Page \thepage\ of \pageref{LastPage}}
+\fancyhf{}
+\fancyfoot[LE]{\textsl{\hffont \pagenumber}}
+% \fancyfoot[RE]{\textsl{\hffont DS-GA 1002, \thisquarter\ \thisyear}}
+\fancyfoot[LO]{\textsl{\hffont \handouttitle}}
+\fancyfoot[RO]{\textsl{\hffont \pagenumber}}
+\thispagestyle{empty}
+
+\newenvironment{exercise}[1][]
+ {\def\exercisedescription{\if#1\empty\else\expandafter\textit{#1}\ \fi}
+  \def\solutionpoints##1{\ifnum##1>0(##1 points) \fi}}
+ {}
+
+\long\def\skipbl@nkline#1{\ifx#1\par\else#1\fi}
+\long\def\skipbl@nklines#1{\ifx#1\par\else#1\fi}
+
+\ifproblem
+\newenvironment{problem}
+ {\exercisedescription\skipbl@nkline}
+ {}
+\else
+\excludeversion{problem}
+\fi
+
+\ifsolution
+  \ifproblem
+  \def\soln{\textsc{Solution}}
+  \newenvironment{solution}[1][0]
+  {\par\vspace{8pt}\soln\ \solutionpoints{#1}\par\nopagebreak\vspace{4pt}}
+  {}
+  \else
+  \newenvironment{solution}[1][0]
+  {\solutionpoints{#1}\exercisedescription\skipbl@nkline}
+  {}
+  \fi
+\else
+\excludeversion{solution}
+\fi
+
+\newenvironment{exam}[1][2pt]
+{
+ % \displayskip{8pt minus 2pt}
+ \parskip 4pt%
+ \def\@listI{
+   \settowidth{\labelwidth}{0.}
+   \leftmargin\labelwidth\advance\leftmargin\labelsep
+   \renewcommand{\labelenumi}{\makebox[\labelwidth][l]{\theenumi.}}
+   \topsep 6pt \parsep 4pt \itemsep 4pt plus 4pt minus 2pt
+ }%
+ \let\@listi\@listI%
+ \@listi
+ \def\@listii{%
+   \settowidth{\labelwidth}{a.}%
+   \leftmargin\labelwidth\advance\leftmargin\labelsep%
+   \renewcommand{\labelenumii}{\makebox[\labelwidth][l]{\theenumii.}}%
+   \topsep 0pt\parsep 4pt\itemsep #1}
+ \def\@listiii{
+   \settowidth{\labelwidth}{ii..}
+   \leftmargin\labelwidth\advance\leftmargin\labelsep
+   \renewcommand{\labelenumiii}{\makebox[\labelwidth][l]{\theenumiii.}}
+   \topsep 0pt \parsep 2pt \itemsep 0pt
+ }%
+\begin{enumerate}}{\end{enumerate}}
+
+\newcommand{\describe}[1]{\textit{#1}}
