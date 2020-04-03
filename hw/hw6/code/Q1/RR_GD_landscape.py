@@ -52,6 +52,7 @@ def compute_bias_covariance(U, S, k, alpha, reg_param, beta_true, std):
         print(f"tau:{tau}")
         diag_bias[i, i] = (tau * s2) / t
         diag_sigma[i, i] = diag_bias[i, i] * tau
+        diag_sigma[i, i] /= t
 
     bias = U.T @ beta_true
     bias = diag_bias @ bias
@@ -59,12 +60,13 @@ def compute_bias_covariance(U, S, k, alpha, reg_param, beta_true, std):
 
     sigma = diag_sigma @ U.T
     sigma = U @ sigma
-    sigma = std * sigma
+    sigma = (std**2) * sigma
     return bias[..., np.newaxis], sigma
 
 
 X = np.array([[0.1, 0], [0, 1]])
 U, S, V = np.linalg.svd(X, full_matrices=False)
+print(S)
 
 beta_true = np.array([1, 1])
 
@@ -87,28 +89,28 @@ v2 = np.linspace(-2, 4, 100)
 V1, V2 = np.meshgrid(v1, v2)
 
 for ind, k in enumerate(k_vec):
-    # est_betas = np.zeros((2,n_noise))
-    #
-    # for ind_noise in range(n_noise):
-    #     z = noise[:,ind_noise]
-    #     y = data_clean + z
-    #     betas = gradient_descent(X,y,alpha,k,reg_param)
-    #     est_betas[:,ind_noise] = betas[:,-1]
-    # fig = plt.figure(figsize = (9,6))
-    # plt.scatter(est_betas[0,:],est_betas[1,:],color="teal",s=6)
-    # plt.plot(1,1,'o',color='red',markersize=6)
-    # ax = plt.axes()
-    # ax.text(1-0.1,1 - 0.55,r'$\mathbf{\beta_{true}}$',
-    # fontsize=20,color='red')
-    # plt.xticks(fontsize=15)
-    # plt.yticks(fontsize=15)
-    # plt.xlabel(r'$\beta[1]$', fontsize=18,labelpad=10)
-    # h = plt.ylabel(r'$\beta [2] $', fontsize=18,labelpad=15)
-    # h.set_rotation(0)
-    # plt.xlim([-3,6])
-    # plt.ylim([-2,4])
-    # plt.savefig('RR_GD_scatterplot'+str(ind)+'.pdf',bbox_inches='tight')
-    #
+    est_betas = np.zeros((2,n_noise))
+
+    for ind_noise in range(n_noise):
+        z = noise[:,ind_noise]
+        y = data_clean + z
+        betas = gradient_descent(X,y,alpha,k,reg_param)
+        est_betas[:,ind_noise] = betas[:,-1]
+    fig = plt.figure(figsize = (9,6))
+    plt.scatter(est_betas[0,:],est_betas[1,:],color="teal",s=6)
+    plt.plot(1,1,'o',color='red',markersize=6)
+    ax = plt.axes()
+    ax.text(1-0.1,1 - 0.55,r'$\mathbf{\beta_{true}}$',
+    fontsize=20,color='red')
+    plt.xticks(fontsize=15)
+    plt.yticks(fontsize=15)
+    plt.xlabel(r'$\beta[1]$', fontsize=18,labelpad=10)
+    h = plt.ylabel(r'$\beta [2] $', fontsize=18,labelpad=15)
+    h.set_rotation(0)
+    plt.xlim([-3,6])
+    plt.ylim([-2,4])
+    plt.savefig('RR_GD_scatterplot'+str(ind)+'.pdf',bbox_inches='tight')
+
 
     # WRITE YOUR CODE TO GENERATE THE MEAN bias_GD AND COVARIANCE MATRIX
     # Sigma OF THE COEFFICIENT ESTIMATOR HERE
@@ -139,3 +141,7 @@ for ind, k in enumerate(k_vec):
     plt.legend(fontsize=20, framealpha=1)
     plt.savefig('RR_GD_scatterplot_distribution' + str(ind) + '.pdf',
                 bbox_inches='tight')
+var1 = noise_std**2 * (1**2) / ((1 + reg_param)**2)
+var2 = noise_std**2 * (0.1**2) / ((0.1 + reg_param)**2)
+
+print(var1, var2)

@@ -51,6 +51,7 @@ def predict_using_all_training_data(data, T):
     X = get_model_data(n_samples, T)
     model = LinearRegression(fit_intercept=False)
     model.fit(X, data)
+    print(model.coef_)
     predictions = model.predict(X)
     training_error = mean_squared_error(predictions, data, squared=False)
     return predictions, training_error
@@ -63,7 +64,8 @@ def determine_best_T_using_all_training_data(train_max_temp):
         training_errors.append(training_error)
 
     training_errors = np.array(training_errors)
-    print("Minimum training error at T={:d}".format(np.argmin(training_errors)))
+    #print(training_errors)
+    print("Minimum training error at T={:d}".format(np.argmin(training_errors) + 1))
     plt.figure(figsize=(9, 6))
     t = np.arange(1, 21)
     plt.plot(t, training_errors, "-o", lw=3, color='purple', label="Training error")
@@ -83,8 +85,7 @@ def predict_using_training_validation_set(data, T):
     train, val = train_test_split(data, test_size=0.2, random_state=1234)
     model = LinearRegression(fit_intercept=False)
     n_train = train.shape[0]
-    n_val = val.shape[0]
-    X = get_model_data(n_train + n_val, T)
+    X = get_model_data(data.shape[0], T)
     X_train = X[:n_train, :]
     model.fit(X_train, train)
     train_predictions = model.predict(X_train)
@@ -106,8 +107,8 @@ def determine_best_T_using_training_validation(train_max_temp):
 
     training_errors = np.array(training_errors)
     validation_errors = np.array(validation_errors)
-    print("Minimum training error at T={:d}, Minimum validation error at T:{:d}".format(np.argmin(training_errors),
-                                                                                        np.argmin(validation_errors)))
+    print("Minimum training error at T={:d}, Minimum validation error at T:{:d}".format(np.argmin(training_errors)+1,
+                                                                                        np.argmin(validation_errors)+1))
     plt.figure(figsize=(9, 6))
     t = np.arange(1, 21)
     plt.plot(t, training_errors, "-o", lw=3, color='purple', label="Training error")
@@ -156,7 +157,7 @@ def compare_predictions_first_model(train, test, T):
     plot_fit(X_test, test, model.coef_.T, "test_predictions_" + str(T))
 
 
-def compare_predicitions_simple_model(train, test, T):
+def compare_predictions_simple_model(train, test, T):
     n_train = train.shape[0]
     n_test = test.shape[0]
     n_samples = n_train + n_test
@@ -172,17 +173,41 @@ def compare_predicitions_simple_model(train, test, T):
     X_test = X[n_train:, :]
     plot_fit(X_test, test, model.coef_.T, "simplified_model_test_predictions_" + str(T))
 
+def determine_temperature_increase(data, T):
+    data = data[1200:, :]
+    n_samples = data.shape[0]
+    X = get_simplified_model_data(n_samples, T)
+
+    model = LinearRegression(fit_intercept=False)
+    model.fit(X, data)
+    print(model.coef_)
+    print("**************")
+    predictions = X @ model.coef_.T
+    #print(predictions)
+    print(predictions[-1, 0] , predictions[0, 0])
+    print(predictions[-1, 0] - predictions[0, 0])
+
+
+    plot_fit(X, data, model.coef_.T, "increase_temperatures_" + str(T))
+
+
 def main():
     np.random.seed(1234)
+    np.set_printoptions(precision=3)
+    np.set_printoptions(suppress=True)
     train, test = load_data()
     train_max_temp = np.array(train["max_temp_C"])[..., np.newaxis]
     test_max_temp = np.array(test["max_temp_C"])[..., np.newaxis]
 
     #determine_best_T_using_all_training_data(train_max_temp)
     #determine_best_T_using_training_validation(train_max_temp)
-    best_T = 11 # 11
+    #best_T = 12 # 11
     #compare_predictions_first_model(train_max_temp, test_max_temp, best_T)
-    compare_predicitions_simple_model(train_max_temp, test_max_temp, best_T)
+    #compare_predictions_simple_model(train_max_temp, test_max_temp, best_T)
 
+    all_data = np.vstack([train_max_temp, test_max_temp])
+    print(all_data.shape)
+
+    determine_temperature_increase(all_data, 10)
 if __name__ == "__main__":
     main()
