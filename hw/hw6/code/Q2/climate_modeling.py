@@ -1,11 +1,16 @@
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
+from enum import Enum
 
 from sklearn.linear_model import LinearRegression, Ridge
 from sklearn.metrics import mean_squared_error
 from sklearn.model_selection import train_test_split
 
+
+class MODEL(Enum):
+    simple = "simple"
+    complex = "complex"
 
 def get_model_data(num_samples: int, T: int) -> np.array:
     t = np.arange(num_samples)
@@ -14,6 +19,14 @@ def get_model_data(num_samples: int, T: int) -> np.array:
     X[:, 1] = t
     X[:, 2] = np.cos((2 * np.pi * t) / T)
     X[:, 3] = np.sin((2 * np.pi * t) / T)
+    return X
+
+def get_simplified_model_data(num_samples: int, T: int) -> np.array:
+    t = np.arange(num_samples)
+    X = np.zeros((t.shape[0], 3))
+    X[:, 0] = np.ones_like(t)
+    X[:, 1] = t
+    X[:, 2] = np.sin((2 * np.pi * t) / T)
     return X
 
 def get_model_data_using_temperatures(max_temp, T: int) -> np.array:
@@ -35,13 +48,17 @@ def load_data():
 
 def predict_using_all_training_data(data, T):
     n_samples = data.shape[0]
-    X = get_model_data_using_temperatures(data, T)
+    X = get_model_data(n_samples, T)
+
+    #X = get_model_data_using_temperatures(data, T)
     # U, S, V = np.linalg.svd(X)
     # print(S)
+
     model = LinearRegression(fit_intercept=True)
     model.fit(X, data)
     predictions = model.predict(X)
     # print(model.coef_.shape)
+
     training_error = mean_squared_error(predictions, data, squared=False)
     return predictions, training_error
 
@@ -74,7 +91,7 @@ def predict_using_training_validation_set(data, T):
     model = LinearRegression(fit_intercept=True)
     n_train = train.shape[0]
     n_val = val.shape[0]
-    X = get_model_data_using_temperatures(train, T)
+    X = get_model_data(n_train + n_val, T)
     #X = get_model_data(n_train + n_val, T)
     # U, S, V = np.linalg.svd(X)
     # print(S)
@@ -136,11 +153,11 @@ def compare_predictions_first_model(train, test, T):
     n_train = train.shape[0]
     n_test = test.shape[0]
     n_samples = n_train + n_test
-    X = get_model_data_using_temperatures(train, T)
+
+    #X = get_model_data_using_temperatures(train, T)
+
     X = get_model_data(n_samples, T)
 
-    print(X[:10,:])
-    #X = get_model_data(n_samples, T)
     model = LinearRegression(fit_intercept=False)
 
     #model.fit(X, train)
@@ -148,19 +165,31 @@ def compare_predictions_first_model(train, test, T):
     X_train = X[:n_train, :]
     model.fit(X_train, train)
 
-    #train_predictions = model.predict(X)
-
     plot_fit(X_train, train, model.coef_.T, "train_predictions")
 
     # X = get_model_data_using_temperatures(test, T)
     # test_predictions = model.predict(X)
     # plot_fit(X, test, model.coef_.T, "test_predictions")
-    print(model.coef_)
 
     X_test = X[n_train:, :]
-    test_predictions = model.predict(X_test)
     plot_fit(X_test, test, model.coef_.T, "test_predictions")
 
+
+def predict_using_all_training_data_simple_mode(data, T):
+    n_samples = data.shape[0]
+    X = get_simplified_model_data(n_samples, T)
+
+    #X = get_model_data_using_temperatures(data, T)
+    # U, S, V = np.linalg.svd(X)
+    # print(S)
+
+    model = LinearRegression(fit_intercept=True)
+    model.fit(X, data)
+    predictions = model.predict(X)
+    # print(model.coef_.shape)
+
+    training_error = mean_squared_error(predictions, data, squared=False)
+    return predictions, training_error
 
 def main():
     np.random.seed(1234)
@@ -170,7 +199,8 @@ def main():
 
     #determine_best_T_using_all_training_data(train_max_temp)
     #determine_best_T_using_training_validation(train_max_temp)
-    compare_predictions_first_model(train_max_temp, test_max_temp, 10)
+    best_T = 8 # 11
+    compare_predictions_first_model(train_max_temp, test_max_temp, best_T)
 
 if __name__ == "__main__":
     main()

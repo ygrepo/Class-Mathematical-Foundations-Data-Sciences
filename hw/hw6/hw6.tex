@@ -150,26 +150,73 @@ and plot the fit to the training data as in the previous question. Explain why i
 \end{align}
 and the corresponding Fourier series of order $k_c$ equals
 \begin{align}
-\ml{F}_{k_c}\{x\}(t) = \sum_{k=-k_c}^{k_c} \hat{x}[k] \exp \brac{i 2 \pi t}.
+\ml{F}_{k_c}\{x\}(t) = \sum_{k=-k_c}^{k_c} \hat{x}[k] \exp \brac{i 2 \pi k t}.
 \end{align}
 As we will discuss in class, this is a representation of $x$ in a basis of complex exponentials. In this problem we show that for real signals the Fourier series is equivalent to a representation in terms of cosine and sine functions.
   \begin{enumerate}
   \item Prove that $\hat{x}[k]=\overline{\hat{x}[-k]}$
-    for all $k\in\Z$. [Hint: What is $\overline{e^{it}}$?]
+    for all $k\in\Z$. [Hint: What is $\overline{e^{it}}$?]\\
+    \begin{align*}
+    	\overline{\hat{x}[-k]} 	&= 	\overline{  \int_{-1/2}^{1/2} x(t) \exp \brac{ i 2 \pi k t}  \diff{t} } \\
+					&=	 \int_{-1/2}^{1/2} \overline{x(t)} \overline{ \exp \brac{ i2 \pi k t} } \diff{t} \\
+					&=	 \int_{-1/2}^{1/2} x(t)  \exp \brac{ -i 2 \pi k t} \diff{t} \\
+					&= 	 \hat{x}[k] \\
+    \end{align*}
+    
+    
   \item Show that the Fourier series of $x$ of order $k_c$ can be written as
     $$\ml{F}_{k_c}\{x\}(t) = a_0 + \sum_{k=1}^{k_c} a_k\cos(2\pi
     kt)+b_k\sin(2\pi kt),$$
     for some $a_0,\ldots,a_k,b_1,\ldots,b_k\in\R$. [Hint: Group terms
       in $\ml{F}_{k_c}\{x\}(t)$ corresponding to $\pm k$ and use previous
       part.  What is the real part of $zw$ for $z,w\in\C $?]
+      
+    \begin{align*}
+		\ml{F}_{k_c}\{x\}(t) 	&=	\sum_{k=-k_c}^{k_c} \hat{x}[k] \exp \brac{i 2 \pi k t} \\
+						&= 	\hat{x}[0] +  \sum_{k=-k_c}^{-1} \hat{x}[k] \exp \brac{i 2 \pi k t} + \sum_{k=1}^{k_c} \hat{x}[k] \exp \brac{i 2 \pi k t} \\
+						&= 	\hat{x}[0] +  \sum_{k=k_c}^{1} \hat{x}[-k] \exp \brac{- i 2 \pi k t} + \sum_{k=1}^{k_c} \hat{x}[k] \exp \brac{i 2 \pi k t} \\
+						&=	\hat{x}[0] +   \sum_{k=1}^{k_c} (\hat{x}[-k] \exp \brac{- i 2 \pi k t} +  \hat{x}[k] \exp \brac{i 2 \pi k t} ) \\
+						&=	\hat{x}[0] +   \sum_{k=1}^{k_c} (\overline{ \hat{x}[k] } \exp \brac{- i 2 \pi k t} +  \hat{x}[k] \exp \brac{i 2 \pi k t} ) \text{ ~ using part a } \\
+   \end{align*}
+Given two complex numbers $z = a + i b$ and $w = c + id$, we have $zw = ac - bd + i (ad + bc)$ and $\overline{z} \; \overline{w} = ac - bd - i (ad + bc)$ giving that $z w + \overline{z} \overline{w} = 2 (ac - bd)$.
+Let  $z_k = \hat{x}[k]$ and $w_k =     \exp \brac{i 2 \pi k t} $ thus
+   \begin{align*}
+   	\ml{F}_{k_c}\{x\}(t) 		&=  \hat{x}[0] +  \sum_{k=1}^{k_c} 2 (\Real{ \hat{x}[k]} \cos{ 2 \pi k t} - \Imag{\hat{x}[k] }  \sin{ 2 \pi k t} ) \\
+						&= \hat{x}[0] +  \sum_{k=1}^{k_c} (2 \Real{ \hat{x}[k]}) \cos{ 2 \pi k t} + (-2  \Imag{\hat{x}[k] } ) \sin{ 2 \pi k t}  \\
+						&= \hat{x}[0] +   \sum_{k=1}^{k_c} a_k \cos(2\pi k t) + b_k \sin(2\pi k t) \\
+   \end{align*}
+   
   \item Give
     expressions for the coefficients $a_k,b_k$ for $k\geq 1$ from the
     previous part as real integrals. Interpret them in terms of inner products.
+    
+    From the definition 
+   \begin{align*}
+  				 \hat{x}[k] 	&= \PROD{x}{\phi_k} = \int_{-1/2}^{1/2} x(t) \exp \brac{- i2 \pi k t}  \diff{t}   \text{ for } k\geq 1\\
+				 		&=  	\int_{-1/2}^{1/2} x(t) (\cos(2\pi k t) + i \sin(2\pi k t)) \diff{t} \\
+						&=	 \int_{-1/2}^{1/2} x(t)  \cos(2\pi k t) \diff{t} + i \int_{-1/2}^{1/2} x(t) \sin(2\pi k t) \diff{t} \\
+						&=	\Real{ \hat{x}[k]} + i   \Imag{\hat{x}[k] } \\			
+   \end{align*}
+   thus 
+   $$a_k =2 \int_{-1/2}^{1/2} x(t)  \cos(2\pi k t) \diff{t} = 2  \PROD{x}{ \cos(2\pi k t) } =  2  \PROD{x}{\Real{ \phi_k}} $$ 
+   and $$b_k =  2 \int_{-1/2}^{1/2} x(t)   \sin(2\pi k t) \diff{t} = 2  \PROD{x}{ \sin(2\pi k t) } =  2  \PROD{x}{\Imag{ \phi_k}}$$.
+          
   \item Suppose $x(t)=\cos(2\pi(t+\phi))$ for some fixed
     $\phi\in\R$.  What are the Fourier coefficients of $x$?
   \item Suppose that $f$ is also even (i.e., $x(-t)=x(t)$).  Prove
     that the Fourier coefficients are all real (i.e., that
     $\hat{x}[k]\in\R$ for all $k\in\Z$).
+    
+    Using part a
+      \begin{align*}
+      	\overline{\hat{x}[k]}	&= 	\hat{x}[-k] \\
+					&= 	\int_{-1/2}^{1/2} x(t) \exp \brac{i 2 \pi k t}  \diff{t} \\
+					&= 	\int_{1/2}^{-1/2} x(-u) \exp \brac{- i 2 \pi k u}  (- \diff{u})  \text{ by change of variable } u = -t \\
+					&=	\int_{-1/2}^{1/2} x(t) \exp \brac{- i 2 \pi k t}  \diff{t} \text{ ~ since x is even }\\
+					&=	\hat{x}[k] \\
+       \end{align*}  
+       $\overline{\hat{x}[k]} = \hat{x}[k]$, $\hat{x}[k]  \in \R$ for all $k\in\Z$.
+       
   \end{enumerate} 
    
  \end{enumerate}
