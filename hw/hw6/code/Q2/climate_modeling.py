@@ -49,16 +49,9 @@ def load_data():
 def predict_using_all_training_data(data, T):
     n_samples = data.shape[0]
     X = get_model_data(n_samples, T)
-
-    #X = get_model_data_using_temperatures(data, T)
-    # U, S, V = np.linalg.svd(X)
-    # print(S)
-
-    model = LinearRegression(fit_intercept=True)
+    model = LinearRegression(fit_intercept=False)
     model.fit(X, data)
     predictions = model.predict(X)
-    # print(model.coef_.shape)
-
     training_error = mean_squared_error(predictions, data, squared=False)
     return predictions, training_error
 
@@ -88,20 +81,17 @@ def determine_best_T_using_all_training_data(train_max_temp):
 
 def predict_using_training_validation_set(data, T):
     train, val = train_test_split(data, test_size=0.2, random_state=1234)
-    model = LinearRegression(fit_intercept=True)
+    model = LinearRegression(fit_intercept=False)
     n_train = train.shape[0]
     n_val = val.shape[0]
     X = get_model_data(n_train + n_val, T)
-    #X = get_model_data(n_train + n_val, T)
-    # U, S, V = np.linalg.svd(X)
-    # print(S)
     X_train = X[:n_train, :]
     model.fit(X_train, train)
     train_predictions = model.predict(X_train)
-    training_error = mean_squared_error(train_predictions, train, squared=False)
+    training_error = mean_squared_error(train, train_predictions, squared=False)
     X_val = X[n_train:, :]
     val_predictions = model.predict(X_val)
-    validation_error = mean_squared_error(val_predictions, val, squared=False)
+    validation_error = mean_squared_error(val, val_predictions, squared=False)
 
     return training_error, validation_error
 
@@ -139,8 +129,6 @@ def plot_fit(X, y, b, name):
     t = np.arange(y.shape[0])
     plt.plot(t, y, label='Actual')
     plt.plot(t, X @ b, label='Predicted')
-    # plt.plot(X.T, y, label='Actual')
-    # plt.plot(X.T, X @ b, label='Predicted')
     plt.xlabel('Month')
     plt.ylabel('Max Temperature (C)')
     plt.title('Max Temperature - ' + name)
@@ -154,42 +142,35 @@ def compare_predictions_first_model(train, test, T):
     n_test = test.shape[0]
     n_samples = n_train + n_test
 
-    #X = get_model_data_using_temperatures(train, T)
-
     X = get_model_data(n_samples, T)
 
     model = LinearRegression(fit_intercept=False)
 
-    #model.fit(X, train)
-
     X_train = X[:n_train, :]
     model.fit(X_train, train)
+    print(model.coef_)
 
-    plot_fit(X_train, train, model.coef_.T, "train_predictions")
-
-    # X = get_model_data_using_temperatures(test, T)
-    # test_predictions = model.predict(X)
-    # plot_fit(X, test, model.coef_.T, "test_predictions")
+    plot_fit(X_train, train, model.coef_.T, "train_predictions_" + str(T))
 
     X_test = X[n_train:, :]
-    plot_fit(X_test, test, model.coef_.T, "test_predictions")
+    plot_fit(X_test, test, model.coef_.T, "test_predictions_" + str(T))
 
 
-def predict_using_all_training_data_simple_mode(data, T):
-    n_samples = data.shape[0]
+def compare_predicitions_simple_model(train, test, T):
+    n_train = train.shape[0]
+    n_test = test.shape[0]
+    n_samples = n_train + n_test
     X = get_simplified_model_data(n_samples, T)
 
-    #X = get_model_data_using_temperatures(data, T)
-    # U, S, V = np.linalg.svd(X)
-    # print(S)
+    model = LinearRegression(fit_intercept=False)
+    X_train = X[:n_train, :]
+    model.fit(X_train, train)
+    print(model.coef_)
 
-    model = LinearRegression(fit_intercept=True)
-    model.fit(X, data)
-    predictions = model.predict(X)
-    # print(model.coef_.shape)
+    plot_fit(X_train, train, model.coef_.T, "simplified_model_train_predictions_" + str(T))
 
-    training_error = mean_squared_error(predictions, data, squared=False)
-    return predictions, training_error
+    X_test = X[n_train:, :]
+    plot_fit(X_test, test, model.coef_.T, "simplified_model_test_predictions_" + str(T))
 
 def main():
     np.random.seed(1234)
@@ -199,8 +180,9 @@ def main():
 
     #determine_best_T_using_all_training_data(train_max_temp)
     #determine_best_T_using_training_validation(train_max_temp)
-    best_T = 8 # 11
-    compare_predictions_first_model(train_max_temp, test_max_temp, best_T)
+    best_T = 11 # 11
+    #compare_predictions_first_model(train_max_temp, test_max_temp, best_T)
+    compare_predicitions_simple_model(train_max_temp, test_max_temp, best_T)
 
 if __name__ == "__main__":
     main()

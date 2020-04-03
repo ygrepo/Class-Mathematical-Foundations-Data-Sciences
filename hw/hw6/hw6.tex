@@ -130,17 +130,62 @@ $$ \Sigma_{\text{GD}} = \sigma^2 U  \text{diag}_{j=1}^p \frac{ (1 - ( 1 - \alpha
   where $a,b,c,d\in\R$, $y[t]$ denotes the maximum temperature in Celsius during month $t$ of the dataset (with $t$ starting from $0$ and ending at $162\cdot 12-1$).
    
   \begin{enumerate}
-  \item What is the number of parameters in your model and how many data points do you have to fit the model? Are you worried about overfitting?
+  \item What is the number of parameters in your model and how many data points do you have to fit the model? Are you worried about overfitting?\\
+  The number of parameters if $4$ much less than the number of training samples $150\cdot 12 = 1800$, so we have enough samples compared to the number of parameters and our linear regression model will not overfit as there are enough data points.
+  Since we want to model the trend of the temperature over the years we have enough datapoints to detect the trend of the  temperature. If we did not have enough points compared to the number of parameters our model will overfit, fitting mostly the noise.
+  
   \item Fit the model using least squares on the training set to
-    find the coefficients for values of $T$ equal to 1,2,\ldots,20. Which of these models provides a better fit? Explain why this is the case. In the remaining question we will fix $T$ to the value $T^{\ast}$ that provides a better fit.
+    find the coefficients for values of $T$ equal to 1,2,\ldots,20. Which of these models provides a better fit? Explain why this is the case. In the remaining question we will fix $T$ to the value $T^{\ast}$ that provides a better fit.\\ \\
+
+    When we plot the training errors we find out the model with the better fit is T=12. This is the value of T for which estimate coefficients  corresponding to the cosine and sine  terms
+    are the maximum in amplitude, allowing to better fit the oscillations of the temperatures over the years. $T=12$ corresponds also to the number of months in a year and could be seen as the period to which the temperatures fall in  
+    the same range from one year to the other for the corresponding month.
+    
   \item Produce two plots comparing the actual maximum temperatures with
-    the ones predicted by your model for $T:=T^{\ast}$; one for the training set and one for the test set. 
+    the ones predicted by your model for $T:=T^{\ast}$; one for the training set and one for the test set. \\
+    
+	\begin{figure}[H]
+		\centering
+		\includegraphics[width=200pt]{code/Q2/train_predictions_12_fit.pdf}
+		\caption{Actual and predicted max. temperatures from 1853-2014 \newline for $T=12$ on the training set.}
+	\end{figure}
+
+	\begin{figure}[H]
+		\centering
+		\includegraphics[width=200pt]{code/Q2/test_predictions_12_fit.pdf}
+		\caption{Actual and predicted max. temperatures from 1853-2014 \newline for $T=12$ on the test set.}
+	\end{figure}
+    
  \item Fit the modified model  
    \begin{align}
   y[t] = a + bt + d \sin(2\pi t/T^{\ast})
   \end{align}
-and plot the fit to the training data as in the previous question. Explain why it is better to also include a cosine term in the model.
-   \item Provide an intuitive interpretation of the coefficients $a$, $b$, $c$ and $d$, and the corresponding features. According to your model, are temperatures rising in Oxford? By how much?
+and plot the fit to the training data as in the previous question. Explain why it is better to also include a cosine term in the model.\\ \\
+
+Not having the cosine term simplify the model but we are no longer capturing all the frequencies of the fundamental seasonal frequency of the temperatures. So it is better to combine sine and cosine terms to span more frequencies. 
+
+	\begin{figure}[H]
+		\centering
+		\includegraphics[width=200pt]{code/Q2/simplified_model_train_predictions_12_fit.pdf}
+		\caption{Actual and predicted max. temperatures from 1853-2014 \newline for $T=12$ on the training set using the model $y[t] = a + bt + d \sin(2\pi t/T^{\ast})$.}
+	\end{figure}
+
+	\begin{figure}[H]
+		\centering
+		\includegraphics[width=200pt]{code/Q2/simplified_model_test_predictions_12_fit.pdf}
+		\caption{Actual and predicted max. temperatures from 1853-2014 \newline for $T=12$ on the test set $y[t] = a + bt + d \sin(2\pi t/T^{\ast})$.}
+	\end{figure}
+
+
+   \item Provide an intuitive interpretation of the coefficients $a$, $b$, $c$ and $d$, and the corresponding features. According to your model, are temperatures rising in Oxford? By how much?\\
+   \begin{itemize}
+   	\item a is the intercept or expected mean of the temperatures over the years
+	\item b corresponds to the trend or drift of the temperatures
+	\item c and d are related to the seasonal frequencies of the temperatures, they are included to capture the vertical or horizontal shift of these temperatures over time and their periodicity
+   \end{itemize}
+   If we look at the trend of the predicted temperatures on the training set (see fig. 3) or if we use a value of $T$ which corresponds to a model less sensitive to the seasonality of the temperatures, we observe that the temperatures
+   are increasing in Oxford by 2-3 degrees.
+   
   \end{enumerate}
    
  \item (Sines and cosines)
