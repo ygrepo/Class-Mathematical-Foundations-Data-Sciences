@@ -1,0 +1,135 @@
+\documentclass[12pt,twoside]{article}
+\usepackage[dvipsnames]{xcolor}
+\usepackage{tikz,graphicx,amsmath,amsfonts,amscd,amssymb,bm,cite,epsfig,epsf,url}
+\usepackage[hang,flushmargin]{footmisc}
+\usepackage[colorlinks=true,urlcolor=blue,citecolor=blue]{hyperref}
+\usepackage{amsthm,multirow,wasysym,appendix}
+\usepackage{array,subcaption} 
+% \usepackage[small,bf]{caption}
+\usepackage{bbm}
+\usepackage{pgfplots}
+\usetikzlibrary{spy}
+\usepgfplotslibrary{external}
+\usepgfplotslibrary{fillbetween}
+\usetikzlibrary{arrows,automata}
+\usepackage{thmtools}
+\usepackage{blkarray} 
+\usepackage{textcomp}
+\usepackage[left=0.8in,right=1.0in,top=1.0in,bottom=1.0in]{geometry}
+
+\input{macros}
+
+\begin{document}
+
+\begin{center}
+{\large{\textbf{Homework 7}} } \vspace{0.2cm}\\
+Due April 12 at 11 pm
+\end{center}
+
+\begin{enumerate}
+
+\item (Fourier coefficients and smoothness) Let $x:\R\to\C$ be
+  periodic with period $1$
+  and let $\hat{x}[k]$ denote the $k$th Fourier coefficient of $x$,
+  for $k\in\Z$ (computed on any interval of length $1$).
+  \begin{enumerate}
+  \item Suppose $x$ is continuously differentiable. Prove that for
+    $k\neq 0$ we have
+    $$|\hat{x}[k]| \leq \frac{C_1}{|k|}$$
+    for some $C_1\geq0$ that depends on $x$ (but not on $k$). [Hint:
+      Integration by parts.  Also note that
+      $$\left|\int_0^1 f(t)\,dt\right| \leq \int_0^1 |f(t)|\,dt<\infty$$
+    if $f$ is continuous on $[0,1]$.]
+  \item Suppose $x$ is twice continuously differentiable.
+    Prove that for $k\neq 0$ we have
+    $$|\hat{x}[k]| \leq \frac{C_2}{|k|^2}$$
+    for some $C_2\geq0$ that depends on $x$ (but not on $k$).
+  \end{enumerate}
+  
+\item (Sampling a sum of sinusoids) We are interested in a signal $x$ belonging to the unit interval $[0,1]$ of the form
+\begin{align}
+x(t) := a_1 \exp (i 2 \pi k_1 t ) + a_2 \exp (i 2 \pi k_2 t ),
+\end{align}
+where the amplitudes $a_1$ and $a_2$ are complex numbers, and the
+frequencies $k_1$ and $k_2$ are known integers.
+We sample the signal at $N$ equispaced locations $0$, $1/N$, $2/N$,
+\ldots, $(N-1)/N$, for some positive integer $N$.  
+\begin{enumerate}
+\item What value of $N$ is required by the Sampling Theorem to
+  guarantee that we can reconstruct $x$ from the samples? 
+\item Write a system of equations in matrix form mapping the
+  amplitudes $a_1$ and $a_2$ to the samples $x_{N}$. 
+  \item Under what condition on $N$, $k_1$ and $k_2$ can we recover the
+  amplitudes from the samples by solving the system of equations? 
+  Can $N$ be smaller than the value dictated by the Sampling Theorem?
+  If yes, give an example. If not, explain why.  
+  \item What is the limitation of this approach, which could make it unrealistic?
+\end{enumerate}
+   
+\item (Sampling theorem for bandpass signals) Bandpass signals are signals that have nonzero Fourier coefficients
+only in a fixed band of the frequency domain. We are interested in
+sampling a bandpass signal $x$ belonging to the unit interval $[0,1]$
+that has nonzero Fourier-series coefficients between $k_1$ and $k_2$,
+inclusive, where $k_1$ and $k_2$ are known positive integers such that $k_2 > k_1$. 
+\begin{enumerate}
+\item We sample the signal at $N$ equispaced locations $0$, $1/N$, $2/N$, \ldots, $(N-1)/N$. What value of $N$ is required by the Sampling Theorem to guarantee that we can reconstruct $x$ from the samples?
+\item Assume that $k_2:=k_1 + 2\tilde{k}_c$, where $\tilde{k}_c $ is a positive integer. For any $N \geq 2\tilde{k}_c + 1$ it is possible to recover the signal from the samples. Explain why (you don't need to derive any explicit expressions).
+\item Assume that $k_2:=k_1 + 2\tilde{k}_c$, $N\geq 2\tilde{k}_c+1$,
+  and $mN = k_1+\tilde{k}_c$ for some integer $m$. Explain precisely how to recover $x$ from the samples in this case.
+\end{enumerate} 
+ 
+ \item  (Frequency analysis of musical notes) In this exercise you will
+  use the code and data in the \texttt{musicdata} folder.  Make sure you have
+  the python packages sklearn, pandas, sounddevice, and soundfile
+  installed.  The skeleton code for you to work with is given in
+  \texttt{analysis.py} which uses tools given in
+  \texttt{music\_tools.py}.  The data used here comes from the NSynth
+  dataset.
+
+  \begin{enumerate}
+  \item Plot the audio signals for the first signal in the training
+    set, and the first vocal signal in the training set (i.e., the
+    first signal whose \texttt{instrument\_family\_str} field is
+    'vocal' in the dataframe).  In the titles of your two plots, include the
+    \texttt{instrument\_family\_str} and the frequency (in Hz).
+    We recommend you also use \texttt{play\_signal}
+    to hear what the signals sound like.
+  \item For each signal in the test set, compute the (strictly positive)
+    frequency with the largest amplitude (in absolute value), and
+    convert it to a pitch number (using the tools in
+    \texttt{music\_tools}).  This will be our predicted pitch.
+    \begin{enumerate}
+    \item Report what overall fraction of the signals in
+      the test set you accurately predict using this method (i.e.,
+      your overall accuracy).
+    \item For the
+      first two signals you misclassify (in the order they occur in the
+      test set), give plots of their absolute
+      DFT coefficients (use \texttt{np.fft.fft} and make one plot per
+      signal). In the title of your plots, include the
+      \texttt{instrument\_family\_str}, the true frequency, and the
+      predicted frequency (in Hz).  Make
+      sure to plot the coefficients on an axis centered at $0$ by using
+      fftfreq with the correct arguments.
+    \item What is the instrument family for which the method got the
+      highest fraction of incorrect predictions (i.e., number incorrect
+      divided by number of examples from that family)?
+    \end{enumerate}
+  \item Use the \texttt{LogisticRegression} class in sklearn to fit a
+    pitch classifier on the training set using the absolute DFT
+    coefficients as the features.  Use the default parameters
+    but set \texttt{multi\_class} to 'multinomial' and
+    \texttt{solver} to 'lbfgs'.  Note: We will use the negative
+    frequencies as well for convenience, even though they have the same magnitudes as
+    the positive (the $L_2$ regularization will take care of it for us).
+    \begin{enumerate}
+    \item Report your score on the test set as computed by the model.
+    \item Give 3 plots of the model coefficients for pitches 60, 65, and 72.
+      Make sure to plot the coefficients on an axis centered at $0$ by using
+      fftfreq with the correct arguments (because the coefficients
+      correspond to frequencies).
+    \end{enumerate}
+  \end{enumerate}
+
+ \end{enumerate}
+\end{document}
