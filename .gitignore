@@ -20,9 +20,9 @@ __pycache__
 #*.png
 imdb
 data/
-__MACOSX/*
-code/*
-hw/hw7/code/*
+__MACOSX/
+**/__MACOSX/
+**/wav_data/
 
 
 # Skip temporary figures
