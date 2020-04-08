@@ -65,13 +65,50 @@ Yves Greatti - yg390\\
     for some $C_1\geq0$ that depends on $x$ (but not on $k$). [Hint:
       Integration by parts.  Also note that
       $$\left|\int_0^1 f(t)\,dt\right| \leq \int_0^1 |f(t)|\,dt<\infty$$
-    if $f$ is continuous on $[0,1]$.]
+    if $f$ is continuous on $[0,1]$.]\\
+    
+   WLOG we consider the interval [0,1] since  $x$ is periodic with period $1$ and, we have for $k \neq 0$:
+    \begin{align*}
+	    \hat{x}[k] 	&= \int_0^1 x(t) \exp \brac{- i2 \pi k t}  \diff{t}  \; (\text{by parts with } u=x(t) \text{, and } v=\frac{-1}{i 2 \pi k} e^{-i2 \pi kt})\\	
+	    			&= \frac{-1}{i 2 \pi k} [x(t) e^{-i2 \pi kt}]_0^1 + \frac{1}{i 2 \pi k} \int_0^1 x'(t) \exp \brac{- i2 \pi k t}  \diff{t}\\  	
+				&=  \frac{x(0) - x(1)} {i 2 \pi k} + \frac{1}{i 2 \pi k} \int_0^1 x'(t) \exp \brac{- i2 \pi k t}  \diff{t}\\
+				&=  \frac{1}{i 2 \pi k} \int_0^1 x'(t) \exp \brac{- i2 \pi k t}  \diff{t} \text{ ~ since period is 1 }\\
+    \end{align*}
+    
+    $x$ is continuously differentiable on $[0,1]$ so:
+     $$\left|\int_0^1 x'(t)\,dt\right| \leq \int_0^1 |x'(t)|\,dt<\infty$$
+     Let  $M=\int_0^1 |x'(t)|\,dt$, using the previous expression of $\hat{x}[k] $, we can now determine an upper bound:
+     \begin{align*}
+	   | \hat{x}[k]| 	&= |\frac{1}{i 2 \pi k} \int_0^1 x'(t) \exp \brac{- i2 \pi k t}  \diff{t}| \\
+	   			&= |\frac{1}{i 2 \pi k}| | \int_0^1 x'(t) \exp \brac{- i2 \pi k t}  \diff{t} | \\
+				&\le |\frac{1}{2 \pi k}|  \int_0^1 | x'(t) \exp \brac{- i2 \pi k t}| \diff{t}  \\
+				&= |\frac{1}{2 \pi k}|  \int_0^1 | x'(t)  |  |\exp \brac{- i2 \pi k t}| \diff{t}  \\
+				&=  |\frac{1}{2 \pi k}|  \int_0^1 | x'(t) |  \diff{t}  \\
+				&\le  |\frac{1}{2 \pi k}| M\\
+     \end{align*}
+     So  $| \hat{x}[k]| \leq \frac{C_1}{|k|}$ with $C_1 = \frac{M}{2 \pi}$.
+	         
   \item Suppose $x$ is twice continuously differentiable.
     Prove that for $k\neq 0$ we have
     $$|\hat{x}[k]| \leq \frac{C_2}{|k|^2}$$
     for some $C_2\geq0$ that depends on $x$ (but not on $k$).
+    
+    Let $ \hat{x}'[k] =  \int_0^1 x'(t) \exp \brac{- i2 \pi k t}  \diff{t}$, using part a, we can write that
+    $$\hat{x}'[k] =  \frac{x'(0) - x'(1)} {i 2 \pi k} + \frac{1}{i 2 \pi k} \int_0^1 x''(t) \exp \brac{- i2 \pi k t}  \diff{t}$$ 
+    $x$ is now twice continuously differentiable:
+     $$\left|\int_0^1 x''(t)\,dt\right| \leq \int_0^1 |x''(t)|\,dt = M_2<\infty$$
+     And since $x'$ is continuous on $[0,1]$, it is bounded, let $M_1 = \max|x(t)|, t \in [0,1]$ then
+      \begin{align*}
+	   | \hat{x}'[k]| 	&\le \frac{|x'(0) | +  |x'(1) |} {|2 \pi k|} +  \frac{1}{|2 \pi k|} M_2\\
+	   			&= \frac{2 \; M_1 + M_2} {|2 \pi k|} \\
+	  | \hat{x}[k]| 	&= |\frac{1}{i 2 \pi k}| | \int_0^1 x'(t) \exp \brac{- i2 \pi k t}  \diff{t}| \text{ ~ from part a}\\
+	  			&\le \frac{C_2} {|k^2|} \text{ ~ where } C_2 = \frac{2 M_1 + M2} {4 \pi^2}
+        \end{align*}
+    
   \end{enumerate}
   
+\newpage
+
 \item (Sampling a sum of sinusoids) We are interested in a signal $x$ belonging to the unit interval $[0,1]$ of the form
 \begin{align}
 x(t) := a_1 \exp (i 2 \pi k_1 t ) + a_2 \exp (i 2 \pi k_2 t ),
@@ -82,15 +119,36 @@ We sample the signal at $N$ equispaced locations $0$, $1/N$, $2/N$,
 \ldots, $(N-1)/N$, for some positive integer $N$.  
 \begin{enumerate}
 \item What value of $N$ is required by the Sampling Theorem to
-  guarantee that we can reconstruct $x$ from the samples? 
+  guarantee that we can reconstruct $x$ from the samples? \\
+  
+ By theorem 3.4, if the number of samples $N$ is larger than $2 \max{(k_1, k_2)} + 1$ then  the Fourier coefficients $a_1,  a_2$ and hence the signal $x$ can
+ be reconstructed. 
+ 
 \item Write a system of equations in matrix form mapping the
   amplitudes $a_1$ and $a_2$ to the samples $x_{N}$. 
+  
+  $$\MAT{x(\frac{0}{N}) \\ x(\frac{1}{N}) \\ \ldots \\ x(\frac{j}{N}) \\ \ldots\\ x(\frac{N-1}{N}) } 
+  	= \MAT{1  & 1 \\  \exp (\frac{i 2 \pi k_1 1} {N} ) & \exp (\frac{i 2 \pi k_2 1} {N} )
+	 \\ \ldots &  \ldots \\    \exp (\frac{i 2 \pi k_1 j} {N} ) & \exp (\frac{i 2 \pi k_2 j} {N} ) 
+	 \\  \ldots &  \ldots \\    \exp (\frac{i 2 \pi k_1 (N-1)} {N} ) & \exp (\frac{i 2 \pi k_2 (N-1)} {N} ) }
+	 \MAT{a_1 \\ a_2 }$$
+  
   \item Under what condition on $N$, $k_1$ and $k_2$ can we recover the
   amplitudes from the samples by solving the system of equations? 
   Can $N$ be smaller than the value dictated by the Sampling Theorem?
-  If yes, give an example. If not, explain why.  
-  \item What is the limitation of this approach, which could make it unrealistic?
+  If yes, give an example. If not, explain why.  \\
+  It is a system of $N$ equations of two unknowns $a_1$ and $a_2$ which has a solution if $N > = 2$ assuming the matrix is at least of column rank $2$ which is
+  the case if $k_1 \neq k_2$. If N is smaller that the value dictated by the Sampling Theorem, we may encounter the issue of aliasing for a sinusoid with frequency $m$ such that $m =  \max{(k_1, k_2)} \mod N$,
+  the two signals from the samples will look the same.
+  
+  \item What is the limitation of this approach, which could make it unrealistic?\\
+  If we have too many equations, the cost of solving this system using a method like least square will be very costly (in practice with OLS we are looking for a solution of the form $[a_0 a_1]^T = (A A^T )^{-1} A$ where $A$ is the two columns matrix defined in
+  part b, this will requires a time proportional at least to $\mathcal{O}(N^3$), making large problem signal reconstruction intractable. In addition solving this system with the matrix $A$ can be prone to machine errors 
+  not only when $N$ is large but also when $k_1 \approx k_2$.
+  
 \end{enumerate}
+   
+\newpage
    
 \item (Sampling theorem for bandpass signals) Bandpass signals are signals that have nonzero Fourier coefficients
 only in a fixed band of the frequency domain. We are interested in
@@ -104,6 +162,7 @@ inclusive, where $k_1$ and $k_2$ are known positive integers such that $k_2 > k_
   and $mN = k_1+\tilde{k}_c$ for some integer $m$. Explain precisely how to recover $x$ from the samples in this case.
 \end{enumerate} 
  
+ \newpage
  \item  (Frequency analysis of musical notes) In this exercise you will
   use the code and data in the \texttt{musicdata} folder.  Make sure you have
   the python packages sklearn, pandas, sounddevice, and soundfile
