@@ -156,8 +156,13 @@ sampling a bandpass signal $x$ belonging to the unit interval $[0,1]$
 that has nonzero Fourier-series coefficients between $k_1$ and $k_2$,
 inclusive, where $k_1$ and $k_2$ are known positive integers such that $k_2 > k_1$. 
 \begin{enumerate}
-\item We sample the signal at $N$ equispaced locations $0$, $1/N$, $2/N$, \ldots, $(N-1)/N$. What value of $N$ is required by the Sampling Theorem to guarantee that we can reconstruct $x$ from the samples?
-\item Assume that $k_2:=k_1 + 2\tilde{k}_c$, where $\tilde{k}_c $ is a positive integer. For any $N \geq 2\tilde{k}_c + 1$ it is possible to recover the signal from the samples. Explain why (you don't need to derive any explicit expressions).
+\item We sample the signal at $N$ equispaced locations $0$, $1/N$, $2/N$, \ldots, $(N-1)/N$. What value of $N$ is required by the Sampling Theorem to guarantee that we can reconstruct $x$ from the samples?\\
+The minimum value of $N$ required by the Sampling theorem is $N \ge 2 k_2 + 1$.
+
+\item Assume that $k_2:=k_1 + 2\tilde{k}_c$, where $\tilde{k}_c $ is a positive integer. For any $N \geq 2\tilde{k}_c + 1$ it is possible to recover the signal from the samples. Explain why (you don't need to derive any explicit expressions).\\
+If  $k_2:=k_1 + 2\tilde{k}_c$ then $N \geq 2\tilde{k}_c + 1$ means that $N \geq k_2 - k_1$. Knowing that the signal has nonzero Fourier-series coefficients only between $k_1$ and $k_2$, there could be only at most $k_2 - k_1 + 1$ nonzero
+coefficients in the interval $[k_1, k_2]$, having the number of samples $N \ge k_2 - k_1 + 1$ allows to recover fully the $k_2 - k_1 + 1$ Fourier coefficients hence the original signal $x$.
+
 \item Assume that $k_2:=k_1 + 2\tilde{k}_c$, $N\geq 2\tilde{k}_c+1$,
   and $mN = k_1+\tilde{k}_c$ for some integer $m$. Explain precisely how to recover $x$ from the samples in this case.
 \end{enumerate} 
