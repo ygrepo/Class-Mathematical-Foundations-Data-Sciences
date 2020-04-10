@@ -93,19 +93,18 @@ Yves Greatti - yg390\\
     $$|\hat{x}[k]| \leq \frac{C_2}{|k|^2}$$
     for some $C_2\geq0$ that depends on $x$ (but not on $k$).
     
-    Let $ \hat{x}'[k] =  \int_0^1 x'(t) \exp \brac{- i2 \pi k t}  \diff{t}$, using part a, we can write that
-    $$\hat{x}'[k] =  \frac{x'(0) - x'(1)} {i 2 \pi k} + \frac{1}{i 2 \pi k} \int_0^1 x''(t) \exp \brac{- i2 \pi k t}  \diff{t}$$ 
-    $x$ is now twice continuously differentiable:
-     $$\left|\int_0^1 x''(t)\,dt\right| \leq \int_0^1 |x''(t)|\,dt = M_2<\infty$$
-     And since $x'$ is continuous on $[0,1]$, it is bounded, let $M_1 = \max|x(t)|, t \in [0,1]$ then
-      \begin{align*}
-	   | \hat{x}'[k]| 	&\le \frac{|x'(0) | +  |x'(1) |} {|2 \pi k|} +  \frac{1}{|2 \pi k|} M_2\\
-	   			&= \frac{2 \; M_1 + M_2} {|2 \pi k|} \\
-	  | \hat{x}[k]| 	&= |\frac{1}{i 2 \pi k}| | \int_0^1 x'(t) \exp \brac{- i2 \pi k t}  \diff{t}| \text{ ~ from part a}\\
-	  			&\le \frac{C_2} {|k^2|} \text{ ~ where } C_2 = \frac{2 M_1 + M2} {4 \pi^2}
-        \end{align*}
-    
-  \end{enumerate}
+    We know that $x'(t)$ is continuous and differentiable, thus from the previous question, there exists $C_1$ such that:
+    $$ | \hat{x'}[k]|  \leq \frac{C_1}{|k|}$$
+    From part a, we have
+    \begin{align*}
+    	 | \hat{x}[k]| 	&= |\frac{1}{i 2 \pi k}| | \int_0^1 x'(t) \exp \brac{- i2 \pi k t}  \diff{t} | \\
+	 			&= \frac{1}{2 \pi |k|}  | \hat{x'}[k]| \\
+				&\le \frac{1}{2 \pi |k|}  \frac{C_1}{|k|} \\
+				&= \frac{C_1}{2 \pi |k|^2} \\ 
+				&=  \frac{C_2}{|k|^2}
+    \end{align*}
+          
+   \end{enumerate}
   
 \newpage
 
@@ -121,7 +120,7 @@ We sample the signal at $N$ equispaced locations $0$, $1/N$, $2/N$,
 \item What value of $N$ is required by the Sampling Theorem to
   guarantee that we can reconstruct $x$ from the samples? \\
   
- By theorem 3.4, if the number of samples $N$ is larger than $2 \max{(k_1, k_2)} + 1$ then  the Fourier coefficients $a_1,  a_2$ and hence the signal $x$ can
+ By theorem 3.4, if the number of samples $N$ is larger or equal to $2 \max{(|k_1|, |k_2|)} + 1$ then  the Fourier coefficients $a_1,  a_2$ and hence the signal $x$ can
  be reconstructed. 
  
 \item Write a system of equations in matrix form mapping the
@@ -137,15 +136,14 @@ We sample the signal at $N$ equispaced locations $0$, $1/N$, $2/N$,
   amplitudes from the samples by solving the system of equations? 
   Can $N$ be smaller than the value dictated by the Sampling Theorem?
   If yes, give an example. If not, explain why.  \\
-  It is a system of $N$ equations of two unknowns $a_1$ and $a_2$ which has a solution if $N > = 2$ assuming the matrix is at least of column rank $2$ which is
-  the case if $k_1 \neq k_2$. If N is smaller that the value dictated by the Sampling Theorem, we may encounter the issue of aliasing for a sinusoid with frequency $m$ such that $m =  \max{(k_1, k_2)} \mod N$,
-  the two signals from the samples are indistinguishable.
+  It is a system of $N$ equations of two unknowns $a_1$ and $a_2$ which has a solution if the matrix is at least of column rank $2$ which is
+  the case if $k_1 \neq k_2$ , $k_1 \mod N \neq 0$, and $k_2 \mod N \neq 0$. 
+  N could be smaller than the value dictated by the Sampling Theorem if we select two samples $ \frac{j_2}{N}$ and $ \frac{j_2}{N}$ such that $k_1 - \frac{j_1}{N} \mod N = 0$ and $k_1 - \frac{j_2}{N} \mod N = 0$
+ 
   
   \item What is the limitation of this approach, which could make it unrealistic?\\
-  If we have too many equations, the cost of solving this system using a method like least square will be very costly (in practice with OLS we are looking for a solution of the form $[a_0 a_1]^T = (A A^T )^{-1} A$ where $A$ is the two columns matrix defined in
-  part b, this will requires a time proportional at least to $\mathcal{O}(N^3$), making large problem signal reconstruction intractable. In addition solving this system with the matrix $A$ can be prone to machine errors 
-  not only when $N$ is large but also when $k_1 \approx k_2$.
-  
+ The assumptions we made in the previous question was that we know exactly the signal and the two frequency locations, which is unrealistic since we want to recover a signal $x$ which we do not know.
+   
 \end{enumerate}
    
 \newpage
@@ -161,25 +159,39 @@ The minimum value of $N$ required by the Sampling theorem is $N \ge 2 k_2 + 1$.
 
 \item Assume that $k_2:=k_1 + 2\tilde{k}_c$, where $\tilde{k}_c $ is a positive integer. For any $N \geq 2\tilde{k}_c + 1$ it is possible to recover the signal from the samples. Explain why (you don't need to derive any explicit expressions).\\
 If  $k_2:=k_1 + 2\tilde{k}_c$ then $N \geq 2\tilde{k}_c + 1$ means that $N \geq k_2 - k_1$. Knowing that the signal has nonzero Fourier-series coefficients only between $k_1$ and $k_2$, there could be only at most $k_2 - k_1 + 1$ nonzero
-coefficients in the interval $[k_1, k_2]$, having the number of samples $N \ge k_2 - k_1 + 1$ allows to recover fully the $k_2 - k_1 + 1$ Fourier coefficients hence the original signal $x$.
+coefficients in the interval $[k_1, k_2]$, having the number of samples $N \ge k_2 - k_1 + 1$ allows to recover fully the $k_2 - k_1 + 1$ Fourier coefficients since there is one-to-one relationship between samples and
+a Fourier coefficients, therefore we can also recover the original signal $x$.
 
 \item Assume that $k_2:=k_1 + 2\tilde{k}_c$, $N\geq 2\tilde{k}_c+1$,
   and $mN = k_1+\tilde{k}_c$ for some integer $m$. Explain precisely how to recover $x$ from the samples in this case.
  Since   $N\geq 2\tilde{k}_c+1$, from the previous question we know that we can take $N$ samples of $x$ in [0,1] and find all the Fourier coefficients between $[k_1, k_2]$. 
  In addition $k_2:=k_1 + 2\tilde{k}_c$ or $\tilde{k}_c = \frac{k_2 - k_1}{2}$ and $mN=k_1 + \tilde{k}_c = \frac{k_1 + k_2}{2}$.
  From $mN$ we find the point in the frequency domain $\frac{k_1 + k_2}{2}$ and we sample $N$ points of $x$ from the frequency $\frac{k_1 + k_2}{2} - \tilde{k}_c = k_1$ to the frequency $\frac{k_1 + k_2}{2} + \tilde{k}_c = k_2$:
- The Fourier coefficients of the signal can be recovered from $N$ samples where:
- \begin{align*}
- 	x(\frac{j\; T}{N})	&= \sum_{k=-\tilde{k}_c}^{k=\tilde{k}_c}  \hat{x}[k]  \exp (\frac{i 2 \pi k j} {N}) \\
- \end{align*}
  
-  	\begin{figure}[H]
+ 	\begin{figure}[H]
 		\centering
 		\captionsetup{justification=centering}
 		\includegraphics[width=200pt]{Q3_c.png}
 	\end{figure}
 
+ 
 
+The Fourier coefficients of the signal can be recovered from $N$ samples where:
+ \begin{align*}
+ 	x(\frac{j\; T}{N})	&= \sum_{k=-\tilde{k}_c}^{k=\tilde{k}_c}  \hat{x}[k]  \exp (\frac{i 2 \pi k j} {N}) \\
+ \end{align*}
+ 
+    $$
+  \MAT{x(\frac{0}{N}) \\ x(\frac{T}{N}) \\ \ldots \\ x(\frac{jT}{N}) \\ \ldots\\ x(\frac{(N-1)T}{N}) } 
+  	= \MAT{1  & 1 & \ldots  & 1 \\
+	 \exp (\frac{i 2 \pi (-\tilde{k}_c)} {N} ) & \exp (\frac{(i 2 \pi (-\tilde{k}_c+ 1)} {N} ) & \ldots &  \exp (\frac{(i 2 \pi \tilde{k}_c)} {N} ) \\
+	 \ldots &  \ldots & \ldots & \ldots \\   
+	 \exp (\frac{i 2 \pi (-\tilde{k}_c) j} {N} ) & \exp (\frac{(i 2 \pi (-\tilde{k}_c+ 1) j} {N} ) & \ldots &  \exp (\frac{(i 2 \pi \tilde{k}_c j)} {N} ) \\
+	 \ldots &  \ldots & \ldots & \ldots \\   
+	 \exp (\frac{i 2 \pi (-\tilde{k}_c) (N-1)} {N} ) & \exp (\frac{(i 2 \pi (-\tilde{k}_c+ 1) (N-1)} {N} ) & \ldots &  \exp (\frac{(i 2 \pi \tilde{k}_c (N-1))} {N} ) }
+	 = \MAT{\hat{x}[-\tilde{k}_c]  \\ \hat{x}[-\tilde{k}_c + 1] \\ \ldots \\ \hat{x}[\tilde{k}_c]}
+$$
+The matrix $\tilde{F}_{[N]}$ is invertible and the Fourier coefficients can be recovered $\hat{x}_{[\tilde{k}_c]} = \frac{1}{N} \tilde{F}^*_{[N]} x_{[N]}$, and the signal $x$ reconstructed. 
 \end{enumerate} 
  
  \newpage
@@ -217,7 +229,7 @@ coefficients in the interval $[k_1, k_2]$, having the number of samples $N \ge k
     \item Report what overall fraction of the signals in
       the test set you accurately predict using this method (i.e.,
       your overall accuracy).\\
-      Using this method, the overall accuracy obtained is: $72.084\%$.
+      Using this method, the overall accuracy obtained is: $72.084\%$ (ignoring the DC component only).
     \item For the
       first two signals you misclassify (in the order they occur in the
       test set), give plots of their absolute
