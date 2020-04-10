@@ -1,0 +1,137 @@
+\documentclass[12pt,twoside]{article}
+\usepackage[dvipsnames]{xcolor}
+\usepackage{tikz,graphicx,amsmath,amsfonts,amscd,amssymb,bm,cite,epsfig,epsf,url}
+\usepackage[hang,flushmargin]{footmisc}
+\usepackage[colorlinks=true,urlcolor=blue,citecolor=blue]{hyperref}
+\usepackage{amsthm,multirow,wasysym,appendix}
+\usepackage{array,subcaption} 
+% \usepackage[small,bf]{caption}
+\usepackage{bbm}
+\usepackage{pgfplots}
+\usetikzlibrary{spy}
+\usepgfplotslibrary{external}
+\usepgfplotslibrary{fillbetween}
+\usetikzlibrary{arrows,automata}
+\usepackage{thmtools}
+\usepackage{blkarray} 
+\usepackage{textcomp}
+\usepackage[left=0.8in,right=1.0in,top=1.0in,bottom=1.0in]{geometry}
+
+\usepackage{times}
+\usepackage{amsfonts}
+\usepackage{amsmath}
+\usepackage{latexsym}
+\usepackage{color}
+\usepackage{graphics}
+\usepackage{enumerate}
+\usepackage{amstext}
+\usepackage{blkarray}
+\usepackage{url}
+\usepackage{epsfig}
+\usepackage{bm}
+\usepackage{hyperref}
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue,
+    filecolor=magenta,      
+    urlcolor=blue,
+}
+\usepackage{textcomp}
+\usepackage[left=0.8in,right=1.0in,top=1.0in,bottom=1.0in]{geometry}
+\usepackage{mathtools}
+\usepackage{minted}
+
+
+
+\input{macros}
+
+\begin{document}
+
+\begin{center}
+{\large{\textbf{Homework 8}} } \vspace{0.2cm}\\
+Due April 19 at 11 pm
+\end{center}
+Yves Greatti - yg390\\
+
+\begin{enumerate}
+
+ \item (Aliasing) Suppose $x:\R\to\C$ takes the form 
+  $$x(t) = \sum_{k=-k_c}^{k_c} a_ke^{2\pi i kt},$$
+  for some finite $k_c>0$ with $a_k\in\C$.  
+
+  In the timedata folder you will find data.py.  The 
+  \texttt{load\_data} function will give you 3 complex numpy arrays.  Each
+  has the form
+  $$x_{[N]}=[x(0/N),x(1/N),\ldots,x((N-1)/N)]$$
+  where $N=2049,4097,8193$ for the three arrays, respectively.  Each of
+  the arrays are sampled from the same signal $x$.
+  \begin{enumerate}
+  \item Give plots of the magnitudes of the DFT
+    coefficients computed from each of the arrays (3 plots in total).
+    Make sure to order your plot so
+    that frequency 0 is in the center, with negatives to the left
+    and positives to the right. What do you notice about the
+    magnitudes of the plots?
+    [Hint: Use fftfreq in numpy with sample spacing $d=1.0/N$.]
+  \item Assuming $k_c\leq 4096$ give the three largest $|a_k|$-values,
+    along with their corresponding frequencies
+    (i.e., the $k$-values). % [Hint: The largest value isn't $307237.5$.]
+  \item Let $\hat{x}_{[2049]}$ and $\hat{x}_{[8193]}$ denote the DFT
+    coefficients computed from the small and large arrays, respectively.
+    Suppose you have only computed $\hat{x}_{[8193]}$
+    and assume $k_c\leq4096$.
+    Give a formula for $\hat{x}_{[2049]}[3]$ in terms of
+    the entries of $\hat{x}_{[8193]}$ and test your formula
+    on the given data.  Your formula should only require simple algebra. 
+    % [Hint: Use the aliasing formula.]
+  \item True or False: Since none of the plots computed above are non-zero for
+    any frequency $k$ with $|k|>2048$ it follows that
+    $k_c\leq2048$. % No justification needed.
+ % \item Show that for any integer $k$ with $|k|\leq k_c$, and any integer $M\geq 2k_c+1$ we must have $$\int_{0}^{1}x(t)e^{-2\pi ikt}\,dt = \frac{1}{M}\sum_{j=0}^{M-1} x(j/M)e^{-2\pi ijk/M}.$$
+  \end{enumerate}
+
+\item (Justification of the FFT) Define the matrix
+  $F_{[N]}\in\C^{N\times N}$ by
+  $(F_{[N]})_{j,k}=e^{-2\pi i jk/N}$ where $0\leq j,k<N$ and $N$ is even.
+  The indexing $a:b$ denotes the
+  inclusive range $a,a+1,\ldots,b$, $:$ alone denotes the
+  full set of indices, and $a:$ denotes all indices starting from $a$. Answer these questions to complete the proof of Lemma 4.3.
+  \begin{enumerate}
+  \item For any $k\geq 0$ with $2k<N$ prove a formula showing how to
+    compute the rows corresponding to odd indices $(F_{[N]})_{:,2k+1}$ assuming you are given the rows for even indices $(F_{[N]})_{:,2k}$.
+  \item For any $k\geq 0$ with $2k<N$ prove that the first half of the even rows equals the second half $(F_{[N]})_{0:N/2-1,2k}=(F_{[N]})_{N/2:,2k}$.  
+  \item Prove that the first half of the even rows is equal to the even rows of the $N/2$ DFT matrix $(F_{[N]})_{0:N/2-1,2k} = (F_{[N/2]})_{:,k}$.
+  \end{enumerate}
+ 
+ \item (Properties of the DFT)
+  Let $F_{[N]}\in\C^{N\times N}$ denote the DFT matrix.
+  \begin{enumerate}
+  \item Prove that $\frac{1}{N}F_{[N]}^*$, the inverse DFT, can be
+    written as $\frac{1}{N}PF_{[N]}$ for some permutation matrix $P$
+    with $P^{-1}=P$.  This shows that the DFT and the inverse DFT can be
+    calculated in a very similar way.
+  \item Using the fact that
+    $$(ABC)[j,k] = A[j,:](B)C[:,k]$$
+    for any $A,B,C\in\C^{N\times N}$ and $0\leq j,k<N$ prove that
+    the 2D DFT coefficients are given by
+    $$(F_{[N]}XF_{[N]})[j,k] = \hat{X}[j,k],$$
+    for $X\in\C^{N\times N}$.  Here we take
+    $$\hat{X}[j,k] := \langle X,\psi_j\psi_k^T\rangle$$
+    as the definition of $\hat{X}[j,k]$
+    where $\psi_j,\psi_k\in\C^N$ are discrete
+    sinusoidal basis vectors.
+    [Hint: Use the trace operator.]
+  \item If $x:L_2[0,1)^2\to\C$ is real-valued, prove that the Fourier
+    coefficients satisfy $\hat{x}[j,k]=\overline{\hat{x}[-j,-k]}$.
+   % [Note: By sampling, the same property must hold for the 2D DFT.]
+  \end{enumerate}
+  
+  \item (Undersampling in MRI) MRI measurements can be modeled as the Fourier coefficients of tissue density (being very simplistic). An important goal is to reduce the number of Fourier coefficients, because this accelerates data acquisition, decreasing costs and improving the experience for the patient. Here we will see one of the possible pitfalls of undersampling in the Fourier domain, which is equivalent to aliasing.
+ \begin{enumerate}
+ \item Imagine that you only measure half of the DFT coefficients of an $N$-dimensional vector $x$.  Specifically you measure a vector $y \in \C^{N/2}$ (assume $N$ is even) that contains the Fourier coefficients corresponding to even indices. Explain how to reconstruct the vector $x_{\op{est}}$ with the smallest $\ell_2$ norm that is consistent with these measurements. Use a single multiplication with the inverse DFT matrix $\frac{1}{N}F_{[N]}^{\ast}$.
+ \item The script  \texttt{mr\_undersampling.py} loads the data and plots the MR image and it's Fourier coefficients. Apply your proposed reconstruction method to 2D data by completing the script \texttt{mr\_undersampling.py}.  Reconstruct the image using (1) only the even-indexed rows, (2) only the even-indexed columns, (3) only indices in even rows and columns. Report images generated using the plotting script for your under sampled Fourier coefficients and reconstructed image.  
+  \item To explain what you are seeing, express $x_{\op{est}}$ in terms of the entries of $x$ in the 1D case. (Hint: You might want to use some results from Problem 1.)
+  \end{enumerate}
+
+ \end{enumerate}
+\end{document}
