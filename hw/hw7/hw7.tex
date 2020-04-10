@@ -139,7 +139,7 @@ We sample the signal at $N$ equispaced locations $0$, $1/N$, $2/N$,
   If yes, give an example. If not, explain why.  \\
   It is a system of $N$ equations of two unknowns $a_1$ and $a_2$ which has a solution if $N > = 2$ assuming the matrix is at least of column rank $2$ which is
   the case if $k_1 \neq k_2$. If N is smaller that the value dictated by the Sampling Theorem, we may encounter the issue of aliasing for a sinusoid with frequency $m$ such that $m =  \max{(k_1, k_2)} \mod N$,
-  the two signals from the samples will look the same.
+  the two signals from the samples are indistinguishable.
   
   \item What is the limitation of this approach, which could make it unrealistic?\\
   If we have too many equations, the cost of solving this system using a method like least square will be very costly (in practice with OLS we are looking for a solution of the form $[a_0 a_1]^T = (A A^T )^{-1} A$ where $A$ is the two columns matrix defined in
@@ -165,6 +165,21 @@ coefficients in the interval $[k_1, k_2]$, having the number of samples $N \ge k
 
 \item Assume that $k_2:=k_1 + 2\tilde{k}_c$, $N\geq 2\tilde{k}_c+1$,
   and $mN = k_1+\tilde{k}_c$ for some integer $m$. Explain precisely how to recover $x$ from the samples in this case.
+ Since   $N\geq 2\tilde{k}_c+1$, from the previous question we know that we can take $N$ samples of $x$ in [0,1] and find all the Fourier coefficients between $[k_1, k_2]$. 
+ In addition $k_2:=k_1 + 2\tilde{k}_c$ or $\tilde{k}_c = \frac{k_2 - k_1}{2}$ and $mN=k_1 + \tilde{k}_c = \frac{k_1 + k_2}{2}$.
+ From $mN$ we find the point in the frequency domain $\frac{k_1 + k_2}{2}$ and we sample $N$ points of $x$ from the frequency $\frac{k_1 + k_2}{2} - \tilde{k}_c = k_1$ to the frequency $\frac{k_1 + k_2}{2} + \tilde{k}_c = k_2$:
+ The Fourier coefficients of the signal can be recovered from $N$ samples where:
+ \begin{align*}
+ 	x(\frac{j\; T}{N})	&= \sum_{k=-\tilde{k}_c}^{k=\tilde{k}_c}  \hat{x}[k]  \exp (\frac{i 2 \pi k j} {N}) \\
+ \end{align*}
+ 
+  	\begin{figure}[H]
+		\centering
+		\captionsetup{justification=centering}
+		\includegraphics[width=200pt]{Q3_c.png}
+	\end{figure}
+
+
 \end{enumerate} 
  
  \newpage
