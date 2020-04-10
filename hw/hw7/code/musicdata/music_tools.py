@@ -81,13 +81,14 @@ def play_file(filename) :
     
     
 def main() :
-    df = load_df()
-    print(df.head())
-    print(df.iloc[0])
-    a = load_signals(df)
-    print(a.shape)
-    play_signal(*load_signal(df['filename'][0]))
-    play_signal(a[0,:],df['sample_rate'][0])
+    df_train, df_test = load_df()
+    print(df_train.shape)
+    # print(df.head())
+    # print(df.iloc[0])
+    # a = load_signals(df)
+    # print(a.shape)
+    play_signal(*load_signal(df_train['filename'][0]))
+    #play_signal(a[0,:],df['sample_rate'][0])
     
 if __name__ == "__main__" :
     main()

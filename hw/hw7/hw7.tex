@@ -184,6 +184,16 @@ coefficients in the interval $[k_1, k_2]$, having the number of samples $N \ge k
     \texttt{instrument\_family\_str} and the frequency (in Hz).
     We recommend you also use \texttt{play\_signal}
     to hear what the signals sound like.
+    
+	\begin{figure}[H]
+		\centering
+		\captionsetup{justification=centering}
+		\includegraphics[width=200pt]{code/musicdata/signals.pdf}
+		\caption{First signal and first vocal signal in the training set.}
+		%\label{simplemodel}
+	\end{figure}
+
+    
   \item For each signal in the test set, compute the (strictly positive)
     frequency with the largest amplitude (in absolute value), and
     convert it to a pitch number (using the tools in
@@ -191,7 +201,8 @@ coefficients in the interval $[k_1, k_2]$, having the number of samples $N \ge k
     \begin{enumerate}
     \item Report what overall fraction of the signals in
       the test set you accurately predict using this method (i.e.,
-      your overall accuracy).
+      your overall accuracy).\\
+      Using this method, the overall accuracy obtained is: $72.084\%$.
     \item For the
       first two signals you misclassify (in the order they occur in the
       test set), give plots of their absolute
@@ -200,10 +211,22 @@ coefficients in the interval $[k_1, k_2]$, having the number of samples $N \ge k
       \texttt{instrument\_family\_str}, the true frequency, and the
       predicted frequency (in Hz).  Make
       sure to plot the coefficients on an axis centered at $0$ by using
-      fftfreq with the correct arguments.
+      fftfreq with the correct arguments.\\
+      
+	\begin{figure}[H]
+		\centering
+		\captionsetup{justification=centering}
+		\includegraphics[width=200pt]{code/musicdata/misclassified_signals.pdf}
+		\caption{First signal and second misclassified signals in the test set.}
+	\end{figure}
+
+      
     \item What is the instrument family for which the method got the
       highest fraction of incorrect predictions (i.e., number incorrect
       divided by number of examples from that family)?
+      The instrument family with the highest fraction of incorrect predictions is the family $10$ which corresponds
+      to the vocal instrument\_family\_str.
+      
     \end{enumerate}
   \item Use the \texttt{LogisticRegression} class in sklearn to fit a
     pitch classifier on the training set using the absolute DFT
@@ -213,11 +236,22 @@ coefficients in the interval $[k_1, k_2]$, having the number of samples $N \ge k
     frequencies as well for convenience, even though they have the same magnitudes as
     the positive (the $L_2$ regularization will take care of it for us).
     \begin{enumerate}
-    \item Report your score on the test set as computed by the model.
+    \item Report your score on the test set as computed by the model.\\
+    The mean accuracy score reported by the LogisticRegression model on the test dataset is $0.9964$
+    
     \item Give 3 plots of the model coefficients for pitches 60, 65, and 72.
       Make sure to plot the coefficients on an axis centered at $0$ by using
       fftfreq with the correct arguments (because the coefficients
-      correspond to frequencies).
+      correspond to frequencies).\\
+
+	\begin{figure}[H]
+		\centering
+		\captionsetup{justification=centering}
+		\includegraphics[width=200pt]{code/musicdata/pitch_classification.pdf}
+		\caption{Pitch classification, coefficients of the logistic regression models for pitches $60$, $65$ and $70$.}
+	\end{figure}
+
+      
     \end{enumerate}
   \end{enumerate}
 
