@@ -73,9 +73,46 @@ Yves Greatti - yg390\\
     and positives to the right. What do you notice about the
     magnitudes of the plots?
     [Hint: Use fftfreq in numpy with sample spacing $d=1.0/N$.]
+    The magnitudes os the plots seems to double each time we double the number of samples or similarly decrease
+    the sampling frequency ($\frac{1}{N}$).
+    
+	\begin{figure}[H]
+		\centering
+		\captionsetup{justification=centering}
+		\includegraphics[width=200pt]{code/timedata/question_1.pdf}
+	\end{figure}
+    
+   If we scale the Fourier coefficients by $N$,  to get a length invariant signal magnitude, we have the same magnitude on each plot of the signal $x$ for the corresponding
+   frequencies. And as we increase the sampling frequency $\frac{1}{N}$, we have more samples:
+   	
+	\begin{figure}[H]
+		\centering
+		\captionsetup{justification=centering}
+		\includegraphics[width=200pt]{code/timedata/question_1_1.pdf}
+	\end{figure}
+
+
   \item Assuming $k_c\leq 4096$ give the three largest $|a_k|$-values,
     along with their corresponding frequencies
     (i.e., the $k$-values). % [Hint: The largest value isn't $307237.5$.]
+    
+    Top $3$ largest $|a_k|$-values are:
+     \begin{center}
+    		\begin{tabular}{ | c | c | c | }
+		\hline
+			76837.5 & 59544.473 & 56645.969 \\ 
+		\hline
+    	\end{tabular}
+    \end{center}
+    corresponding to these frequencies:
+       \begin{center}
+    		\begin{tabular}{ | c | c | c | }
+		\hline
+			0 & 257 & -184 \\ 
+		\hline
+    	\end{tabular}
+    \end{center}
+
   \item Let $\hat{x}_{[2049]}$ and $\hat{x}_{[8193]}$ denote the DFT
     coefficients computed from the small and large arrays, respectively.
     Suppose you have only computed $\hat{x}_{[8193]}$
@@ -87,6 +124,8 @@ Yves Greatti - yg390\\
   \item True or False: Since none of the plots computed above are non-zero for
     any frequency $k$ with $|k|>2048$ it follows that
     $k_c\leq2048$. % No justification needed.
+    True. As we go from $N=8193$ to $N=4097$, no new frequencies beyond $2048$ were computed.
+    
  % \item Show that for any integer $k$ with $|k|\leq k_c$, and any integer $M\geq 2k_c+1$ we must have $$\int_{0}^{1}x(t)e^{-2\pi ikt}\,dt = \frac{1}{M}\sum_{j=0}^{M-1} x(j/M)e^{-2\pi ijk/M}.$$
   \end{enumerate}
 
