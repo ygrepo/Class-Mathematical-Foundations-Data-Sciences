@@ -129,6 +129,7 @@ Yves Greatti - yg390\\
  % \item Show that for any integer $k$ with $|k|\leq k_c$, and any integer $M\geq 2k_c+1$ we must have $$\int_{0}^{1}x(t)e^{-2\pi ikt}\,dt = \frac{1}{M}\sum_{j=0}^{M-1} x(j/M)e^{-2\pi ijk/M}.$$
   \end{enumerate}
 
+\newpage
 \item (Justification of the FFT) Define the matrix
   $F_{[N]}\in\C^{N\times N}$ by
   $(F_{[N]})_{j,k}=e^{-2\pi i jk/N}$ where $0\leq j,k<N$ and $N$ is even.
@@ -137,11 +138,35 @@ Yves Greatti - yg390\\
   full set of indices, and $a:$ denotes all indices starting from $a$. Answer these questions to complete the proof of Lemma 4.3.
   \begin{enumerate}
   \item For any $k\geq 0$ with $2k<N$ prove a formula showing how to
-    compute the rows corresponding to odd indices $(F_{[N]})_{:,2k+1}$ assuming you are given the rows for even indices $(F_{[N]})_{:,2k}$.
-  \item For any $k\geq 0$ with $2k<N$ prove that the first half of the even rows equals the second half $(F_{[N]})_{0:N/2-1,2k}=(F_{[N]})_{N/2:,2k}$.  
-  \item Prove that the first half of the even rows is equal to the even rows of the $N/2$ DFT matrix $(F_{[N]})_{0:N/2-1,2k} = (F_{[N/2]})_{:,k}$.
-  \end{enumerate}
+    compute the rows corresponding to odd indices $(F_{[N]})_{:,2k+1}$ assuming you are given the rows for even indices $(F_{[N]})_{:,2k}$.\\ \\
+    For a given element of the even row corresponding to the index $2k$: $(F_{[N]})_{j,2k}=e^{-2\pi i j 2\; k/N}, 0\leq j,k<N$ we can express the corresponding
+    element $(F_{[N]})_{j,2k+1}$:
+    $$
+    	(F_{[N]})_{j,2k+1}=e^{-2\pi i j (2\; k + 1)/N} = e^{-2\pi i j (2\; k)/N} e^{-2\pi i j/N}  = (F_{[N]})_{j,2k} (e^{-2\pi i /N})^j
+    $$
+    If we define $w = e^{-2\pi i /N}$, the equality above is similar to: $w^{j (2k + 1)} = w^{j 2k} w^j$.
+    
+  \item For any $k\geq 0$ with $2k<N$ prove that the first half of the even columns equals the second half $(F_{[N]})_{0:N/2-1,2k}=(F_{[N]})_{N/2:,2k}$.  \\ \\
+  We want to show that these two half-rows are the same:
+  \begin{align*}
+  	(F_{[N]})_{0:N/2-1,2k}	&= [1 \; w^{2k} \; w^{2 (2k)} \; \ldots \; w^{(\frac{N}{2} -1) (2k)} ] \\
+  	(F_{[N]})_{N/2:,2k}		&= [w^{\frac{N}{2} (2k)}  \; [w^{(\frac{N}{2} + 1) (2k)}  \ldots \; w^{(N -1) (2k)} ] \\
+  \end{align*}
+  And for every element of the first half of the even row, $0 \le j \le \frac{N}{2}-1$
+  \begin{align*}
+  	w^N		&=	 e^{-2\pi \frac{i}{N} N} = e^{-2\pi i} = 1 \text{ ~ thus }\\ 	
+  	w^{j 2k} 	&=	w^{j 2k} (w^N)^{2k} = w^{ (j +  \frac{N}{2} +  \frac{N}{2}) 2k} \\
+			&= 	w^{ (j +  \frac{N}{2}) 2k} w^{(\frac{N}{2}) 2k} = w^{ (j +  \frac{N}{2}) 2k} (w^N)^k\\
+			&= 	 w^{ (j +  \frac{N}{2}) 2k}
+  \end{align*}
+    
+  \item Prove  that  the  first  half  of  the  even  columns  is  equal to  the $N/2$ DFT matrix $(F_{[N]})_{0:N/2-1,2k} = (F_{[N/2]})_{:,k}$.\\ \\
+  This comes from the fact that the sub-matrix $F_{[\frac{N}{2}][\frac{N}{2}]}$ on the upper-left corner of $F_{[N]}$ is the matrix $F_{[N/2]}$ since $N$ is even.
+  Therefore the first half of the even columns is  equal to  the $N/2$ DFT.
+   
+   \end{enumerate}
  
+ \newpage
  \item (Properties of the DFT)
   Let $F_{[N]}\in\C^{N\times N}$ denote the DFT matrix.
   \begin{enumerate}
@@ -149,6 +174,37 @@ Yves Greatti - yg390\\
     written as $\frac{1}{N}PF_{[N]}$ for some permutation matrix $P$
     with $P^{-1}=P$.  This shows that the DFT and the inverse DFT can be
     calculated in a very similar way.
+    
+    The DFT matrix $F_{[N]}$, adopting the notation $w = e^{-2\pi i /N}$, is:
+    $$
+    \MAT{
+    1 & 1 & 1 & 1 & \ldots & 1 \\
+    1 & w & w^2 & w^3 & \ldots & w^{N-1} \\
+    1 & w^2 & w^4 & w^6 & \ldots & w^{2 (N-1)} \\
+    \vdots & \vdots & \vdots & \vdots & \ddots & \vdots \\
+    1 & w^{N-1}	& w^{2(N-1)} & w^{3 (N-1)} & \ldots & w^{(N-1) (N-1)}	\\
+    }
+    $$
+   Let $N=2l$,  $w$ is the $N^{\text{th}}$ unitary root with $w^l = -1$ and  $w^0 = w^N = 1$. All the coefficients of $F_{[N]}$ are on the unit circle equally spaced by an angle $\frac{2\pi}{N}$.
+   So the conjugate of $w$ is $w^{N-1}$, $w^2$ is $w^{2 (N-2)} = w^{2N-2} = w^{N + N-2} = w^{N-2}$, up to $w^{N-1}$ which has for conjugate $w^{(N-1)(N-1)} = w^{N^2-2N+1} = w$, 
+   thus taking the conjugate of the second row  gives the last row of the matrix $F_{[N]}$, 
+   taking the conjugate of the third row of $F_{[N]}$ gives the $N-1$ row, 
+   we keep permutating the rows following this pattern until reaching the row $N$, as a side note the row at position $l+1$ is permutated without changes.
+   The permutation matrix $P$ is:
+       $$
+    \MAT{
+    1 & 0 & 0 & 0 & \ldots & 0 \\
+    0 & 0 & 0 & 0 & \ldots & 1 \\
+    0 & 0 & 0 & \ldots & 1 & 0 \\
+    0 & 0 & \ldots & 1 & 0 & 0 \\
+    \vdots & \vdots & \vdots & \vdots & \vdots & \vdots\\
+    0 & 1	& 0 & 0 & \ldots & 0	\\
+    }
+    $$
+    Being a permutation matrix $P$ is invertible and if we multiply $P$ by itself, we see that  we will select the same non-zero entries so $P^{-1}=P$.
+    In final $\frac{1}{N}F_{[N]}^* = \frac{1}{N}PF_{[N]}$
+   
+    
   \item Using the fact that
     $$(ABC)[j,k] = A[j,:](B)C[:,k]$$
     for any $A,B,C\in\C^{N\times N}$ and $0\leq j,k<N$ prove that
@@ -161,10 +217,17 @@ Yves Greatti - yg390\\
     sinusoidal basis vectors.
     [Hint: Use the trace operator.]
   \item If $x:L_2[0,1)^2\to\C$ is real-valued, prove that the Fourier
-    coefficients satisfy $\hat{x}[j,k]=\overline{\hat{x}[-j,-k]}$.
-   % [Note: By sampling, the same property must hold for the 2D DFT.]
+    coefficients satisfy $\hat{x}[j,k]=\overline{\hat{x}[-j,-k]}$.\\
+   % [Note: By sampling, the same property must hold for the 2D DFT.]\\
+\begin{align*}
+   	\hat{x}[j,k]	   	&= \PROD{x}{\phi_{j,k}^{\text{2D}}} = \int_0^1 \int_0^1 x(t_1, t_2) \exp \brac{- i2 \pi j t_1 }  \exp \brac{- 2 \pi k t_2 } \diff{t_1} \diff{t_2} \text{ ~ where we assume } T = 1\\ 	
+				&=   \int_0^1 \int_0^1 x(t_1, t_2) \overline{\exp \brac{- i2 \pi (-j) t_1 }}  \;  \overline{\exp \brac{- 2 \pi (-k) t_2 }} \diff{t_1} \diff{t_2} \; x \text{being real-valued}\\
+				&= \overline{\hat{x}[-j,-k]} \\
+\end{align*}
+   
   \end{enumerate}
   
+  \newpage
   \item (Undersampling in MRI) MRI measurements can be modeled as the Fourier coefficients of tissue density (being very simplistic). An important goal is to reduce the number of Fourier coefficients, because this accelerates data acquisition, decreasing costs and improving the experience for the patient. Here we will see one of the possible pitfalls of undersampling in the Fourier domain, which is equivalent to aliasing.
  \begin{enumerate}
  \item Imagine that you only measure half of the DFT coefficients of an $N$-dimensional vector $x$.  Specifically you measure a vector $y \in \C^{N/2}$ (assume $N$ is even) that contains the Fourier coefficients corresponding to even indices. Explain how to reconstruct the vector $x_{\op{est}}$ with the smallest $\ell_2$ norm that is consistent with these measurements. Use a single multiplication with the inverse DFT matrix $\frac{1}{N}F_{[N]}^{\ast}$.
