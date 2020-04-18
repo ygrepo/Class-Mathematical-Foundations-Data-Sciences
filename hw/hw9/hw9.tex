@@ -1,0 +1,98 @@
+\documentclass[12pt,twoside]{article}
+\usepackage[dvipsnames]{xcolor}
+\usepackage{tikz,graphicx,amsmath,amsfonts,amscd,amssymb,bm,cite,epsfig,epsf,url}
+\usepackage[hang,flushmargin]{footmisc}
+\usepackage[colorlinks=true,urlcolor=blue,citecolor=blue]{hyperref}
+\usepackage{amsthm,multirow,wasysym,appendix}
+\usepackage{array,subcaption} 
+% \usepackage[small,bf]{caption}
+\usepackage{bbm}
+\usepackage{pgfplots}
+\usetikzlibrary{spy}
+\usepgfplotslibrary{external}
+\usepgfplotslibrary{fillbetween}
+\usetikzlibrary{arrows,automata}
+\usepackage{thmtools}
+\usepackage{blkarray} 
+\usepackage{textcomp}
+\usepackage[left=0.8in,right=1.0in,top=1.0in,bottom=1.0in]{geometry}
+
+\usepackage{times}
+\usepackage{amsfonts}
+\usepackage{amsmath}
+\usepackage{latexsym}
+\usepackage{color}
+\usepackage{graphics}
+\usepackage{enumerate}
+\usepackage{amstext}
+\usepackage{blkarray}
+\usepackage{url}
+\usepackage{epsfig}
+\usepackage{bm}
+\usepackage{hyperref}
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue,
+    filecolor=magenta,      
+    urlcolor=blue,
+}
+\usepackage{textcomp}
+\usepackage[left=0.8in,right=1.0in,top=1.0in,bottom=1.0in]{geometry}
+\usepackage{mathtools}
+\usepackage{minted}
+
+
+
+\input{macros}
+
+\begin{document}
+
+\begin{center}
+{\large{\textbf{Homework 9}} } \vspace{0.2cm}\\
+Due April 26 at 11 pm
+\end{center}
+Yves Greatti - yg390\\
+
+\begin{enumerate}
+
+\item (Real discrete sinusoids)
+
+ \begin{enumerate}
+ \item Prove that for any $x,y\in\R$
+  \begin{align}
+ \cos(x+y) & = \cos(x)\cos(y) - 2\sin(x)\sin(y) ,\\
+ \sin(x+y) & = \cos(x)\sin(y) + \sin(x)\cos(y) .
+ \end{align}
+ \item Use the result from part (a) to show that the real discrete sinusoidal vectors
+ \begin{align}
+ c_0 & = \frac{1}{\sqrt{N}}\MAT{1 \\ 1 \\ \cdots \\ 1},\\
+c_k & = \sqrt{\frac{2}{N}}\MAT{1 \\ \cos \brac{\frac{2 \pi k }{N}} \\ \cdots \\ \cos \brac{\frac{2 \pi k (N-1))}{N}}}, \quad 1 \leq k \leq \frac{N-1}{2},\\
+ s_k & = \sqrt{\frac{2}{N}}\MAT{1 \\ \sin \brac{\frac{2 \pi k }{N}} \\ \cdots \\ \sin \brac{\frac{2 \pi k (N-1))}{N}}}, \quad 1 \leq k \leq \frac{N-1}{2},
+ \end{align}
+ where we assume that $N$ is odd, form an orthonormal basis of $\R^{N}$.
+ \end{enumerate}
+  
+ \item (PCA of stationary vector) Let $\rv{x}$ be a wide-sense stationary vector with real-valued autocovariance vector $a_{\rx}$,  with covariance matrix $\Sigma_{\rv{x}}$ . In the notes we showed that the eigenvectors and eigenvalues of $\Sigma_{\rv{x}}$ are complex exponentials and the DFT coefficients of $a_{\rx}$ respectively. Here we will show that we can derive an equivalent real-valued eigendecomposition because the autocovariance vector is real. We will assume that $N$ is an odd number. (Hint: You will find the results from Problem 1 useful.)
+ \begin{enumerate}
+ \item Show that the DFT coefficients of $a_{\rx}$ are real, and satisfy $\hat{a}_{\rx}[k] = \hat{a}_{\rx}[N-k]$ for $k=1,\ldots,\frac{N-1}{2}$.
+ \item Show that
+ \begin{align}
+ \Sigma_{\rv{x}}[j_1,j_2] & = \frac{1}{N}\sum_{k=0}^{N-1} \hat{a}_{\rx}[k] \exp\brac{\frac{2 \pi k (j_2-j_1)}{N}}.
+ \end{align}  
+  \item Derive the real-valued eigenvalues and the corresponding eigenvectors of $\Sigma_{\rv{x}}$.
+  \end{enumerate}
+ 
+ \item (Discrete filter) Let us index the DFT coefficients of the $N$-dimensional vectors from $-(N-1)/2$ to $(N-1)/2$ (assuming $N$ is odd). We define the bandlimited signals in this space as those for which the nonzero Fourier coefficients are zero beyond a certain value $k_c$, i.e. $x \in \C^{N}$ is bandlimited if $\hat{x}[k]=0$ for all $\abs{k}>k_c$. Let $y$ be the vector with the smallest $\ell_2$ norm such that $x \ast y = x$ for all bandlimited vectors with cut-off frequency $k_c$ (where $k_c$ is a fixed integer smaller than $(N-1)/2$). Derive an explicit expression for the entries of $y$, showing that they are real valued.
+
+ 
+  \item (Deconvolution) In this problem we will tackle image deblurring, an important problem in image processing. Image blurring is often modeled as convolution of the image of interest with a blur kernel.  The file \texttt{wiener.py} contains code to load all the required data and has snippet of code to plot image and filters in pixel domain and fourier domain. 
+  
+ \begin{enumerate}
+ \item Gaussian blur kernels are a very popular model in the literature.  Outline a method to recover the true image from the blurred image. The variable \texttt{blur} in \texttt{wiener.py} contains the 2D convolution of an image with a Gaussian kernel \texttt{filt}. Write a function \texttt{deconvolution()} to recover the true image from \texttt{blur}. Report the result in both the image domain and the Fourier domain (plot the magnitude of the Fourier coefficients). You can adapt the snippet of code in \texttt{wiener.py} to generate the plots. [Hint: Check if a division by zero will nearly occur, and replace with a small non-zero value.]
+ \item Apply your method to the image in the variable \texttt{noisy\_blur}, which contains a blurred image corrupted by some noise.  Report the result in the image and the Fourier domains (plot the magnitude of the Fourier coefficients). Explain what is happening.
+  \item Derive the Wiener filter for estimating a zero-mean vector $\ry$ from noisy blurred measurements $\rx = b \ast \ry + \rnd{z}$, where $b$ is a known blur kernel and $\rnd{z}$ is iid Gaussian noise with zero mean and variance $\sigma^2$. 
+  \item Write a function \texttt{weiener\_deconvolution()} to recover the image from the noisy data (\texttt{noisy\_blur}). Report the result in the image and the Fourier domains (plot the magnitude of the Fourier coefficients). Compare this method to the result in (b) and explain why it works better. [Hint: you may have to use the variable \texttt{all\_images} and \texttt{s} here]
+  \end{enumerate}
+
+ \end{enumerate}
+\end{document}

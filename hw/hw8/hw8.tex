@@ -118,14 +118,25 @@ Yves Greatti - yg390\\
     and assume $k_c\leq4096$.
     Give a formula for $\hat{x}_{[2049]}[3]$ in terms of
     the entries of $\hat{x}_{[8193]}$ and test your formula
-    on the given data.  Your formula should only require simple algebra. 
+    on the given data.  Your formula should only require simple algebra. \\
     % [Hint: Use the aliasing formula.]
+    Let $N=2048$
+    \begin{align*}
+    	\hat{x}_{N}[k]	&=	\frac{1}{N} (\tilde{F}^*_{[N]} x_{[N]})[k] \\
+				&=	\frac{1}{N} \sum_{j=0}^{N-1} \exp \brac{ \frac{ - i2 \pi kj}{N} } \sum_{m=-k_c}^{+k_c} \hat{x}[m] \exp \brac{ \frac{ - i2 \pi mj}{4 N} }\\		
+				&=	\frac{1}{N} \sum_{j=0}^{N-1}  \sum_{m=-k_c}^{+k_c}  \hat{x}[m]  \exp \brac{  \frac{ - i2 \pi j}{N} (k + \frac{m}{4}) } \\
+				&=    \sum_{\{(4 k + m) \mod 4 N = 0\} } \hat{x}[m] \\
+      \hat{x}_{[2049]}[3]	&= \hat{x}_{[8193]}[4 \times 2048 - 4 \times 3] =  \hat{x}_{[8193]}[8180]\\
+    \end{align*}
+    
+    
   \item True or False: Since none of the plots computed above are non-zero for
     any frequency $k$ with $|k|>2048$ it follows that
     $k_c\leq2048$. % No justification needed.
-    True. As we go from $N=8193$ to $N=4097$, no new frequencies beyond $2048$ were computed.
+    False.High-frequency signals can fold back to a frequency within  $\leq2048$. In the question above we showed that the true signal has 
+    $k_c\leq4096$ but within  $[-2048, +2048]$ aliasing can occur a different sampling rates than $N=8192$.
     
- % \item Show that for any integer $k$ with $|k|\leq k_c$, and any integer $M\geq 2k_c+1$ we must have $$\int_{0}^{1}x(t)e^{-2\pi ikt}\,dt = \frac{1}{M}\sum_{j=0}^{M-1} x(j/M)e^{-2\pi ijk/M}.$$
+ %\item Show that for any integer $k$ with $|k|\leq k_c$, and any integer $M\geq 2k_c+1$ we must have $$\int_{0}^{1}x(t)e^{-2\pi ikt}\,dt = \frac{1}{M}\sum_{j=0}^{M-1} x(j/M)e^{-2\pi ijk/M}.$$
   \end{enumerate}
 
 \newpage
@@ -223,7 +234,7 @@ Yves Greatti - yg390\\
     sinusoidal basis vectors.
     [Hint: Use the trace operator.]\\
     
-    From the notes on Fourier: $\psi_{j, k_1} = \exp \brac{ \frac{ i2 \pi j k_1j}{N} }$  and  $\psi_{k, k_2} = \exp \brac{ \frac{ i2 \pi j k_2 k}{N} }$
+    From the notes on Fourier: $\psi_{j, k_1} = \exp \brac{ \frac{ i2 \pi j k_1}{N} }$  and  $\psi_{k, k_2} = \exp \brac{ \frac{ i2 \pi k k_2}{N} }$
     \begin{align*}
     	\hat{X}[j,k] 	&=	 \langle X,\psi_j\psi_k^T\rangle \\
 				&=	\tr{ (\psi_j\psi_k^T)^*  X}\\
@@ -248,7 +259,7 @@ Yves Greatti - yg390\\
   \item (Undersampling in MRI) MRI measurements can be modeled as the Fourier coefficients of tissue density (being very simplistic). An important goal is to reduce the number of Fourier coefficients, because this accelerates data acquisition, decreasing costs and improving the experience for the patient. Here we will see one of the possible pitfalls of undersampling in the Fourier domain, which is equivalent to aliasing.
  \begin{enumerate}
  \item Imagine that you only measure half of the DFT coefficients of an $N$-dimensional vector $x$.  Specifically you measure a vector $y \in \C^{N/2}$ (assume $N$ is even) that contains the Fourier coefficients corresponding to even indices. Explain how to reconstruct the vector $x_{\op{est}}$ with the smallest $\ell_2$ norm that is consistent with these measurements. Use a single multiplication with the inverse DFT matrix $\frac{1}{N}F_{[N]}^{\ast}$.\\ \\
- If we had measured all the  Fourier coefficients then $x_{\op{est}} = \frac{1}{N}F_{[N]}^{\ast} \hat{x}$, and $F_{[N]}^{\ast}$ is unitary, it preserves the norm. When  we have only $y$ which contains only the even Fourier coefficients there is an infinite number of signals solution of the previous system (it is undertermined). In order to minimize  $\ell_2$ norm of the reconstruct the vector $x_{\op{est}}$ which is proportional to the norm of the of the corresponding vector in the frequency domain, we set the even Fourier coefficients to $0$: $x_{\op{est}} = \frac{1}{N}F_{[N]}^{\ast} [0 \; x_2 \;0 \; x_4 \cdots x_N]^T$
+ If we had measured all the  Fourier coefficients then $x_{\op{est}} = \frac{1}{N}F_{[N]}^{\ast} \hat{x}$, and $F_{[N]}^{\ast}$ is unitary, it preserves the norm. When  we have only $y$ which contains only the even Fourier coefficients there is an infinite number of signals solution of the previous system (it is undertermined). In order to minimize  $\ell_2$ norm of the reconstruct the vector $x_{\op{est}}$ which is proportional to the norm of the of the corresponding vector in the frequency domain, we set the even Fourier coefficients to $0$: $x_{\op{est}} = \frac{1}{N}F_{[N]}^{\ast} [0 \; \hat{x}_2 \;0 \; \hat{x}_4 \cdots \hat{x}_N]^T$
  
  \item The script  \texttt{mr\_undersampling.py} loads the data and plots the MR image and it's Fourier coefficients. Apply your proposed reconstruction method to 2D data by completing the script \texttt{mr\_undersampling.py}.  Reconstruct the image using (1) only the even-indexed rows, (2) only the even-indexed columns, (3) only indices in even rows and columns. Report images generated using the plotting script for your under sampled Fourier coefficients and reconstructed image.  
 
@@ -301,7 +312,31 @@ Yves Greatti - yg390\\
 
 
 
-  \item To explain what you are seeing, express $x_{\op{est}}$ in terms of the entries of $x$ in the 1D case. (Hint: You might want to use some results from Problem 1.)
+  \item To explain what you are seeing, express $x_{\op{est}}$ in terms of the entries of $x$ in the 1D case. (Hint:   You might want to use some results from Problem 2(b) and 2(c).)\\ \\
+  We have an aliasing, parts of the image are scrambled, if we under sample rows, up and down of the initial image are overlapping in the recovered  image, if we under sample columns
+  left and right halves of the image are scrambled, the aliasing is less severe when under sampling a mixed of rows and columns. We have a duplication of the initial image and a shift. 
+  From problem 2(b) and 2(c) if we sample only the even columns of $F_{[N]}$ then 
+  $$
+  (F_{[N]})_{\text{even columns}}
+  \MAT{
+  F_{[\frac{N}{2}]} \\
+   F_{[\frac{N}{2}]} }$$
+ Measure half of the DFT coefficients is equivalent of 
+ \begin{align*}
+& (F_{[N]})_{\text{even columns}} x \\
+&  \MAT{
+  F_{[\frac{N}{2}]} \\
+   F_{[\frac{N}{2}]} } x \\
+  & 2  F_{[\frac{N}{2}]}  x
+ \end{align*}
+ Similarly setting all the odd entries of $\hat{x} = y$ to $0$ is equivalent to:
+ \begin{align*}
+ x_{\op{est}} 	&=  \frac{1}{N}F_{[\frac{N}{2}]}^{\ast} y \\
+ 			&=  \frac{1}{N}F_{[\frac{N}{2}]}^{\ast}  2  F_{[\frac{N}{2}]}  x \\
+			&= \frac{2}{N} x
+  \end{align*}
+we have twice the original vector.
+
   \end{enumerate}
 
  \end{enumerate}
