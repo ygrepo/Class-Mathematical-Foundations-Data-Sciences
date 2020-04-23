@@ -75,18 +75,10 @@ Equality of the real part of LHS to the real part of RHS gives the first equalit
  \begin{align}
  c_0 & = \frac{1}{\sqrt{N}}\MAT{1 \\ 1 \\ \cdots \\ 1},\\
 c_k & = \sqrt{\frac{2}{N}}\MAT{1 \\ \cos \brac{\frac{2 \pi k }{N}} \\ \cdots \\ \cos \brac{\frac{2 \pi k (N-1))}{N}}}, \quad 1 \leq k \leq \frac{N-1}{2},\\
- s_k & = \sqrt{\frac{2}{N}}\MAT{1 \\ \sin \brac{\frac{2 \pi k }{N}} \\ \cdots \\ \sin \brac{\frac{2 \pi k (N-1))}{N}}}, \quad 1 \leq k \leq \frac{N-1}{2},
- \end{align}
- where we assume that $N$ is odd, form an orthonormal basis of $\R^{N}$.
- 
-  \begin{align}
- c_0 & = \frac{1}{\sqrt{N}}\MAT{1 \\ 1 \\ \cdots \\ 1},\\
-c_k & = \sqrt{\frac{2}{N}}\MAT{1 \\ \cos \brac{\frac{2 \pi k }{N}} \\ \cdots \\ \cos \brac{\frac{2 \pi k (N-1))}{N}}}, \quad 1 \leq k \leq \frac{N-1}{2},\\
- s_k & = \sqrt{\frac{2}{N}}\MAT{1 \\ \sin \brac{\frac{2 \pi k }{N}} \\ \cdots \\ \sin \brac{\frac{2 \pi k (N-1))}{N}}}, \quad 1 \leq k \leq \frac{N-1}{2},
+ s_k & = \sqrt{\frac{2}{N}}\MAT{0 \\ \sin \brac{\frac{2 \pi k }{N}} \\ \cdots \\ \sin \brac{\frac{2 \pi k (N-1))}{N}}}, \quad 1 \leq k \leq \frac{N-1}{2},
  \end{align}
  where we assume that $N$ is odd, form an orthonormal basis of $\R^{N}$.\\
- 
- Let $x=\frac{2 k \pi}{N}, \|c_0||^2 =  \frac{1}{\sqrt{N}} \sqrt{\sum_{j=1}^N 1} = \frac{\sqrt{N}} {\sqrt{N}} = 1$ 
+Let $x=\frac{2 k \pi}{N}, \|c_0||^2 =  \frac{1}{\sqrt{N}} \sqrt{\sum_{j=1}^N 1} = \frac{\sqrt{N}} {\sqrt{N}} = 1$ 
 and $\|c_k\|^2 = \frac{2}{N} \sum_{j=0}^{N-1} \cos(j x)^2, \|s_k\|^2 = \frac{2}{N} \sum_{j=1}^{N-1} \sin(j x)^2)$
  
  \begin{align*}
@@ -132,7 +124,7 @@ For $1 \leq i,j \leq \frac{N-1}{2}, i \neq j$
  \PROD{c_i}{s_j}		&=	 \sqrt{\frac{4}{N^2}}  \sum_{k=1}^{N-1} \cos \brac{\frac{2 \pi i k }{N}} \sin \brac{\frac{2 \pi j k }{N}} \\
  					&=	 \sqrt{\frac{4}{N^2}}  ( \sum_{k=1}^{N-1}  \sin \brac{\frac{2 \pi (i+j) k }{N}} - \sum_{k=1}^{N-1}  \sin \brac{\frac{2 \pi (i-j) k }{N}}  )\\		
 					&= 	 \sqrt{\frac{4}{N^2}}  ( \sum_{k=1}^{N-1}  \sin \brac{\frac{2 \pi \tau k }{N}} - \sum_{k=1}^{N-1}  \sin \brac{\frac{2 \pi \zeta k }{N}}  )\\		
-					&= 0
+					&= 0 \text{ using the result few lines above about the sum of sines}
   \end{align*}
    \end{enumerate}
  
@@ -162,9 +154,29 @@ For $1 \leq i,j \leq \frac{N-1}{2}, i \neq j$
  And $$\Sigma_{\rv{x}}[j_1,j_2] = \frac{1}{N}\sum_{k=0}^{N-1} \hat{a}_{\rx}[k] \exp\brac{\frac{i2 \pi k (j_2-j_1)}{N}}$$
  
  
-  \item Derive the real-valued eigenvalues and the corresponding eigenvectors of $\Sigma_{\rv{x}}$.
+  \item Derive the real-valued eigenvalues and the corresponding eigenvectors of $\Sigma_{\rv{x}}$.\\
+  From the notes on stationarity, $C$ being a circulant matrix and let $x \neq 0$, an eigenvector of $C$, and the previous question, we have
+  \begin{align*}
+  					y	&= C x =	c * x \\
+					y[k]	&= \frac{1}{N}\sum_{k=0}^{N-1} \hat{a}_{\rx}[k] \exp\brac{\frac{i2 \pi k (j_2-j_1)}{N}} \\
+						&=  \frac{1}{N}\sum_{k=0}^{N-1} \hat{a}_{\rx}[k]  \exp\brac{\frac{-i2 \pi k j_1}{N}}  \exp\brac{\frac{i2 \pi k j_2}{N}} \\
+						&= \frac{1}{N}\sum_{k=0}^{N-1} \hat{a}_{\rx}[k] ( \exp\brac{\frac{i2 \pi k j_1}{N}} )  (\exp\brac{\frac{i2 \pi k j_2}{N}})  \text{ since } \rx \text{ is wide-sense stationary}\\
+						&= \frac{1}{N}\sum_{k=0}^{N-1} \hat{a}_{\rx}[k] ( \exp\brac{\frac{i2 \pi j}{N}} )^k    ( \exp\brac{\frac{i2 \pi j}{N}} )^k  \text{ multiplication along the same rows} j_1 = j_2\\
+						&=  \frac{1}{N}\sum_{k=0}^{N-1} \hat{a}_{\rx}[k] ( \exp\brac{\frac{i2 \pi j}{N}} )^k  \MAT{1 \\  \exp\brac{\frac{i2 \pi j}{N}}  \\  \exp\brac{\frac{i2 \pi j}{N}}^2 \\ \vdots \\  \exp\brac{\frac{i2 \pi j}{N}}^{N-1}}\\
+  \end{align*}
+  $x= \frac{1}{N} \MAT{1 \\  \exp\brac{\frac{i2 \pi j}{N}}  \\  \exp\brac{\frac{i2 \pi j}{N}}^2 \\ \vdots \\  \exp\brac{\frac{i2 \pi j}{N}}^{N-1}}$ is the eigenvector for the eigenvalue $\sum_{k=0}^{N-1} \hat{a}_{\rx}[k] ( \exp\brac{\frac{i2 \pi j}{N}} )^k $.
+  From part (a)  $\hat{a}_{\rx}[k] = \hat{a}_{\rx}[N-k]$ for $k=1,\ldots,\frac{N-1}{2}$ and using the fact that 
+  $$
+  \exp\brac{\frac{i2 \pi k j}{N}} +  \exp\brac{\frac{i2 \pi (N-k) j}{N}} = 2 \cos (\frac{i2 \pi k j}{N})
+  $$
+  Each $\lambda_j$ for $0 \le j \le N-1$, eigenvalue $j$ is:
+  $$
+  	\lambda_j = \hat{a}_{\rx}[0] +  2 \hat{a}_{\rx}[1] \cos (\frac{i2 \pi j}{N})+ \cdots +   2 \hat{a}_{\rx}[\frac{N}{2}] \cos (\frac{i2 \pi \frac{N}{2} j}{N})
+  $$
+  
   \end{enumerate}
- 
+
+  \newpage
  \item (Discrete filter) Let us index the DFT coefficients of the $N$-dimensional vectors from $-(N-1)/2$ to $(N-1)/2$ (assuming $N$ is odd). We define the bandlimited signals in this space as those for which the nonzero Fourier coefficients are zero beyond a certain value $k_c$, i.e. $x \in \C^{N}$ is bandlimited if $\hat{x}[k]=0$ for all $\abs{k}>k_c$. Let $y$ be the vector with the smallest $\ell_2$ norm such that $x \ast y = x$ for all bandlimited vectors with cut-off frequency $k_c$ (where $k_c$ is a fixed integer smaller than $(N-1)/2$). Derive an explicit expression for the entries of $y$, showing that they are real valued.
 
  
