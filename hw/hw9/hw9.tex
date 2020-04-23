@@ -62,7 +62,15 @@ Yves Greatti - yg390\\
   \begin{align}
  \cos(x+y) & = \cos(x)\cos(y) - \sin(x)\sin(y) ,\\
  \sin(x+y) & = \cos(x)\sin(y) + \sin(x)\cos(y) .
- \end{align}
+ \end{align}\\
+ 
+ \begin{align*}
+	  \exp(i (x+y)) 					&= \exp(ix) \exp(iy) \\
+ 	 \cos(x+y) + i \sin(x+y)			&= (\cos(x) + i \sin(x))(\cos(y) + i \sin(y)) \\
+	  \cos(x+y) + i \sin(x+y)			&= (\cos(x) \cos(y) -  \sin(x) \sin(y)) + i (\cos(x) \sin(y) +  \sin(x) \cos(y)) \\
+ \end{align*}
+Equality of the real part of LHS to the real part of RHS gives the first equality and similarly equality of  the imaginary parts gives the second equality.
+ 
  \item Use the result from part (a) to show that the real discrete sinusoidal vectors
  \begin{align}
  c_0 & = \frac{1}{\sqrt{N}}\MAT{1 \\ 1 \\ \cdots \\ 1},\\
@@ -79,34 +87,81 @@ c_k & = \sqrt{\frac{2}{N}}\MAT{1 \\ \cos \brac{\frac{2 \pi k }{N}} \\ \cdots \\ 
  where we assume that $N$ is odd, form an orthonormal basis of $\R^{N}$.\\
  
  Let $x=\frac{2 k \pi}{N}, \|c_0||^2 =  \frac{1}{\sqrt{N}} \sqrt{\sum_{j=1}^N 1} = \frac{\sqrt{N}} {\sqrt{N}} = 1$ 
-and $\|c_k\|^2 = \frac{2}{N} \sum_{j=0}^{N-1} \cos(j x)^2, \|s_k\|^2 = \frac{2}{N} (1 + \sum_{j=1}^{N-1} \sin(j x)^2)$
+and $\|c_k\|^2 = \frac{2}{N} \sum_{j=0}^{N-1} \cos(j x)^2, \|s_k\|^2 = \frac{2}{N} \sum_{j=1}^{N-1} \sin(j x)^2)$
  
  \begin{align*}
- \text{from (a)}	\cos(2 x)		&= \cos(x)^2 - \sin(x)^2 \\
-			\cos(x)^2 		&= \frac{1 + \cos(2 x)} {2} \\
-			\sin(x)^2		&=  \frac{1 - \cos(2 x)} {2} \\
-			\cos(x+y) 		& = \cos(x)\cos(y) - \sin(x)\sin(y)\\
-			\cos(x - y)		&= -\cos(x) \cos(y) - \sin(x) \sin(y) \\
-			 2 \sin(x) \sin(y)	&= \cos(x - y) - \cos( x+ y) \\
+ \text{from (a)}	\cos(2 x)			&= \cos(x)^2 - \sin(x)^2 \\
+			\cos(x)^2 			&= \frac{1 + \cos(2 x)} {2} \\
+			\sin(x)^2			&=  \frac{1 - \cos(2 x)} {2} \\
+			\sin(x+y) 			& = \cos(x)\sin(y) + \sin(x)\cos(y)\\
+			\sin(x - y)			&= -\cos(x) \sin(y) + \sin(x) \cos(y) \\
+			 2 \cos(x) \sin(y)	&= \sin(x + y) - \sin( x- y) \\
  \end{align*}
- Using the last equality and telescoping, we have 
+ $N$ is odd so $\sin(\frac{x}{2}) = \sin( \frac{2 k \pi}{2N} ) = \sin( \frac{k \pi}{N} ) \neq 0$ thus and using the last equality and telescoping, we have 
  \begin{align*}
- 		2 \sin(\frac{x}{2}) \sum_{k=1}^N \sin(k x)	&=  \sum_{k=1}^N  2 \sin(\frac{x}{2})  \sin(k x) \\
-										&= \sum_{k=1}^N \bigg( \cos \bigg( (k - \frac{1}{2}) x \bigg) -  \cos \bigg( (k + \frac{1}{2}) x \bigg) \bigg) \\
-										&= \cos(\frac{x}{2}) - \cos \bigg( (k + \frac{1}{2}) x \bigg) \\
+ 		2 \sin(\frac{x}{2}) \sum_{k=1}^N \cos(k x)	&=  \sum_{k=1}^N  2 \sin(\frac{x}{2})  \cos(k x) \\
+										&= \sum_{k=1}^N \bigg( \sin \bigg( (k + \frac{1}{2}) x \bigg) -  \sin \bigg( (k - \frac{1}{2}) x \bigg) \bigg) \\
+										&= \sin \bigg( (N + \frac{1}{2}) x \bigg) - \sin(\frac{x}{2})\\
+ \end{align*}
+ \begin{align*}
+	  \sum_{k'=1}^{N-1} \cos(k' x)	&= \frac{ \sin \bigg( (N - \frac{1}{2}) \frac{2 k \pi}{N} \bigg)   - \sin(\frac{k \pi}{N}) } {2 \sin( \frac{k \pi}{N} )} \\
+	  						&= \frac{-2 \sin( \frac{k \pi}{N} ) } {2 \sin( \frac{k \pi}{N} )} \\
+							&= -1 \\
+\end{align*}
+ Similarly we find that
+  \begin{align*}
+   	\sum_{k'=1}^{N-1} \sin(k' x)	&=  \frac{ \cos(\frac{k \pi}{N}) - \cos \bigg( (N - \frac{1}{2}) \frac{2 k \pi}{N} \bigg) } {2 \sin( \frac{k \pi}{N} )} \\
+							&= 0
  \end{align*}
  
-
-
- \end{enumerate}
-  
+ \ \begin{align*}			
+	  \sum_{k'=1}^{N-1} \cos(k' x)^2	&=    \sum_{k'=1}^{N-1}  \frac{1 + \cos(k' 2 x)} {2} \\
+	  						&=	\frac{N-1}{2} + \frac{1}{2}  \sum_{k'=1}^{N-1}  \cos(k' 2 x) \\
+							&=  	\frac{N-2}{2} \\
+	\|c_k\|^2 					&= 	 \frac{2}{N} (1 +  \sum_{k'=1}^{N-1} \cos(k' x)^2) \\
+							&=  	\frac{2}{N} \frac{N}{2} = 1 \\	
+	\|s_k\|^2 					&=.  	\frac{2}{N} \sum_{k'=1}^{N-1} \sin (k' x)^2 \\
+	 \sum_{k'=1}^{N-1} \sin (k' x)^2  &= 	 \sum_{k'=1}^{N-1}  \frac{1 - \cos(k' 2 x)} {2} \\	
+	 						&=	 \frac{N-1}{2} -\frac{1}{2}  \sum_{k'=1}^{N-1}  \cos(k' 2 x) \\
+							&= 	 \frac{N-1}{2} -\frac{1}{2} (-1) \\
+							&= 	\frac{N}{2} \\
+	\|s_k\|^2 					&= 	\frac{2}{N} \frac{N}{2}  = 1\\											
+ \end{align*}
+For $1 \leq i,j \leq \frac{N-1}{2}, i \neq j$
+ \begin{align*}
+ \PROD{c_i}{s_j}		&=	 \sqrt{\frac{4}{N^2}}  \sum_{k=1}^{N-1} \cos \brac{\frac{2 \pi i k }{N}} \sin \brac{\frac{2 \pi j k }{N}} \\
+ 					&=	 \sqrt{\frac{4}{N^2}}  ( \sum_{k=1}^{N-1}  \sin \brac{\frac{2 \pi (i+j) k }{N}} - \sum_{k=1}^{N-1}  \sin \brac{\frac{2 \pi (i-j) k }{N}}  )\\		
+					&= 	 \sqrt{\frac{4}{N^2}}  ( \sum_{k=1}^{N-1}  \sin \brac{\frac{2 \pi \tau k }{N}} - \sum_{k=1}^{N-1}  \sin \brac{\frac{2 \pi \zeta k }{N}}  )\\		
+					&= 0
+  \end{align*}
+   \end{enumerate}
+ 
+ \newpage
  \item (PCA of stationary vector) Let $\rv{x}$ be a wide-sense stationary vector with real-valued autocovariance vector $a_{\rx}$,  with covariance matrix $\Sigma_{\rv{x}}$ . In the notes we showed that the eigenvectors and eigenvalues of $\Sigma_{\rv{x}}$ are complex exponentials and the DFT coefficients of $a_{\rx}$ respectively. Here we will show that we can derive an equivalent real-valued eigendecomposition because the autocovariance vector is real. We will assume that $N$ is an odd number. (Hint: You will find the results from Problem 1 useful.)
  \begin{enumerate}
- \item Show that the DFT coefficients of $a_{\rx}$ are real, and satisfy $\hat{a}_{\rx}[k] = \hat{a}_{\rx}[N-k]$ for $k=1,\ldots,\frac{N-1}{2}$.
+ \item Show that the DFT coefficients of $a_{\rx}$ are real, and satisfy $\hat{a}_{\rx}[k] = \hat{a}_{\rx}[N-k]$ for $k=1,\ldots,\frac{N-1}{2}$.\\
+ From the notes on stationarity, the covariance matrix $\Sigma_{\rv{x}}$ is a symmetric circulant matrix which has for rows the real-valued autocovariance vector $a_{\rx}$ and shifted up to $N-1$ autocovariance vectors.
+ Being a real symmetric matrix, eigenvalues of $\Sigma_{\rv{x}}$  are real. And (from Theorem 4.3), the eigendecomposition of the  covariance matrix $\Sigma_{\rv{x}}$ has for eigenvalues the DFT coefficients  of $a_{\rx}$:
+ $$\Sigma_{\rv{x}} = \frac{1}{N} F_{[N]}^* \text{diag}(\hat{a}_{\rx}) F_{[N]}$$ which implies that  $\hat{a}_{\rx}$ are real.
+ For the proof of a symmetric matrix has all its eigenvalues real, we have, let $A=A^*$ and $v\neq 0$ being an eigenvector with eigenvalue $\lambda$:
+ \begin{align*}
+ 	\PROD{v}{Av}	&= \PROD{v}{\lambda v}  = \overline{\lambda} \PROD{v}{v}  \\
+ 	\PROD{Av}{v}	&= \PROD{\lambda v}{v}  = \lambda \PROD{v}{v}  \\
+	\lambda		&=  \overline{\lambda}
+ \end{align*}
+ 
  \item Show that
  \begin{align}
  \Sigma_{\rv{x}}[j_1,j_2] & = \frac{1}{N}\sum_{k=0}^{N-1} \hat{a}_{\rx}[k] \exp\brac{\frac{i2 \pi k (j_2-j_1)}{N}}.
- \end{align}  
+ \end{align}  \\
+ With $\psi_{k}[j] = \exp( \frac{i 2 \pi k j}{N} )$, we have 
+ $$F_{[N]} = \MAT{\overline{\psi_0} \\ \overline{\psi_1} \\ \vdots \\ \overline{\psi_{N-1}}}$$
+ $$ F_{[N]}^* = \MAT{\psi_0 & \psi_1 & \cdots & \psi_{N-1}}$$
+ Thus
+ $$\Sigma_{\rv{x}} =  \frac{1}{N} F_{[N]}^* \text{diag}(\hat{a}_{\rx}) F_{[N]} =  \frac{1}{N}  \sum_{k=0}^{N-1} \hat{a}_{\rx}[k] \psi_{k}  \overline{\psi_k}$$
+ And $$\Sigma_{\rv{x}}[j_1,j_2] = \frac{1}{N}\sum_{k=0}^{N-1} \hat{a}_{\rx}[k] \exp\brac{\frac{i2 \pi k (j_2-j_1)}{N}}$$
+ 
+ 
   \item Derive the real-valued eigenvalues and the corresponding eigenvectors of $\Sigma_{\rv{x}}$.
   \end{enumerate}
  
