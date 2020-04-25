@@ -3,6 +3,7 @@ import numpy as np
 from matplotlib.colors import LogNorm
 
 from prepare_data import load_all_data
+from scipy.signal import wiener as wiener_scipy
 
 path = "wienerimages/"
 fftmax = 1e4
@@ -78,29 +79,28 @@ def wiener_2(imgs, img, fil, v):
 def wiener(all_images, noisy_blur, filt, s):
     n, r, c = all_images.shape
     dft_imgs = np.array([np.fft.fft2(all_images[i, :, :]) for i in range(n)])
-    mean_dft_imgs = np.mean(dft_imgs, axis=0)
-    var_dft_imgs = np.var(dft_imgs, axis=0)
     dft_img = np.fft.fft2(noisy_blur)
     dft_fil = np.fft.fft2(filt)
-    #dft_img -= dft_fil * dft_img
-    dft_img -= dft_fil * mean_dft_imgs
+    mean_dft_imgs = np.mean(dft_imgs, axis=0)
+    var_dft_imgs = np.var(dft_imgs, axis=0)
+    dft_img -= mean_dft_imgs
     var_dft_noise = (s ** 2) * r * c
-    wiener_k = np.conj(dft_fil) * var_dft_imgs / (np.abs(dft_fil) ** 2 * var_dft_imgs + var_dft_noise)
-    return np.real(np.fft.fftshift(np.fft.ifft2(wiener_k * dft_img)))
-    #return np.real(np.fft.fftshift(np.fft.ifft2(wiener_k * dft_img)))
+    wiener_k = (np.conj(dft_fil) * var_dft_imgs) / ((np.abs(dft_fil) ** 2) * var_dft_imgs + var_dft_noise)
+    return np.real(np.fft.ifft2(mean_dft_imgs + wiener_k * dft_img))
 
 
 def wiener_deconvolve():
     all_images, image, filt, blur, noisy_blur, s = load_all_data('olivettifaces.mat')
-    deblured_img = wiener(all_images, noisy_blur, filt, s)
+    sfilt = np.fft.ifftshift(filt)
+    deblured_img = wiener_2(all_images, noisy_blur, sfilt, s)
     plt.imshow(deblured_img, cmap=plt.cm.gray)
     plt.axis('off')
     plt.savefig(path + 'DeBlurNoisyImage' + '.pdf', bbox_inches='tight')
     plt.close()
     plotfft(path + "DeBlurNoisyImageFFT", deblured_img)
 
-    # original image
 
 
 if __name__ == "__main__":
+    #denoise()
     wiener_deconvolve()

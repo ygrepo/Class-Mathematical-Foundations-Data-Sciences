@@ -146,12 +146,12 @@ For $1 \leq i,j \leq \frac{N-1}{2}, i \neq j$
  in the basis described in question 1 which yield real eigenvalues which match the coefficients  $\hat{a}_{\rx}[k]$, and holds 
   \begin{align*}
  	\Sigma_{\rv{x}}  		&=  \frac{1}{N} F_{[N]}^* \text{diag}(\hat{a}_{\rx}) F_{[N]}  \\
- 	\Sigma_{\rv{x}}  	         &= \MAT{s_0 \; s_1 \; \cdots c_{-k} \; \cdots \;  s_{-\frac{N-1}{2}} }   \Lambda \MAT{c_0 \\ c_1 \\ \vdots \\ c_k \\ \vdots \\ c_ {\frac{N-1}{2}} }  \\
+ 	\Sigma_{\rv{x}}  	         &= \MAT{s_0 \; s_{-1} \; \cdots c_{-k} \; \cdots \;  s_{-\frac{N-1}{2}} }   \Lambda \MAT{c_0 \\ c_1 \\ \vdots \\ c_k \\ \vdots \\ c_ {\frac{N-1}{2}} }  \\
  \end{align*}
  Hence for $k=1,\ldots,\frac{N-1}{2}$
   \begin{align*}
- 	 \hat{a}_{\rx}[N-k]  		&= 	\sqrt{\frac{4} {N^2}} (1 + \sum_{j=0}^{N-1} \sin \brac{\frac{- 2 \pi (N-k) j }{N}} \cos \brac{\frac{2 \pi (N-k) j }{N}} ) \\
-	 					&=	\sqrt{\frac{4} {N^2}} (1 + \sum_{j=0}^{N-1} \sin \brac{\frac{2 \pi k j }{N}} \cos \brac{\frac{2 \pi k j }{N}} ) \\
+ 	 \hat{a}_{\rx}[N-k]  		&= 	\sqrt{\frac{4} {N^2}} (\sum_{j=0}^{N-1} \sin \brac{\frac{- 2 \pi (N-k) j }{N}} \cos \brac{\frac{2 \pi (N-k) j }{N}} ) \\
+	 					&=	\sqrt{\frac{4} {N^2}} (\sum_{j=0}^{N-1} \sin \brac{\frac{2 \pi k j }{N}} \cos \brac{\frac{2 \pi k j }{N}} ) \\
 						&=	 \hat{a}_{\rx}[k] 
  \end{align*}
  
@@ -187,22 +187,120 @@ For $1 \leq i,j \leq \frac{N-1}{2}, i \neq j$
   $$
   	\lambda_j = \hat{a}_{\rx}[0] +  2 \hat{a}_{\rx}[1] \cos (\frac{i2 \pi j}{N})+ \cdots +   2 \hat{a}_{\rx}[\frac{N}{2}] \cos (\frac{i2 \pi \frac{N}{2} j}{N})
   $$
-  
   \end{enumerate}
 
   \newpage
- \item (Discrete filter) Let us index the DFT coefficients of the $N$-dimensional vectors from $-(N-1)/2$ to $(N-1)/2$ (assuming $N$ is odd). We define the bandlimited signals in this space as those for which the nonzero Fourier coefficients are zero beyond a certain value $k_c$, i.e. $x \in \C^{N}$ is bandlimited if $\hat{x}[k]=0$ for all $\abs{k}>k_c$. Let $y$ be the vector with the smallest $\ell_2$ norm such that $x \ast y = x$ for all bandlimited vectors with cut-off frequency $k_c$ (where $k_c$ is a fixed integer smaller than $(N-1)/2$). Derive an explicit expression for the entries of $y$, showing that they are real valued.
-
+ \item (Discrete filter) Let us index the DFT coefficients of the $N$-dimensional vectors from $-(N-1)/2$ to $(N-1)/2$ (assuming $N$ is odd). We define the bandlimited signals in this space as those for which the nonzero Fourier coefficients are zero beyond a certain value $k_c$, i.e. $x \in \C^{N}$ is bandlimited if $\hat{x}[k]=0$ for all $\abs{k}>k_c$. Let $y$ be the vector with the smallest $\ell_2$ norm such that $x \ast y = x$ for all bandlimited vectors with cut-off frequency $k_c$ (where $k_c$ is a fixed integer smaller than $(N-1)/2$). Derive an explicit expression for the entries of $y$, showing that they are real valued.\\
  
+From  $x \ast y = x$, the convolution in time corresponds to multiplication in  Fourier domain so $\hat{x}[k] = \hat{x}[k] \; \hat{y}[k], k \le k_c$ thus
+\begin{equation}
+  \hat{y}[k] =
+    \begin{cases}
+      1 & -k_c \le k \le k_c\\
+      0 & \text{otherwise}
+    \end{cases}       
+\end{equation}
+
+For an arbitrary $v$ vector whose DFT coefficients equal $\hat{y}$:
+ \begin{align*}
+ 	\|v\|_2^2	&=	v*v \\
+			&= \frac{1}{N}	v^* F_{[N]}^* F_{[N]} v \\ 
+			&= 	 \frac{1}{N} \|F_{[N]} v\|_2^2 \\
+			&= 	 \frac{1}{N} \|\hat{y}\|_2^2 +  \frac{1}{N} \|\hat{v}_{\text{other}}\|^2 \\
+			&= 	 \frac{1}{N} \|y\|_2^2 +  \frac{1}{N} \|\hat{v}_{\text{other}}\|^2 \\
+ \end{align*}
+ This is minimized by setting the "other" Fourier coefficients to $0$. To reconstruct it, we just need to use the vector $\hat{y}$ and then compute $ \frac{1}{N}  F_{[N]}^* \hat{y}$
+ \begin{align*}
+ 	y(t)		&= \sum_{j=-\frac{N-1}{2}}^{\frac{N-1}{2}}	\exp\brac{\frac{i2 \pi j}{N}}  \; t \in [-\frac{N-1}{2}, \frac{N-1}{2}] \\
+			&= \sum_{j=-\frac{N-1}{2}}^{\frac{N-1}{2}}	\exp\brac{\frac{i2 \pi j}{N}} \\
+			&= \sum_{j=-w}^w \exp\brac{\frac{i2 \pi}{N}}^j \\
+			&=	\frac{ \exp\brac{-\frac{i2 \pi k w}{N}} -  \exp\brac{\frac{i2 \pi k (w+1)}{N}} } {1 -   \exp\brac{\frac{i2 \pi k}{N}}} \\ 
+			&= \frac{ -2 i \sin{\frac{2 \pi k (w + \frac{1}{2})}  {N} } } {-2 i \sin{\frac{\pi k}{N}} } \\
+			&=  \frac{\sin{\frac{2 \pi k (w + \frac{1}{2})}  {N} } } {\sin{\frac{\pi k}{N}} } \\
+ \end{align*}
+ Entries of $y$ are real-valued.
  
   \newpage
   \item (Deconvolution) In this problem we will tackle image deblurring, an important problem in image processing. Image blurring is often modeled as convolution of the image of interest with a blur kernel.  The file \texttt{wiener.py} contains code to load all the required data and has snippet of code to plot image and filters in pixel domain and fourier domain. 
   
  \begin{enumerate}
- \item Gaussian blur kernels are a very popular model in the literature.  Outline a method to recover the true image from the blurred image. The variable \texttt{blur} in \texttt{wiener.py} contains the 2D convolution of an image with a Gaussian kernel \texttt{filt}. Write a function \texttt{deconvolution()} to recover the true image from \texttt{blur}. Report the result in both the image domain and the Fourier domain (plot the magnitude of the Fourier coefficients). You can adapt the snippet of code in \texttt{wiener.py} to generate the plots. [Hint: Check if a division by zero will nearly occur, and replace with a small non-zero value.]
- \item Apply your method to the image in the variable \texttt{noisy\_blur}, which contains a blurred image corrupted by some noise.  Report the result in the image and the Fourier domains (plot the magnitude of the Fourier coefficients). Explain what is happening.
-  \item Derive the Wiener filter for estimating a zero-mean vector $\ry$ from noisy blurred measurements $\rx = b \ast \ry + \rnd{z}$, where $b$ is a known blur kernel and $\rnd{z}$ is iid Gaussian noise with zero mean and variance $\sigma^2$. 
-  \item Write a function \texttt{wiener\_deconvolution()} to recover the image from the noisy data (\texttt{noisy\_blur}). Report the result in the image and the Fourier domains (plot the magnitude of the Fourier coefficients). Compare this method to the result in (b) and explain why it works better. [Hint: you may have to use the variable \texttt{all\_images} and \texttt{s} here]
+ \item Gaussian blur kernels are a very popular model in the literature.  Outline a method to recover the true image from the blurred image. The variable \texttt{blur} in \texttt{wiener.py} contains the 2D convolution of an image with a Gaussian kernel \texttt{filt}. Write a function \texttt{deconvolution()} to recover the true image from \texttt{blur}. Report the result in both the image domain and the Fourier domain (plot the magnitude of the Fourier coefficients). You can adapt the snippet of code in \texttt{wiener.py} to generate the plots. [Hint: Check if a division by zero will nearly occur, and replace with a small non-zero value.]\\
+ 
+ The blurred image is obtained by a convolution of the true image with a Gaussian kernel which is in the Fourier domain the result of the multiplication of the image Fourier coefficients with the kernel Fourier coefficients, the resulting product is then inverted back to the space domain using an inverse Fourier transform. For deblurring we reverse back the changes: dividing the Fourier coefficients of the blurred image by the kernel Fourier coefficients and taking the inverse Fourier transform of this division
+ (also adding to the Fourier coefficients of the Gaussian kernel a small $\epsilon$ to avoid a division by $0$).
+ 
+ \begin{figure}[H] 
+\captionsetup[subfigure]{labelformat=empty}
+\centering
+   \begin{subfigure}[]{.5\textwidth}
+   \centering
+        \includegraphics[width=60mm]{code/wienerimages/DeBlurImage.pdf}
+	\caption{Deblurred image - image domain}
+    \end{subfigure}%
+   \begin{subfigure}[]{.5\textwidth}
+   \centering   
+        \includegraphics[width=60mm]{code/wienerimages/DeBlurImageFFT.pdf}
+        \caption{Deblurred image - Fourier domain}
+    \end{subfigure}% 
+\end{figure}
+
+	
+ \item Apply your method to the image in the variable \texttt{noisy\_blur}, which contains a blurred image corrupted by some noise.  Report the result in the image and the Fourier domains (plot the magnitude of the Fourier coefficients). Explain what is happening.\\
+ Using the same method as in part (a) we just spread the noise everywhere in time and frequency by multiplying to the inverse of the Gaussian noise (smoothing of noise).
+ 
+  \begin{figure}[H] 
+\captionsetup[subfigure]{labelformat=empty}
+\centering
+   \begin{subfigure}[]{.5\textwidth}
+   \centering
+        \includegraphics[width=60mm]{code/wienerimages/DeNoisyBlurImage.pdf}
+	\caption{Deblurred noisy image - image domain}
+    \end{subfigure}%
+   \begin{subfigure}[]{.5\textwidth}
+   \centering   
+        \includegraphics[width=60mm]{code/wienerimages/DeNoisyBlurImageFFT.pdf}
+        \caption{Deblurred noisy image - Fourier domain}
+    \end{subfigure}% 
+\end{figure}
+
+
+  \item Derive the Wiener filter for estimating a zero-mean vector $\ry$ from noisy blurred measurements $\rx = b \ast \ry + \rnd{z}$, where $b$ is a known blur kernel and $\rnd{z}$ is iid Gaussian noise with zero mean and variance $\sigma^2$. \\
+  Using Theorem 5.3 from the stationarity notes, we have:
+  \begin{align*}
+  	\hat{w}[k]					&= 	\frac{\Cov(\rx_F[k], \ry_F[k])} {\Var(\rx_F[k])} \\
+	\Cov(\rx_F[k], \ry_F[k])		&=	\E[\rx_F[k] \overline{\ry_F[k]}] \\
+							&=	\E[(\rb_F[k] \ry_F[k] + \rnd{z}_F[k]) \; \overline{\ry_F[k]}] \\
+							&=	\E[(\rb_F[k] \; \ry_F[k]  \overline{\ry_F[k]} ] + \E[ \rnd{z}_F[k]  \overline{\ry_F[k]}] \\
+							&=	\rb_F[k]  \Var(\ry_F[k]) \\
+	\Var(\rx_F[k]])				&=	\Var(\rb_F[k] \ry_F[k] + \rnd{z}_F[k])	\\
+							&= 	\Var(\rb_F[k] \ry_F[k]) + \Var(\rnd{z}_F[k]) \text{ the cross-terms canceling out}\\
+							&=	|\rb_F[k]|^2 \Var(\ry_F[k]) + \sigma^2	\\	
+	\hat{w}[k]					&= 	\frac{\rb_F[k]  \Var(\ry_F[k])} {|\rb_F[k]|^2 \Var(\ry_F[k]) + \sigma^2}		
+  \end{align*}
+  
+  
+  \item Write a function \texttt{wiener\_deconvolution()} to recover the image from the noisy data (\texttt{noisy\_blur}). Report the result in the image and the Fourier domains (plot the magnitude of the Fourier coefficients). Compare this method to the result in (b) and explain why it works better. [Hint: you may have to use the variable \texttt{all\_images} and \texttt{s} here]\\
+  Using the expression of the Wiener filter above and the statistics of all the images, we obtain a better result of deblurring the noisy image than the method described in part (a).
+  We saw that in the above plots that most of the frequencies in the Fourier domain of  the true image are low frequencies, whereas deblurring the noisy image add high frequencies noise everywhere.
+  Now if we look at the expression of the Fourier coefficients of the Wiener filter when multiplied with the DFT coefficients of the image, we observe that the Wiener coefficients go to $0$ for high-frequencies of the image which are quite small, leave unchanged frequencies of the signal not close to $0$ and in between multiply the Fourier coefficients of the image with a ratio smoothing the overall transition between these two sets of frequencies. One thing to note is our above calculations were assuming  a zero-mean vector for the measurements $\ry$ so before applying the Wiener filter in the Fourier domain we need to subtract the statistical mean from the noisy image, multiply by the Wiener coefficients, add the mean back before inverse transform the result in the image domain.
+  
+    \begin{figure}[H] 
+\captionsetup[subfigure]{labelformat=empty}
+\centering
+   \begin{subfigure}[]{.5\textwidth}
+   \centering
+        \includegraphics[width=60mm]{code/wienerimages/DeBlurNoisyImage.pdf}
+	\caption{Deblurring with Wiener filter  - image domain}
+    \end{subfigure}%
+   \begin{subfigure}[]{.5\textwidth}
+   \centering   
+        \includegraphics[width=60mm]{code/wienerimages/DeBlurNoisyImageFFT.pdf}
+        \caption{Deblurring with Wiener filter - Fourier domain}
+    \end{subfigure}% 
+\end{figure}
+
+
+
   \end{enumerate}
 
  \end{enumerate}
