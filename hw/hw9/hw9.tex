@@ -142,6 +142,20 @@ For $1 \leq i,j \leq \frac{N-1}{2}, i \neq j$
 	\lambda		&=  \overline{\lambda}
  \end{align*}
  
+ From the notes on stationarity, we know that for stationary signals, the principal components  of the circulant covariance matrix $\Sigma_{\rv{x}}$, are sinusoids which means we can perform an eigendecomposition
+ in the basis described in question 1 which yield real eigenvalues which match the coefficients  $\hat{a}_{\rx}[k]$, and holds 
+  \begin{align*}
+ 	\Sigma_{\rv{x}}  		&=  \frac{1}{N} F_{[N]}^* \text{diag}(\hat{a}_{\rx}) F_{[N]}  \\
+ 	\Sigma_{\rv{x}}  	         &= \MAT{s_0 \; s_1 \; \cdots c_{-k} \; \cdots \;  s_{-\frac{N-1}{2}} }   \Lambda \MAT{c_0 \\ c_1 \\ \vdots \\ c_k \\ \vdots \\ c_ {\frac{N-1}{2}} }  \\
+ \end{align*}
+ Hence for $k=1,\ldots,\frac{N-1}{2}$
+  \begin{align*}
+ 	 \hat{a}_{\rx}[N-k]  		&= 	\sqrt{\frac{4} {N^2}} (1 + \sum_{j=0}^{N-1} \sin \brac{\frac{- 2 \pi (N-k) j }{N}} \cos \brac{\frac{2 \pi (N-k) j }{N}} ) \\
+	 					&=	\sqrt{\frac{4} {N^2}} (1 + \sum_{j=0}^{N-1} \sin \brac{\frac{2 \pi k j }{N}} \cos \brac{\frac{2 \pi k j }{N}} ) \\
+						&=	 \hat{a}_{\rx}[k] 
+ \end{align*}
+ 
+ 
  \item Show that
  \begin{align}
  \Sigma_{\rv{x}}[j_1,j_2] & = \frac{1}{N}\sum_{k=0}^{N-1} \hat{a}_{\rx}[k] \exp\brac{\frac{i2 \pi k (j_2-j_1)}{N}}.
@@ -180,6 +194,8 @@ For $1 \leq i,j \leq \frac{N-1}{2}, i \neq j$
  \item (Discrete filter) Let us index the DFT coefficients of the $N$-dimensional vectors from $-(N-1)/2$ to $(N-1)/2$ (assuming $N$ is odd). We define the bandlimited signals in this space as those for which the nonzero Fourier coefficients are zero beyond a certain value $k_c$, i.e. $x \in \C^{N}$ is bandlimited if $\hat{x}[k]=0$ for all $\abs{k}>k_c$. Let $y$ be the vector with the smallest $\ell_2$ norm such that $x \ast y = x$ for all bandlimited vectors with cut-off frequency $k_c$ (where $k_c$ is a fixed integer smaller than $(N-1)/2$). Derive an explicit expression for the entries of $y$, showing that they are real valued.
 
  
+ 
+  \newpage
   \item (Deconvolution) In this problem we will tackle image deblurring, an important problem in image processing. Image blurring is often modeled as convolution of the image of interest with a blur kernel.  The file \texttt{wiener.py} contains code to load all the required data and has snippet of code to plot image and filters in pixel domain and fourier domain. 
   
  \begin{enumerate}

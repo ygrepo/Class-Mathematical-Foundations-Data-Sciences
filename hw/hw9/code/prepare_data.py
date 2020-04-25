@@ -22,4 +22,4 @@ def load_all_data(path):
     noise = s*np.random.randn(*blur.shape)
     noisy_blur = blur + noise
     
-    return all_images, filt, blur, noisy_blur, s
+    return all_images, image, filt, blur, noisy_blur, s
