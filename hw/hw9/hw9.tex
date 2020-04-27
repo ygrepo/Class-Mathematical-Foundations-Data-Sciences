@@ -193,13 +193,13 @@ For $1 \leq i,j \leq \frac{N-1}{2}, i \neq j$
  \item (Discrete filter) Let us index the DFT coefficients of the $N$-dimensional vectors from $-(N-1)/2$ to $(N-1)/2$ (assuming $N$ is odd). We define the bandlimited signals in this space as those for which the nonzero Fourier coefficients are zero beyond a certain value $k_c$, i.e. $x \in \C^{N}$ is bandlimited if $\hat{x}[k]=0$ for all $\abs{k}>k_c$. Let $y$ be the vector with the smallest $\ell_2$ norm such that $x \ast y = x$ for all bandlimited vectors with cut-off frequency $k_c$ (where $k_c$ is a fixed integer smaller than $(N-1)/2$). Derive an explicit expression for the entries of $y$, showing that they are real valued.\\
  
 From  $x \ast y = x$, the convolution in time corresponds to multiplication in  Fourier domain so $\hat{x}[k] = \hat{x}[k] \; \hat{y}[k], k \le k_c$ thus
-\begin{equation}
+\begin{equation*}
   \hat{y}[k] =
     \begin{cases}
       1 & -k_c \le k \le k_c\\
       0 & \text{otherwise}
     \end{cases}       
-\end{equation}
+\end{equation*}
 
 For an arbitrary $v$ vector whose DFT coefficients equal $\hat{y}$:
  \begin{align*}
@@ -211,14 +211,20 @@ For an arbitrary $v$ vector whose DFT coefficients equal $\hat{y}$:
  \end{align*}
  This is minimized by setting the "other" Fourier coefficients to $0$. To reconstruct it, we just need to use the vector $\hat{y}$ and then compute $ \frac{1}{N}  F_{[N]}^* \hat{y}$
  \begin{align*}
- 	y(t)		&= \sum_{j=-\frac{N-1}{2}}^{\frac{N-1}{2}}	\exp\brac{\frac{i2 \pi j}{N}}  \; t \in [-\frac{N-1}{2}, \frac{N-1}{2}] \\
-			&= \sum_{j=-\frac{N-1}{2}}^{\frac{N-1}{2}}	\exp\brac{\frac{i2 \pi j}{N}} \\
-			&= \sum_{j=-w}^w \exp\brac{\frac{i2 \pi}{N}}^j \\
-			&=	\frac{ \exp\brac{-\frac{i2 \pi k w}{N}} -  \exp\brac{\frac{i2 \pi k (w+1)}{N}} } {1 -   \exp\brac{\frac{i2 \pi k}{N}}} \\ 
-			&= \frac{ -2 i \sin{\frac{2 \pi k (w + \frac{1}{2})}  {N} } } {-2 i \sin{\frac{\pi k}{N}} } \\
-			&=  \frac{\sin{\frac{2 \pi k (w + \frac{1}{2})}  {N} } } {\sin{\frac{\pi k}{N}} } \\
+ 	y(j)		&= \sum_{k=-k_c}^{k_c}	\exp\brac{\frac{i2 \pi j k}{N}}  \;  0 \le j \le N-1\\
+			&= \sum_{k=-k_c}^{k_c}	\exp\brac{\frac{i2 \pi j k}{N}} \\
+			&= 1 + \sum_{k=1}^{k_c} ( \exp\brac{i k x} + \exp\brac{-i k x} ) , \; x = \frac{2 \pi j}{N}\\
+			&= 1 + 2 \sum_{k=1}^{k_c} \cos{k x} \\
  \end{align*}
- Entries of $y$ are real-valued.
+ Entries of $y$ are real-valued. And using the result established in question 1, part (b):
+  \begin{align*}
+ 	y(j)		&= 1 + 2  \frac{ \sin \bigg( (k_c + \frac{1}{2}) x \bigg) - \sin(\frac{x}{2}) } {2 \sin(\frac{x}{2}) } , \; x = \frac{2 \pi j}{N} , \; j \neq 0\\
+			&= 1 +   \frac{ \sin \bigg( (k_c + \frac{1}{2}) \frac{2 \pi j}{N} \bigg) - \sin{\frac{\pi j}{N}} } {\sin{\frac{\pi j}{N}} } \\
+			&=   \frac{ \sin \bigg( (k_c + \frac{1}{2}) \frac{2 \pi j}{N} \bigg) }  {\sin{\frac{\pi j}{N}} } \\
+	y(0)		&= 1 + 2 \sum_{k=1}^{k_c} 1 \\
+			&= 1 + 2 k_c \\
+ \end{align*}
+
  
   \newpage
   \item (Deconvolution) In this problem we will tackle image deblurring, an important problem in image processing. Image blurring is often modeled as convolution of the image of interest with a blur kernel.  The file \texttt{wiener.py} contains code to load all the required data and has snippet of code to plot image and filters in pixel domain and fourier domain. 
@@ -274,8 +280,8 @@ For an arbitrary $v$ vector whose DFT coefficients equal $\hat{y}$:
 							&=	\rb_F[k]  \Var(\ry_F[k]) \\
 	\Var(\rx_F[k]])				&=	\Var(\rb_F[k] \ry_F[k] + \rnd{z}_F[k])	\\
 							&= 	\Var(\rb_F[k] \ry_F[k]) + \Var(\rnd{z}_F[k]) \text{ the cross-terms canceling out}\\
-							&=	|\rb_F[k]|^2 \Var(\ry_F[k]) + \sigma^2	\\	
-	\hat{w}[k]					&= 	\frac{\rb_F[k]  \Var(\ry_F[k])} {|\rb_F[k]|^2 \Var(\ry_F[k]) + \sigma^2}		
+							&=	|\rb_F[k]|^2 \Var(\ry_F[k]) + N \sigma^2	\\	
+	\hat{w}[k]					&= 	\frac{\rb_F[k]  \Var(\ry_F[k])} {|\rb_F[k]|^2 \Var(\ry_F[k]) + N \sigma^2}		
   \end{align*}
   
   
