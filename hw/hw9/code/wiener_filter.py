@@ -85,8 +85,8 @@ def wiener(all_images, noisy_blur, filt, s):
     var_dft_imgs = np.var(dft_imgs, axis=0)
     dft_img -= dft_fil *  mean_dft_imgs
     var_dft_noise = (s ** 2) * r * c
-    #wiener_k = (dft_fil * var_dft_imgs) / ((np.abs(dft_fil) ** 2) * var_dft_imgs + var_dft_noise)
-    wiener_k = (np.conj(dft_fil) * var_dft_imgs) / ((np.abs(dft_fil) ** 2) * var_dft_imgs + var_dft_noise)
+    wiener_k = (dft_fil * var_dft_imgs) / ((np.abs(dft_fil) ** 2) * var_dft_imgs + var_dft_noise)
+    #wiener_k = (np.conj(dft_fil) * var_dft_imgs) / ((np.abs(dft_fil) ** 2) * var_dft_imgs + var_dft_noise)
     #return np.real(np.fft.ifft2(wiener_k * dft_img))
     return np.real(np.fft.ifft2(dft_fil * mean_dft_imgs + wiener_k * dft_img))
 

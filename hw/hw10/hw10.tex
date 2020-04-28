@@ -1,0 +1,147 @@
+\documentclass[12pt,twoside]{article}
+\usepackage[dvipsnames]{xcolor}
+\usepackage{tikz,graphicx,amsmath,amsfonts,amscd,amssymb,bm,cite,epsfig,epsf,url}
+\usepackage[hang,flushmargin]{footmisc}
+\usepackage[colorlinks=true,urlcolor=blue,citecolor=blue]{hyperref}
+\usepackage{amsthm,multirow,wasysym,appendix}
+\usepackage{array,subcaption} 
+% \usepackage[small,bf]{caption}
+\usepackage{bbm}
+\usepackage{pgfplots}
+\usetikzlibrary{spy}
+\usepgfplotslibrary{external}
+\usepgfplotslibrary{fillbetween}
+\usetikzlibrary{arrows,automata}
+\usepackage{thmtools}
+\usepackage{blkarray} 
+\usepackage{textcomp}
+\usepackage[left=0.8in,right=1.0in,top=1.0in,bottom=1.0in]{geometry}
+
+\usepackage{times}
+\usepackage{amsfonts}
+\usepackage{amsmath}
+\usepackage{latexsym}
+\usepackage{color}
+\usepackage{graphics}
+\usepackage{enumerate}
+\usepackage{amstext}
+\usepackage{blkarray}
+\usepackage{url}
+\usepackage{epsfig}
+\usepackage{bm}
+\usepackage{hyperref}
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue,
+    filecolor=magenta,      
+    urlcolor=blue,
+}
+\usepackage{textcomp}
+\usepackage[left=0.8in,right=1.0in,top=1.0in,bottom=1.0in]{geometry}
+\usepackage{mathtools}
+\usepackage{minted}
+
+
+\input{macros}
+
+\begin{document}
+
+\begin{center}
+{\large{\textbf{Homework 10}} } \vspace{0.2cm}\\
+Due May 3 at 11 pm
+\end{center}
+Yves Greatti - yg390\\
+
+\begin{enumerate}
+
+\item (Hann window)
+In this problem we analyze the Hann window in the frequency domain. 
+ \begin{enumerate}
+ \item Prove that for any vector $x \in \C^{N}$, if $y \in \C^{N}$ is defined as 
+\begin{align}
+y \,[j] := x[j] \exp \brac{\frac{i2 \pi m j}{N} },
+\end{align}
+for some integer $m$, then the DFT of $y$ equals $\hat{y}=\hat{x}^{\downarrow \, m}$, where $\hat{x}$ is the DFT of $x$.
+ \item The Hann window $h \in \C^{N}$ of width $2w$ equals
+\begin{align}
+h\sqbr{j} & :=  
+ \begin{cases}
+  \frac{1}{2} \brac{1 + \cos \brac{ \frac{ \pi j}{w}}} & \text{if } \abs{j} \leq w,\\
+   0 & \text{otherwise.}
+  \end{cases}
+\end{align} 
+Use the result from part (a) to show that the DFT of $h$ can be expressed as
+\begin{align}
+\label{eq:hann}
+\hat{h} = \frac{1}{2}\hat{\pi} + \frac{1}{4}\hat{\pi}^{\downarrow \, -N/2w} + \frac{1}{4}\hat{\pi}^{\downarrow \, N/2w}.
+\end{align}
+\item Plot $\hat{h}$ as well as the different components in Eq.~\eqref{eq:hann}. Interpret what you see in terms of the desired properties of a windowing function. 
+ \end{enumerate}
+  
+ \item (STFT inverse) In this problem we show a simple way to invert the STFT.
+ \begin{enumerate}
+  \item In the definition of the STFT set $w_{[\ell]}$ to be a rectangular window where all entries are equal to one, and let $\alpha_{\op{ov}}=0.5$. Show that the STFT can be inverted using just two operations: applying the inverse DFT and subsampling.
+  \item What is the disadvantage of using this rectangular window?
+  \end{enumerate}
+ 
+ \item (Haar wavelet) Define the discrete Haar wavelet $\mu_{2^s,p}\in\RR^{2^n}$ at scale
+  $2^s$ and position $p$ by
+  $$\mu_{2^s,p}[j] :=
+  \begin{cases}
+    -1/\sqrt{2^{s}} & \text{if $j\in\{p\cdot 2^s,p\cdot 2^s+1,\ldots,p\cdot 2^s+2^{s-1}-1\}$,}\\
+    1/\sqrt{2^{s}} & \text{if $j\in\{p\cdot 2^s+2^{s-1},2^s+2^{s-1}+1,\ldots,(p+1)\cdot2^{s}-1\}$,}\\
+    0 & \text{otherwise,}
+  \end{cases}
+  $$
+  where $0<s\leq n$ and $0 \leq p \leq 2^{n-s}-1$.  Define the
+  discrete Haar scaling function $\varphi_{2^s,p}\in\RR^{2^n}$ at scale $2^s$ and position $p$  by
+  $$\varphi_{2^s,p}[j]=
+  \begin{cases}
+    1/\sqrt{2^{s}} & \text{if $j\in\{p\cdot 2^s,p\cdots 2^s+1,\ldots,(p+1)\cdot 2^{s}-1\}$,}\\
+    0 & \text{otherwise,}
+  \end{cases}$$
+  where $0<s\leq n$ and $0\leq p\leq 2^{n-s}-1$.
+  The code for this
+  exercise is contained in the haar.py file. Include all generated plots in your submission.
+  \begin{enumerate}
+  \item Define $V_0:=\RR^{2^n}$.  For $k>0$, let $V_k\subset\RR^{2^n}$ denote the subspace
+    of all vectors that are constant on segments of size $2^k$.  That
+    is
+    $$V_k := \{x\in\RR^{2^n}: \text{$x[i] = x[j]$ if $\lfloor
+      i/2^k\rfloor = \lfloor j/2^k\rfloor$}\}.$$
+    Give an orthonormal basis for $V_k$.  What is the dimension of
+    $V_k$? 
+  \item Fix $0\leq k < n$, and note that $V_k\supset V_{k+1}$.  Give an orthonormal basis for
+    the set
+    $$W_{k+1}=\{x\in V_k : \text{$\langle x,y\rangle = 0$ for all
+      $y\in V_{k+1}$}\},$$
+    the orthogonal complement of $V_{k+1}$ in $V_k$.  Thus
+    $V_k=V_{k+1}\oplus W_{k+1}$. What is the
+    dimension of $W_{k+1}$?
+  \item For $1\leq k\leq n$ give an orthonormal basis for the set
+    $$W_{\leq k}=\{x\in \RR^{2^n} : \text{$\langle x,y\rangle = 0$ for all
+      $y\in V_{k}$}\},$$
+    the orthogonal complement of $V_{k}$ in $\RR^{2^n}$.  Thus
+    $\RR^{2^n}=V_{k}\oplus W_{\leq k}$. What is the
+    dimension of $W_{\leq k}$?
+  \item Complete the wavelet and scaling functions in \emph{haar.py} that implement $\mu$
+    and $\varphi$ above, respectively.  See the comments for more
+    details.
+  \item Complete the projectV function that orthogonally projects a
+    given vector onto $V_k$. [Hint: Consider averaging the values on each segment.]
+  \item Complete the projectW function that orthogonally projects a
+    given vector onto $W_k$. [Hint: You can use projectV.]
+  \item Complete the function \emph{wavelet\_coeffs}
+    which computes all of the (non-overlapping) wavelet 
+    coefficients of a given data vector at a given scale.  
+    See the comments for more details.
+    \item Report the plots generated by the code, which apply your wavelet transform to some electrocardiogram data.
+  \end{enumerate}
+
+ 
+  \item (Denoising with the STFT)  
+In the lecture, we saw that STFT often yields sparse representation for a signal but dense representation for noise. Building on this, we derived hard thresholding (Algorithm 4.1 in notes) and block thresholding (Algorithm 4.2 in notes) to denoise signals. In this question, we will denoise audio signals.  \texttt{audio\_denoising.ipynb} contains skeleton code for the task. The notebook will download required dataset and contains other utility functions for loading data, plotting and playing the audio signals. You have to fill in the functions \texttt{get\_block\_L2\_norm()} and \texttt{stft\_denoising()}. Report all the plots generated by the script.
+
+
+ \end{enumerate}
+\end{document}

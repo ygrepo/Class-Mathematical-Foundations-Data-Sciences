@@ -121,11 +121,27 @@ and $\|c_k\|^2 = \frac{2}{N} \sum_{j=0}^{N-1} \cos(j x)^2, \|s_k\|^2 = \frac{2}{
  \end{align*}
 For $1 \leq i,j \leq \frac{N-1}{2}, i \neq j$
  \begin{align*}
- \PROD{c_i}{s_j}		&=	 \sqrt{\frac{4}{N^2}}  \sum_{k=1}^{N-1} \cos \brac{\frac{2 \pi i k }{N}} \sin \brac{\frac{2 \pi j k }{N}} \\
- 					&=	 \sqrt{\frac{4}{N^2}}  ( \sum_{k=1}^{N-1}  \sin \brac{\frac{2 \pi (i+j) k }{N}} - \sum_{k=1}^{N-1}  \sin \brac{\frac{2 \pi (i-j) k }{N}}  )\\		
-					&= 	 \sqrt{\frac{4}{N^2}}  ( \sum_{k=1}^{N-1}  \sin \brac{\frac{2 \pi \tau k }{N}} - \sum_{k=1}^{N-1}  \sin \brac{\frac{2 \pi \zeta k }{N}}  )\\		
+ \PROD{c_i}{s_j}		&=	 \frac{2}{N}  \sum_{k=1}^{N-1} \cos \brac{\frac{2 \pi i k }{N}} \sin \brac{\frac{2 \pi j k }{N}} \\
+ 					&=	 \frac{2}{N}  ( \sum_{k=1}^{N-1}  \sin \brac{\frac{2 \pi (i+j) k }{N}} - \sum_{k=1}^{N-1}  \sin \brac{\frac{2 \pi (i-j) k }{N}}  )\\		
+					&= 	 \frac{2}{N}   ( \sum_{k=1}^{N-1}  \sin \brac{\frac{2 \pi \tau k }{N}} - \sum_{k=1}^{N-1}  \sin \brac{\frac{2 \pi \zeta k }{N}}  )\\		
 					&= 0 \text{ using the result few lines above about the sum of sines}
   \end{align*}
+  
+  For $1 \leq i,j \leq \frac{N-1}{2}, i \neq j$
+  \begin{align*}
+ \PROD{c_i}{c_j}		&=	 \frac{2}{N}  (1 + \sum_{k=1}^{N-1} \cos \brac{\frac{2 \pi i k }{N}} \cos \brac{\frac{2 \pi j k }{N}}) \\
+ 					&=      \frac{2}{N}   (1 +  \frac{1}{2}  \sum_{k=1}^{N-1} \cos \brac{\frac{2 \pi (i+j) k }{N}} + \sum_{k=1}^{N-1}  \cos \brac{\frac{2 \pi (i-j) k }{N}} )\\
+ 					&=      \frac{1}{N}  (2 + \sum_{k=1}^{N-1} \cos \brac{\frac{2 \pi (i+j) k }{N}} + \sum_{k=1}^{N-1}  \cos \brac{\frac{2 \pi (i-j) k }{N}} )\\
+					&= 	 \frac{1}{N}  (2 + (-1) +(-1)) \text{ ~ using the expression of sum of cosines established above} \\
+					&= 0 \\
+ \PROD{s_i}{s_j}		&=	 \frac{2}{N}  (\sum_{k=1}^{N-1} \sin \brac{\frac{2 \pi i k }{N}} \sin \brac{\frac{2 \pi j k }{N}}) \\
+ 					&=      \frac{2}{N}   (\frac{1}{2}  \sum_{k=1}^{N-1} \cos \brac{\frac{2 \pi (i-j) k }{N}} - \sum_{k=1}^{N-1}  \cos \brac{\frac{2 \pi (i+j) k }{N}} )\\
+ 					&=      \frac{1}{N}   (\sum_{k=1}^{N-1} \cos \brac{\frac{2 \pi (i-j) k }{N}} - \sum_{k=1}^{N-1}  \cos \brac{\frac{2 \pi (i+j) k }{N}} )\\					
+ 					&=      \frac{1}{N}    ((-1) - (-1)) \text{ ~ using the expression of sum of cosines established above} \\					
+					&= 0
+  \end{align*}
+
+
    \end{enumerate}
  
  \newpage
@@ -141,20 +157,14 @@ For $1 \leq i,j \leq \frac{N-1}{2}, i \neq j$
  	\PROD{Av}{v}	&= \PROD{\lambda v}{v}  = \lambda \PROD{v}{v}  \\
 	\lambda		&=  \overline{\lambda}
  \end{align*}
- 
- From the notes on stationarity, we know that for stationary signals, the principal components  of the circulant covariance matrix $\Sigma_{\rv{x}}$, are sinusoids which means we can perform an eigendecomposition
- in the basis described in question 1 which yield real eigenvalues which match the coefficients  $\hat{a}_{\rx}[k]$, and holds 
+ From theorem 4.3 from the notes on stationarity, if $x$ is an non-zero eigenvector of $\Sigma_{\rv{x}}$, we have
   \begin{align*}
- 	\Sigma_{\rv{x}}  		&=  \frac{1}{N} F_{[N]}^* \text{diag}(\hat{a}_{\rx}) F_{[N]}  \\
- 	\Sigma_{\rv{x}}  	         &= \MAT{s_0 \; s_{-1} \; \cdots c_{-k} \; \cdots \;  s_{-\frac{N-1}{2}} }   \Lambda \MAT{c_0 \\ c_1 \\ \vdots \\ c_k \\ \vdots \\ c_ {\frac{N-1}{2}} }  \\
- \end{align*}
- Hence for $k=1,\ldots,\frac{N-1}{2}$
-  \begin{align*}
- 	 \hat{a}_{\rx}[N-k]  		&= 	\sqrt{\frac{4} {N^2}} (\sum_{j=0}^{N-1} \sin \brac{\frac{- 2 \pi (N-k) j }{N}} \cos \brac{\frac{2 \pi (N-k) j }{N}} ) \\
-	 					&=	\sqrt{\frac{4} {N^2}} (\sum_{j=0}^{N-1} \sin \brac{\frac{2 \pi k j }{N}} \cos \brac{\frac{2 \pi k j }{N}} ) \\
-						&=	 \hat{a}_{\rx}[k] 
- \end{align*}
- 
+	\Sigma_{\rv{x}}x	&= c*x \text{ ~ where } c \text{ is the first column of } \Sigma_{\rv{x}}\\
+					&= \frac{1}{N]} F_{[N]}^* \text{diag}(\hat{c}) F_{[N]} \\
+					&= \frac{1}{N} F_{[N]}^* \text{diag}(\hat{a}_{\rx}) F_{[N]} \\
+			\hat{c}[k]  &= \hat{a}_{\rx}[k] \\
+			\hat{a}_{\rx}[k]  &=  \hat{a}_{\rx}[N-k] \text{ ~ since } c[k] = c[N-k] \text{ ~ so } \hat{c}[k] = \hat{c}[N-k]  \\
+ \end{align*} 
  
  \item Show that
  \begin{align}
@@ -165,29 +175,36 @@ For $1 \leq i,j \leq \frac{N-1}{2}, i \neq j$
  $$ F_{[N]}^* = \MAT{\psi_0 & \psi_1 & \cdots & \psi_{N-1}}$$
  Thus
  $$\Sigma_{\rv{x}} =  \frac{1}{N} F_{[N]}^* \text{diag}(\hat{a}_{\rx}) F_{[N]} =  \frac{1}{N}  \sum_{k=0}^{N-1} \hat{a}_{\rx}[k] \psi_{k}  \overline{\psi_k}$$
- And $$\Sigma_{\rv{x}}[j_1,j_2] = \frac{1}{N}\sum_{k=0}^{N-1} \hat{a}_{\rx}[k] \exp\brac{\frac{i2 \pi k (j_2-j_1)}{N}}$$
+ And $$\Sigma_{\rv{x}}[j_1,j_2] = \frac{1}{N}\sum_{k=0}^{N-1} \hat{a}_{\rx}[k] \exp\brac{\frac{i2 \pi k (j_1-j_2)}{N}}$$
  
  
   \item Derive the real-valued eigenvalues and the corresponding eigenvectors of $\Sigma_{\rv{x}}$.\\
-  From the notes on stationarity, $C$ being a circulant matrix and let $x \neq 0$, an eigenvector of $C$, and the previous question, we have
+  
+  If $x$ is an eigenvector of $\Sigma_{\rv{x}} $, then $y = \Sigma_{\rv{x}}  x = \lambda x$.
+  Let $c_{l-j} = \Sigma_{\rv{x}}[l,j]$ and $w=\frac{i 2 \pi}{N}$.
+  For the $l$ component of $y$, it holds that
   \begin{align*}
-  					y	&= C x =	c * x \\
-					y[k]	&= \frac{1}{N}\sum_{k=0}^{N-1} \hat{a}_{\rx}[k] \exp\brac{\frac{i2 \pi k (j_2-j_1)}{N}} \\
-						&=  \frac{1}{N}\sum_{k=0}^{N-1} \hat{a}_{\rx}[k]  \exp\brac{\frac{-i2 \pi k j_1}{N}}  \exp\brac{\frac{i2 \pi k j_2}{N}} \\
-						&= \frac{1}{N}\sum_{k=0}^{N-1} \hat{a}_{\rx}[k] ( \exp\brac{\frac{i2 \pi k j_1}{N}} )  (\exp\brac{\frac{i2 \pi k j_2}{N}})  \text{ since } \rx \text{ is wide-sense stationary}\\
-						&= \frac{1}{N}\sum_{k=0}^{N-1} \hat{a}_{\rx}[k] ( \exp\brac{\frac{i2 \pi j}{N}} )^k    ( \exp\brac{\frac{i2 \pi j}{N}} )^k  \text{ multiplication along the same rows} j_1 = j_2\\
-						&=  \frac{1}{N}\sum_{k=0}^{N-1} \hat{a}_{\rx}[k] ( \exp\brac{\frac{i2 \pi j}{N}} )^k  \MAT{1 \\  \exp\brac{\frac{i2 \pi j}{N}}  \\  \exp\brac{\frac{i2 \pi j}{N}}^2 \\ \vdots \\  \exp\brac{\frac{i2 \pi j}{N}}^{N-1}}\\
+  	y_l	&= \sum_{j=0}^{N-1} c_{l-j} w^{jk} \\
+		&= \sum_{j=0}^{N-1} c_{j-l} w^{jk} \text{ from stationarity notes } \Sigma_{\rv{x}} [\psi]= \Sigma_{\rv{x}}[-\psi]\\
+		&= \sum_{j=0}^{N-1} c_{j-l} w^{(j- l + l)k} \\		
+		&= w^{lk} \sum_{j=0}^{N-1} c_{j-l} w^{(j- l)k} \\	
+		&= w^{lk} \sum_{j=0}^{N-1} c_j w^{jk} \text{ circular shift of a row of } \Sigma_{\rv{x}}\\	
+		&= \lambda_k  w^{lk}
   \end{align*}
-  $x= \frac{1}{N} \MAT{1 \\  \exp\brac{\frac{i2 \pi j}{N}}  \\  \exp\brac{\frac{i2 \pi j}{N}}^2 \\ \vdots \\  \exp\brac{\frac{i2 \pi j}{N}}^{N-1}}$ is the eigenvector for the eigenvalue $\sum_{k=0}^{N-1} \hat{a}_{\rx}[k] ( \exp\brac{\frac{i2 \pi j}{N}} )^k $.
-  From part (a)  $\hat{a}_{\rx}[k] = \hat{a}_{\rx}[N-k]$ for $k=1,\ldots,\frac{N-1}{2}$ and using the fact that 
+ The eigenvalues are $\lambda_k=  \sum_{j=0}^{N-1} c_j  \exp\brac{\frac{i2 \pi k j}{N}} =   \sum_{j=0}^{N-1}  (\frac{1}{N} \sum_{k'=0}^{N-1} \hat{a}_{\rx}[k'] \exp\brac{\frac{i2 \pi k' j}{N}})   \exp\brac{\frac{i2 \pi k j}{N}}$ 
+ and the eigenvectors are $v_k= \MAT{1 \\  \exp\brac{\frac{i2 \pi k}{N}} \\   \exp\brac{\frac{i2 \pi k 2}{N}} \\ \vdots \\    \exp\brac{\frac{i2 \pi k (N-1)}{N}} }$
+
+ $\Sigma_{\rv{x}}$ being a circulant matrix $c_j = c_{[N-j]}$ for $j=1,\ldots,\frac{N-1}{2}$ and using the fact that 
   $$
   \exp\brac{\frac{i2 \pi k j}{N}} +  \exp\brac{\frac{i2 \pi (N-k) j}{N}} = 2 \cos (\frac{i2 \pi k j}{N})
   $$
-  Each $\lambda_j$ for $0 \le j \le N-1$, eigenvalue $j$ is:
+  For each $\lambda_k, 0 \le k \le N-1$:
   $$
-  	\lambda_j = \hat{a}_{\rx}[0] +  2 \hat{a}_{\rx}[1] \cos (\frac{i2 \pi j}{N})+ \cdots +   2 \hat{a}_{\rx}[\frac{N}{2}] \cos (\frac{i2 \pi \frac{N}{2} j}{N})
+  	\lambda_k = c_0 +  2 c_1 \cos (\frac{i2 \pi j}{N})+ \cdots +   2 c_{\frac{N}{2}} \cos (\frac{i2 \pi \frac{N}{2} j}{N})
   $$
   \end{enumerate}
+Since the $\lambda_k$ are real then the complex eigenvectors $v_k$ can be split into two real eigenvectors since $\Sigma_{\rv{x}} v_k = \lambda_k v_k = \lambda_k \Re{v_k} + i \lambda_k \Im{v_k}$.
+We can choose as orthonormal eigenvectors using 1, part b: $ \MAT{c_0 \; c_{1} \; \cdots c_{k} \; \cdots \;  c_{\frac{N-1}{2}} \; s_{1} \; \cdots s_{k} \; \cdots \;  s_{\frac{N-1}{2}} } $
 
   \newpage
  \item (Discrete filter) Let us index the DFT coefficients of the $N$-dimensional vectors from $-(N-1)/2$ to $(N-1)/2$ (assuming $N$ is odd). We define the bandlimited signals in this space as those for which the nonzero Fourier coefficients are zero beyond a certain value $k_c$, i.e. $x \in \C^{N}$ is bandlimited if $\hat{x}[k]=0$ for all $\abs{k}>k_c$. Let $y$ be the vector with the smallest $\ell_2$ norm such that $x \ast y = x$ for all bandlimited vectors with cut-off frequency $k_c$ (where $k_c$ is a fixed integer smaller than $(N-1)/2$). Derive an explicit expression for the entries of $y$, showing that they are real valued.\\
