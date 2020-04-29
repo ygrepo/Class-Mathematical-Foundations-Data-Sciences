@@ -61,7 +61,14 @@ In this problem we analyze the Hann window in the frequency domain.
 \begin{align}
 y \,[j] := x[j] \exp \brac{\frac{i2 \pi m j}{N} },
 \end{align}
-for some integer $m$, then the DFT of $y$ equals $\hat{y}=\hat{x}^{\downarrow \, m}$, where $\hat{x}$ is the DFT of $x$.
+for some integer $m$, then the DFT of $y$ equals $\hat{y}=\hat{x}^{\downarrow \, m}$, where $\hat{x}$ is the DFT of $x$.\\
+We have
+\begin{align*}
+	\hat{y}[k]	&=	\sum_{j=1}^N x(j)  \exp \brac{\frac{-i2 \pi k j}{N} } \exp \brac{\frac{i2 \pi m j}{N} } \\
+			&=	\sum_{j=1}^N x(j)  \exp \brac{\frac{-i2 \pi (k-m) j}{N} } \\
+			&=    \hat{x}^{\downarrow \, m}[k] \\
+\end{align*}
+
  \item The Hann window $h \in \C^{N}$ of width $2w$ equals
 \begin{align}
 h\sqbr{j} & :=  
@@ -74,10 +81,31 @@ Use the result from part (a) to show that the DFT of $h$ can be expressed as
 \begin{align}
 \label{eq:hann}
 \hat{h} = \frac{1}{2}\hat{\pi} + \frac{1}{4}\hat{\pi}^{\downarrow \, -N/2w} + \frac{1}{4}\hat{\pi}^{\downarrow \, N/2w}.
-\end{align}
+\end{align}\\
+ The rectangular window $\hat{\pi} \in  \C^{N}$ with width $2w$ is defined by
+\begin{equation*}
+  \hat{y}[j] =
+    \begin{cases}
+      1 & \text{if } \abs{j} \leq w,\\
+      0 & \text{otherwise}
+    \end{cases}       
+\end{equation*}
+For $\abs{j} \leq w$, $h\sqbr{j} =  \frac{1}{2} \brac{1 + \cos \brac{ \frac{ \pi j}{w}}} =  \brac{\frac{1}{2}  \cdot 1 +  \frac{ \exp \brac{\frac{i \pi j}{w} } 
++  \exp \brac{\frac{-i \pi j}{w} }} {2} } = \frac{1}{2}  \cdot 1  +  \frac{1}{4}  \exp \brac{\frac{i \pi j}{w} } \cdot 1 + \frac{1}{4}  \exp \brac{\frac{-i \pi j}{w} } \cdot 1$.
+Using part a, with $m= \frac{N}{2w}$, the DFT of  $h$ is then $\hat{h} = \frac{1}{2}\hat{\pi} + \frac{1}{4}\hat{\pi}^{\downarrow \, -N/2w} + \frac{1}{4}\hat{\pi}^{\downarrow \, N/2w}$.
+
+
 \item Plot $\hat{h}$ as well as the different components in Eq.~\eqref{eq:hann}. Interpret what you see in terms of the desired properties of a windowing function. 
+\begin{figure}[H]
+		\centering
+		\captionsetup{justification=centering}
+		\includegraphics[width=200pt]{code/images/Hann.pdf}
+		\caption{Frequency response of the Hann window}
+	\end{figure}
+
  \end{enumerate}
   
+ \newpage
  \item (STFT inverse) In this problem we show a simple way to invert the STFT.
  \begin{enumerate}
   \item In the definition of the STFT set $w_{[\ell]}$ to be a rectangular window where all entries are equal to one, and let $\alpha_{\op{ov}}=0.5$. Show that the STFT can be inverted using just two operations: applying the inverse DFT and subsampling.
