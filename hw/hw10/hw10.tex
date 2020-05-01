@@ -95,7 +95,13 @@ For $\abs{j} \leq w$, $h\sqbr{j} =  \frac{1}{2} \brac{1 + \cos \brac{ \frac{ \pi
 Using part a, with $m= \frac{N}{2w}$, the DFT of  $h$ is then $\hat{h} = \frac{1}{2}\hat{\pi} + \frac{1}{4}\hat{\pi}^{\downarrow \, -N/2w} + \frac{1}{4}\hat{\pi}^{\downarrow \, N/2w}$.
 
 
-\item Plot $\hat{h}$ as well as the different components in Eq.~\eqref{eq:hann}. Interpret what you see in terms of the desired properties of a windowing function. 
+\item Plot $\hat{h}$ as well as the different components in Eq.~\eqref{eq:hann}. Interpret what you see in terms of the desired properties of a windowing function. \\
+The sum of all the three dotted lines give the solid line. And we see that
+\begin{itemize}
+	\item there are some cancellations of the side lobes coming from the two smaller sinc functions so less distortion for the Hann window
+	\item the width of the main lobe is doubled
+\end{itemize}
+
 \begin{figure}[H]
 		\centering
 		\captionsetup{justification=centering}

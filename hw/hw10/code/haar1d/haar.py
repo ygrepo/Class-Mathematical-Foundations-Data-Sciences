@@ -13,7 +13,14 @@ A numpy array of length 2**n containing the Haar wavelet with
 scale 2**s at position p.
 """
 def wavelet(s,p,n) :
-    return None #Your code here
+    psi = np.zeros((2 ** n))
+    start = p * (2 ** s)
+    length = 2 ** (s - 1)
+    half = start + length
+    norm = 2 ** (-s * 0.5)
+    psi[start:start + length] -= norm * np.ones((length))
+    psi[half:half + length] += norm * np.ones((length))
+    return psi #Your code here
     
 """
 Implements the Haar scaling function (phi) at scale 2**s, position p.
@@ -26,7 +33,12 @@ A numpy array of length 2**n containing the Haar scaling function with
 scale 2**s at position p.
 """
 def scaling(s,p,n) :
-    return None #Your code here
+    phi = np.zeros((2 ** n))
+    start = p * (2 ** s)
+    length = 2 ** s
+    norm = 1. / np.sqrt(length)
+    phi[start:start + length] -= norm * np.ones((length))
+    return phi
 
 """
 Orthogonally projects the vector x onto the subspace V_k of vectors
@@ -39,7 +51,11 @@ Returns:
 A numpy array of length 2**n containing the orthogonal projection of x onto V_k.
 """
 def projectV(x,k,n) :
-    return None #Your code here
+    lenght = 2 ** k
+    for p in range(2 ** (n-k)):
+        tmp = np.mean(x[p*lenght:p*lenght+lenght])
+        x[p*lenght:p*lenght+lenght] = tmp
+    return x
 
 """
 Orthogonally projects the vector x onto the subspace W_k of Haar wavelets of scale 2**k.
@@ -51,7 +67,7 @@ Returns:
 A numpy array of length 2**n containing the orthogonal projection of x onto W_k.
 """
 def projectW(x,k,n) :
-    return None #Your code here
+    return projectV(x.copy(),k-1,n) - projectV(x.copy(),k,n)
 
 """
 Computes the wavelet coefficients of x at scale 2**s.
@@ -64,7 +80,12 @@ A numpy array of length 2**(n-s) containing the wavelet coefficents
 at scale 2**s in positions p=0,1,...
 """
 def wavelet_coeffs(x,s,n) :
-    return None #Your code here
+    x_wav = projectW(x,s,n)
+    w = []
+    for p in range(2**(n-s)):
+        w.append(np.dot(x_wav,wavelet(s,p,n)))
+    w = np.array(w)
+    return w
 
 def projectWavelet(w,s,n) :
     ws = []
