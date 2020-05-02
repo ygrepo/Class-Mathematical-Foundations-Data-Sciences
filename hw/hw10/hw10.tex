@@ -114,8 +114,42 @@ The sum of all the three dotted lines give the solid line. And we see that
  \newpage
  \item (STFT inverse) In this problem we show a simple way to invert the STFT.
  \begin{enumerate}
-  \item In the definition of the STFT set $w_{[\ell]}$ to be a rectangular window where all entries are equal to one, and let $\alpha_{\op{ov}}=0.5$. Show that the STFT can be inverted using just two operations: applying the inverse DFT and subsampling.
+  \item In the definition of the STFT set $w_{[\ell]}$ to be a rectangular window where all entries are equal to one, and let $\alpha_{\op{ov}}=0.5$. Show that the STFT can be inverted using just two operations: applying the inverse DFT and subsampling.\\
+  In the same definition we have
+  \begin{align*}
+  	\text{STFT}_{[l]}(x)[k,s]	&=	\PROD{x} {\xi_k^{\downarrow \, \frac{sl}{2}}}\\
+						&=	\sum_{j=1}^N x[j] w_{[l]}[j-\frac{sl}{2}]  \exp \brac{\frac{-i 2 \pi k j}{l}} \\
+						&=	\sum_{j=\frac{l (s-2)}{2}}^{\frac{l(s+2)}{2}} x[j] \exp \brac{\frac{-i 2 \pi k j}{l}} \\
+  \end{align*}
+  which leads to the definition of the STFT as the multiplication of DFT matrices of size $l$ with identity matrices of size $l$.
+  $$
+  	\text{STFT} = \MAT{F_{[l]} & 0 & 0 \cdots \\
+				0 & F_{[l]} & 0  \cdots \\
+				0 & 0 &  F_{[l]}  \cdots } 
+				\MAT{ \text{diag}(w_{[l]}) & 0 & 0 \cdots \\
+					 0 & \text{diag}(w_{[l]}) & 0 \cdots \\
+					 0 & 0 & \text{diag}(w_{[l]}) \cdots} x
+  $$
+  
+  If there was no overlap between the windows, the initial signal $x$ can be fully recovered by multiplying the STFT by 
+ \begin{align*}
+  				x& = \MAT{ \text{diag}(w_{[l]})^{-1} & 0 & 0 \cdots \\
+					 0 & \text{diag}(w_{[l]})^{-1} & 0 \cdots \\
+					 0 & 0 & \text{diag}(w_{[l]})^{-1} \cdots} 
+				\MAT{F_{[l]}^* & 0 & 0 \cdots \\
+				0 & F_{[l]}^* & 0  \cdots \\
+				0 & 0 &  F_{[l]}^*  \cdots } \text{STFT} \\
+			&=
+				\MAT{F_{[l]}^* & 0 & 0 \cdots \\
+				0 & F_{[l]}^* & 0  \cdots \\
+				0 & 0 &  F_{[l]}^*  \cdots } \text{STFT}
+\end{align*} 
+ Because of the window overlap we have redundant signal components which we need to eliminate by subsampling. With  $\alpha_{\op{ov}}=0.5$,  every component of the initial signal $x$ is doubled,
+ so we need to keep half of the recovered signal, so we can subsample the recovered signal $\hat{x}$ by multiplying it with by an identity matrix which has only half of its entries equal to $1$.
+  
   \item What is the disadvantage of using this rectangular window?
+Small perturbations in the STFT can become amplified in the recovered signal $\hat{x}$, as we saw in question 1, a Hann window is more stable and has less fluctuations.
+
   \end{enumerate}
  
   \newpage
@@ -147,16 +181,16 @@ The sum of all the three dotted lines give the solid line. And we see that
     Give an orthonormal basis for $V_k$.  What is the dimension of
     $V_k$? \\
     $V_k$ is the subspace of all vectors $x\in\RR^{2^n}$ for which all the contiguous components modulo $2^k$ of the vector, are constant.
-    Let define such vector as
+    Let define one of such vector of $\RR^{2^n}$ 
   \begin{equation*}
   \psi_{2^{k},p}[j] =
   \begin{cases}
-    2^{\frac{k}{2}} & \text{if $j\in\{p\cdot 2^k,p\cdot 2^k+1,\ldots,(p+1)\cdot2^{k}-1\}$,}\\
+    2^{-\frac{k}{2}} & \text{if $j\in\{p\cdot 2^k,p\cdot 2^k+1,\ldots,(p+1)\cdot2^{k}-1\}$,}\\
     0 & \text{otherwise,}
     \end{cases}       
 \end{equation*}
  where $0 \leq p \leq 2^{n-k}-1$.
- These vectors are orthogonal since they are not overlapping for different position $p$.
+ These vectors are orthogonal since they are not overlapping for different position $p$, and they have unit norm.
  The number of these vectors is equal to the number of position $p$ thus the dimension of  $V_k$ is $2^{n-k}$.
  
   \item Fix $0\leq k < n$, and note that $V_k\supset V_{k+1}$.  Give an orthonormal basis for
@@ -165,13 +199,30 @@ The sum of all the three dotted lines give the solid line. And we see that
       $y\in V_{k+1}$}\},$$
     the orthogonal complement of $V_{k+1}$ in $V_k$.  Thus
     $V_k=V_{k+1}\oplus W_{k+1}$. What is the
-    dimension of $W_{k+1}$?
+    dimension of $W_{k+1}$?\\
+    
+    Vector of the form 
+    $$\xi_{2^{k+1},p}[j] :=
+  \begin{cases}
+    -1/\sqrt{2^{k+1}} & \text{if $j\in\{p\cdot 2^{k+1},p\cdot 2^{k+1}+1,\ldots,p\cdot 2^{k+1}+2^{k}-1\}$,}\\
+    1/\sqrt{2^{k+1}} & \text{if $j\in\{p\cdot 2^{k+1}+2^{k},2^{k+1}+2^{k}+1,\ldots,(p+1)\cdot2^{{k+1}}-1\}$,}\\
+    0 & \text{otherwise,}
+  \end{cases}
+  $$
+  belong to $V_k$ (scaling by $\frac{1}{2}$), are orthonormal (unit norm and orthogonal to each other for different $p$) and they are also orthogonal to the vectors
+  $\psi_{2^{k+1},p}$. Also any vector of $V_k$ that is orthogonal to  $V_{k+1}$  is in $W_{k+1}$ thus we can write
+  $V_k=V_{k+1}\oplus W_{k+1}$.
+  Dimension of  $W_{k+1}$ is $2^{n-(k+1)}$.
+
+
   \item For $1\leq k\leq n$ give an orthonormal basis for the set
     $$W_{\leq k}=\{x\in \RR^{2^n} : \text{$\langle x,y\rangle = 0$ for all
       $y\in V_{k}$}\},$$
     the orthogonal complement of $V_{k}$ in $\RR^{2^n}$.  Thus
     $\RR^{2^n}=V_{k}\oplus W_{\leq k}$. What is the
-    dimension of $W_{\leq k}$?
+    dimension of $W_{\leq k}$?\\
+    Using part b we can 
+    
   \item Complete the wavelet and scaling functions in \emph{haar.py} that implement $\mu$
     and $\varphi$ above, respectively.  See the comments for more
     details.
