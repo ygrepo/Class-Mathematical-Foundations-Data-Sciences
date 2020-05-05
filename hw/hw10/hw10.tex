@@ -98,11 +98,11 @@ Using part a, with $m= \frac{N}{2w}$, the DFT of  $h$ is then $\hat{h} = \frac{1
 \item Plot $\hat{h}$ as well as the different components in Eq.~\eqref{eq:hann}. Interpret what you see in terms of the desired properties of a windowing function. \\
 The sum of all the three dotted lines give the solid line. And we see that
 \begin{itemize}
-	\item there are some cancellations of the side lobes coming from the two smaller sinc functions so less distortion for the Hann window
+	\item there are some cancellations of the side lobes coming from the two smaller sinc functions so there is less distortion in the Fourier domain for the Hann window 
 	\item the width of the main lobe is doubled
 \end{itemize}
 
-\begin{figure}[H]
+	\begin{figure}[H]
 		\centering
 		\captionsetup{justification=centering}
 		\includegraphics[width=200pt]{code/images/Hann.pdf}
@@ -136,19 +136,23 @@ The sum of all the three dotted lines give the solid line. And we see that
   				x& = \MAT{ \text{diag}(w_{[l]})^{-1} & 0 & 0 \cdots \\
 					 0 & \text{diag}(w_{[l]})^{-1} & 0 \cdots \\
 					 0 & 0 & \text{diag}(w_{[l]})^{-1} \cdots} 
-				\MAT{F_{[l]}^* & 0 & 0 \cdots \\
-				0 & F_{[l]}^* & 0  \cdots \\
-				0 & 0 &  F_{[l]}^*  \cdots } \text{STFT} \\
+				\MAT{\frac{1}{l} F_{[l]}^* & 0 & 0 \cdots \\
+				0 & \frac{1}{l} F_{[l]}^* & 0  \cdots \\
+				0 & 0 &  \frac{1}{l} F_{[l]}^*  \cdots } \text{STFT} \\
 			&=
-				\MAT{F_{[l]}^* & 0 & 0 \cdots \\
-				0 & F_{[l]}^* & 0  \cdots \\
-				0 & 0 &  F_{[l]}^*  \cdots } \text{STFT}
+				\MAT{\frac{1}{l} F_{[l]}^* & 0 & 0 \cdots \\
+				0 & \frac{1}{l}  F_{[l]}^* & 0  \cdots \\
+				0 & 0 &  \frac{1}{l}  F_{[l]}^*  \cdots } \text{STFT}
 \end{align*} 
- Because of the window overlap we have redundant signal components which we need to eliminate by subsampling. With  $\alpha_{\op{ov}}=0.5$,  every component of the initial signal $x$ is doubled,
- so we need to keep half of the recovered signal, so we can subsample the recovered signal $\hat{x}$ by multiplying it with by an identity matrix which has only half of its entries equal to $1$.
+ Because of the window overlap we have redundant signal components which we need to eliminate by subsampling. With  $\alpha_{\op{ov}}=0.5$,  every component of the initial signal $x$ is doubled, except at the boundaries of the windows:
+ e.g. for a vector $x$ of size $8$,  and window of length $w=4$, every component form $x_3, \cdots, x_6$ are doubled.
+ To remediate this, we can subsample the recovered signal  $\hat{x}$ eliminating all duplicates, multiplying in the time domain with a rectangular window of size $l$ and shifting the windows by $l + \frac{l}{2}$.
+ Doing so,  brings other concerns since multiplication in time domain is convolution in frequencies and a rectangular window has fluctuations in the frequency domains on the edges of the window.
+ Also there is the trade-off between resolution in time and frequency which we cannot reach simultaneously.
   
   \item What is the disadvantage of using this rectangular window?
 Small perturbations in the STFT can become amplified in the recovered signal $\hat{x}$, as we saw in question 1, a Hann window is more stable and has less fluctuations.
+Using a rectangular window brings issues in frequency domain for the recovered signal detailed in the previous answer.
 
   \end{enumerate}
  
@@ -204,12 +208,13 @@ Small perturbations in the STFT can become amplified in the recovered signal $\h
     Vector of the form 
     $$\xi_{2^{k+1},p}[j] :=
   \begin{cases}
-    -1/\sqrt{2^{k+1}} & \text{if $j\in\{p\cdot 2^{k+1},p\cdot 2^{k+1}+1,\ldots,p\cdot 2^{k+1}+2^{k}-1\}$,}\\
-    1/\sqrt{2^{k+1}} & \text{if $j\in\{p\cdot 2^{k+1}+2^{k},2^{k+1}+2^{k}+1,\ldots,(p+1)\cdot2^{{k+1}}-1\}$,}\\
+    -2^{\frac{k+1}{2}} & \text{if $j\in\{p\cdot 2^{k+1},p\cdot 2^{k+1}+1,\ldots,(p+1)\cdot2^{k+1}-1\}$,}\\
+   % -2^{\frac{k+1}{2}} & \text{if $j\in\{p\cdot 2^{k+1}+2^{k},2^{k+1}+2^{k}+1,\ldots,(p+1)\cdot2^{{k+1}}-1\}$,}\\
+   % 2^{\frac{k+1}{2}}  & \text{if $j\in\{p\cdot 2^{k+1},p\cdot 2^{k+1}+1,\ldots,p\cdot 2^{k+1}+2^{k}-1\}$,}\\
     0 & \text{otherwise,}
   \end{cases}
-  $$
-  belong to $V_k$ (scaling by $\frac{1}{2}$), are orthonormal (unit norm and orthogonal to each other for different $p$) and they are also orthogonal to the vectors
+  $$  where $0 \leq p \leq 2^{n-k-1}-1$,
+  belong to $V_k$ (constant on segment of size $2^{k+1}$ are also constant on segments of size $2^k$), are orthonormal (unit norm and orthogonal to each other for different $p$) and they are also orthogonal to the vectors
   $\psi_{2^{k+1},p}$. Also any vector of $V_k$ that is orthogonal to  $V_{k+1}$  is in $W_{k+1}$ thus we can write
   $V_k=V_{k+1}\oplus W_{k+1}$.
   Dimension of  $W_{k+1}$ is $2^{n-(k+1)}$.
@@ -221,7 +226,11 @@ Small perturbations in the STFT can become amplified in the recovered signal $\h
     the orthogonal complement of $V_{k}$ in $\RR^{2^n}$.  Thus
     $\RR^{2^n}=V_{k}\oplus W_{\leq k}$. What is the
     dimension of $W_{\leq k}$?\\
-    Using part b we can 
+    Using part a) and b) we can see that the set of vectors $\{\xi_{2,p}, \xi_{2^2,p}, \ldots, \xi_{2^k,p}\}$, where $1\leq k\leq n$ and  $0 \leq p \leq 2^{n-k}-1$,  
+    have all unit norm, orthogonal to each others. 
+    They are also orthogonal to any vectors in $V_k$ for different position $p$ and segment size $2^k$ and for the same segment size $2^k$, we showed in part b
+    that these vectors are orthogonal to $V_k$.
+    The dimension of  $W_{\leq k}$ is $2^{n-k} +  2^{n-k-1} + \ldots + 2^{n-1} = 2^{n-1} \sum_{j=1}^{k-1} (\frac{1}{2})^j =  2^{n-1} 2 (1 - (\frac{1}{2})^k)= 2^n-2^{n-k}$ 
     
   \item Complete the wavelet and scaling functions in \emph{haar.py} that implement $\mu$
     and $\varphi$ above, respectively.  See the comments for more

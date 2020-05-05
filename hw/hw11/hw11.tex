@@ -1,0 +1,150 @@
+\documentclass[12pt,twoside]{article}
+\usepackage[dvipsnames]{xcolor}
+\usepackage{tikz,graphicx,amsmath,amsfonts,amscd,amssymb,bm,cite,epsfig,epsf,url}
+\usepackage[hang,flushmargin]{footmisc}
+\usepackage[colorlinks=true,urlcolor=blue,citecolor=blue]{hyperref}
+\usepackage{amsthm,multirow,wasysym,appendix}
+\usepackage{array,subcaption} 
+% \usepackage[small,bf]{caption}
+\usepackage{bbm}
+\usepackage{pgfplots}
+\usetikzlibrary{spy}
+\usepgfplotslibrary{external}
+\usepgfplotslibrary{fillbetween}
+\usetikzlibrary{arrows,automata}
+\usepackage{thmtools}
+\usepackage{blkarray} 
+\usepackage{textcomp}
+\usepackage[left=0.8in,right=1.0in,top=1.0in,bottom=1.0in]{geometry}
+
+
+\usepackage{times}
+\usepackage{amsfonts}
+\usepackage{amsmath}
+\usepackage{latexsym}
+\usepackage{color}
+\usepackage{graphics}
+\usepackage{enumerate}
+\usepackage{amstext}
+\usepackage{blkarray}
+\usepackage{url}
+\usepackage{epsfig}
+\usepackage{bm}
+\usepackage{hyperref}
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue,
+    filecolor=magenta,      
+    urlcolor=blue,
+}
+\usepackage{textcomp}
+\usepackage[left=0.8in,right=1.0in,top=1.0in,bottom=1.0in]{geometry}
+\usepackage{mathtools}
+\usepackage{minted}
+
+
+
+\input{macros}
+
+\begin{document}
+
+\begin{center}
+{\large{\textbf{Homework 11}} } \vspace{0.2cm}\\
+Due May 10 at 11 pm
+\end{center}
+Yves Greatti - yg390\\
+
+\begin{enumerate}
+
+\item (Lasso and $\ell_0$)
+The file \texttt{X.txt} contains a $50 \times 300$ matrix $X$,
+  and the file \texttt{y.txt} contains the $50\times 1$ vector
+  $y$.  Each line of each file represents a row of the corresponding
+  matrix, and the values on each line are space-delimited.
+  \begin{enumerate}
+  \item Consider the lasso problem
+    $$\min_{\beta} \frac{1}{2n}\|X\beta -y\|^2 + \lambda\|\beta\|_1$$
+    where $\lambda>0$ is a parameter and $n=50$.  Construct a (semilogx) plot
+    that draws a
+    separate path for each coefficient value as a function
+    of~$\lambda$.
+    Include values of $\lambda$ between $0.01$ and $2$ (you can
+    include more if you want),
+    and make your values spaced evenly on the log axis (e.g.,
+    \texttt{np.geomspace}).  You can solve the lasso problem using
+    whatever code/library you want.
+  \item Determine the minimizer of
+    $$\begin{array}{ll}
+    \text{minimize} & \|\beta\|_0\\
+    \text{subject to} & X\beta = y.
+    \end{array}$$
+    
+    Assume that the minimizer has small $\ell_0$ norm, i.e $\ell_0 \leq 2$. Explain your strategy and justify that it finds the minimizer.  
+    Report the nonzero coefficients of the minimizer, and
+    their values.  Remember that two floating point values may be different for numerical reasons even if they represent the same value.
+    \item Will your strategy in (b) always find the optimal minimizer of any least-squares problem with $\ell_0$ regularization?
+  \end{enumerate}
+  
+ \item (Proximal operator) The proximal operator of a function $f: \R^n \rightarrow \R$ is defined as
+\begin{align}
+\op{prox}_{f}\brac{y} := \arg \min_{x} f\brac{x}+ \frac{1}{2} \normTwo{x-y}^2.
+\end{align}
+  \begin{enumerate}
+  \item Derive the proximal operator of the squared $\ell_2$ norm weighted by a constant $\alpha > 0$, i.e. $f(x)=\alpha \normTwo{x}^2$.
+  \item Prove that the proximal operator of the $\ell_1$ norm weighted by a constant $\alpha > 0$ is a soft-thresholding operator,
+\begin{align}
+\op{prox}_{\alpha \, \normOne{ \cdot }}\brac{ y } & = \ml{S}_{\alpha}\brac{y},
+\end{align}
+where 
+\begin{align}
+\ml{S}_{\alpha}\brac{y}[i] := 
+\begin{cases}
+y\,[i] - \op{sign}\brac{y\,[i]} \alpha  \qquad & \text{if $\abs{y\,[i]} \geq \alpha$}, \\
+0 \quad & \text{otherwise}.
+\end{cases}
+\end{align}
+    \item Prove that if $X \in \R^{p \times n}$ has orthonormal rows ($p \leq n$) and $y \in \R^{n}$, then for any function $f$
+\begin{align}
+\arg \min_{\beta} \frac{1}{2} \normTwo{ y - X^T\beta }^2 + f(\beta) = \arg \min_{\beta} \frac{1}{2} \normTwo{ Xy - \beta }^2 + f(\beta).
+\end{align}
+\item Use the answers to the previous questions to compare the ridge-regression and lasso estimators for a regression problem where the features are orthonormal.
+  \end{enumerate}
+
+ 
+  \item (Proximal gradient method)   
+ \begin{enumerate}
+ \item The first-order approximation to a function $f:\R^{p}\rightarrow \R$ at $x \in \R^{p}$ equals
+ \begin{align}
+f\brac{x} + \nabla f\brac{x}^T\brac{y-x}. 
+\end{align}
+We want to minimize this first-order approximation locally. To this end we fix a real constant $\alpha >0$ and augment the approximation with an $\ell_2$-norm term that keeps us close to $x$,
+ \begin{align}
+f_{x}(y) :=f\brac{x} + \nabla f\brac{x}^T\brac{y-x} +  \frac{1}{2 \, \alpha }\normTwo{y-x}^2.
+\end{align}
+ Prove that the minimum of $f_{x}$ is the gradient descent update $x- \alpha \nabla f\brac{x}$.
+\item 
+Inspired by the previous question, how would you modify gradient descent to minimize a function of the form
+\begin{align}
+h(x) = f_1(x) + f_2(x),
+\end{align}
+where $f_1$ is differentiable, and $f_2$ is nondifferentiable but has a proximal operator that is easy to compute?
+\item Show that a vector $x^{\ast}$ is a solution to
+\begin{align}
+ \op{minimize} \quad & f_1\brac{x} + f_2\brac{x},
+\end{align}
+where $f_1$ is differentiable, and $f_2$ is nondifferentiable, if and only if it is a fixed point of the iteration you proposed in the previous question for any $\alpha > 0$.
+  \end{enumerate}
+  
+  \item (Iterative shrinkage-thresholding algorithm)   
+ \begin{enumerate}
+ \item What is the proximal gradient update corresponding to the lasso problem defined below? Your answer will involve a hyperparameter which we will call as $\alpha$. 
+ \begin{align*}
+ \frac{1}{2} \normTwo{y - X\beta}^2 + \lambda |\beta|_1
+ \end{align*}
+ \item How would you check whether you have reached an optimum? How would you modify this to take into account possible numerical inaccuracies?
+ \item Implement the method and apply it to the problem in \texttt{pgd\_lasso-question.ipynb}. You have to fill in blocks of code corresponds to the proximal gradient update step and termination condition. Report all the generated plots.
+ \end{enumerate}
+ 
+
+ \end{enumerate}
+\end{document}
