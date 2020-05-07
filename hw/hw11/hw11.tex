@@ -85,12 +85,29 @@ The file \texttt{X.txt} contains a $50 \times 300$ matrix $X$,
     \item Will your strategy in (b) always find the optimal minimizer of any least-squares problem with $\ell_0$ regularization?
   \end{enumerate}
   
+ \newpage
  \item (Proximal operator) The proximal operator of a function $f: \R^n \rightarrow \R$ is defined as
 \begin{align}
 \op{prox}_{f}\brac{y} := \arg \min_{x} f\brac{x}+ \frac{1}{2} \normTwo{x-y}^2.
 \end{align}
   \begin{enumerate}
   \item Derive the proximal operator of the squared $\ell_2$ norm weighted by a constant $\alpha > 0$, i.e. $f(x)=\alpha \normTwo{x}^2$.
+
+\begin{align*}
+\op{prox}_{f}\brac{y} := \arg \min_{x}  \alpha \normTwo{x}^2 + \frac{1}{2} \normTwo{x-y}^2
+\end{align*}
+
+The two terms are quadratic, therefore differentiable, the gradient is 
+$$
+	\nabla_x \op{prox}_{f}\brac{y} = 2 \alpha x + (x-y)
+$$
+ Setting the gradient to zero, yields:
+\begin{align*}
+	2 \alpha x + (x-y)			&= 	0 \\
+		x 					&= \frac{1} {1+2 \alpha} y \\
+		\op{prox}_{f}\brac{y} 		&=	 \frac{1} {1+2 \alpha} y, \alpha > 0 \\
+\end{align*}
+ 
   \item Prove that the proximal operator of the $\ell_1$ norm weighted by a constant $\alpha > 0$ is a soft-thresholding operator,
 \begin{align}
 \op{prox}_{\alpha \, \normOne{ \cdot }}\brac{ y } & = \ml{S}_{\alpha}\brac{y},
@@ -102,15 +119,72 @@ where
 y\,[i] - \op{sign}\brac{y\,[i]} \alpha  \qquad & \text{if $\abs{y\,[i]} \geq \alpha$}, \\
 0 \quad & \text{otherwise}.
 \end{cases}
+\end{align}\\
+
+$$
+\op{prox}_{\alpha \, \normOne{ \cdot }}\brac{ y } = \alpha \|x\|_1 + \frac{1}{2} \normTwo{x-y}^2, \alpha > 0
+$$
+And we are looking for:
+\begin{align*}
+	0 \in \partial( \alpha \|x\|_1) + \nabla_x (\frac{1}{2} \normTwo{x-y}^2) \\
+	0 \in \alpha \; \partial( \|x\|_1) + (x-y) \\
+\end{align*}
+We examine each component of $x$ and $y$ separately.
+Assume first that $x[i] \neq 0$ then $ \partial( \|x\|_1) = \sign{x[i]}$, setting the subgradient to $0$, we have:
+\begin{align*}
+	x[i] - y[i] + \alpha \sign{x[i]}	&= 0 \\
+	x[i]					&= y[i] - \alpha \sign{x[i]} \\
+\end{align*}
+Note that
+\begin{align*}
+	x[i] < 0, \sign{x[i]} = -1 &\rightarrow y[i] + \alpha < 0 \text{ ~ or }  y[i] < -\alpha < 0 \\
+	x[i] > 0, \sign{x[i]} = 1 &\rightarrow y[i] - \alpha > 0 \text{ ~ or }  y[i] > \alpha > 0 \\
+\end{align*}
+thus in this case $\sign{x[i]} = \sign{y[i]}$ and the optimal point is $y[i] - \alpha \sign{y[i]}$.
+In the case where $x[i]=0$, let $\gamma =  \partial(\|x\|_1), | \gamma | \le 1$ then it holds
+\begin{align*}
+	x[i] - y[i] + \alpha \gamma = 0 &\rightarrow y[i] - \alpha \gamma = 0 \\
+							&	y[i] = \gamma \alpha \\
+							& |y[i]| \le \alpha
+\end{align*}
+Putting all together, we get
+\begin{align}
+\op{prox}_{\alpha \, \normOne{ \cdot }}\brac{ y } = 
+\begin{cases}
+y\,[i] - \op{sign}\brac{y\,[i]} \alpha  \qquad & \text{if $\abs{y\,[i]} \geq \alpha$}, \\
+0 \quad & \text{otherwise}.
+\end{cases}
 \end{align}
+
     \item Prove that if $X \in \R^{p \times n}$ has orthonormal rows ($p \leq n$) and $y \in \R^{n}$, then for any function $f$
 \begin{align}
 \arg \min_{\beta} \frac{1}{2} \normTwo{ y - X^T\beta }^2 + f(\beta) = \arg \min_{\beta} \frac{1}{2} \normTwo{ Xy - \beta }^2 + f(\beta).
 \end{align}
+The two expressions for the same function $f$ differs on the first term, so we want to show that
+$$
+\arg \min_{\beta} \frac{1}{2} \normTwo{ y - X^T\beta }^2  =  \arg \min_{\beta} \frac{1}{2} \normTwo{ Xy - \beta }^2
+$$
+
 \item Use the answers to the previous questions to compare the ridge-regression and lasso estimators for a regression problem where the features are orthonormal.
   \end{enumerate}
+The use of $l_1$, $l_2$ norms gives rise to the problems, for $\lambda > 0$:
 
- 
+\begin{align*}
+\frac{1}{2} \argmin_\beta \| y - X^T \beta\|_2^2 + \lambda \|\beta\|_2^2	& \text{~ Ridge regression} \\
+\frac{1}{2} \argmin_\beta \| y - X^T \beta\|_2^2 + \lambda \|\beta\|_1	& \text{~ Lasso regression}
+\end{align*} 
+which is equivalent from part c) to
+\begin{align*}
+ \argmin_\beta  \lambda \|\beta\|_2^2 + \frac{1}{2} \| \beta - X y \|_2^2 	& \text{~ Ridge regression} \\
+ \argmin_\beta   \lambda \|\beta\|_1+    \frac{1}{2} \| \beta - X y \|_2^2 	& \text{~ Lasso regression}
+\end{align*} 
+And for part a) and b), the solutions of these two problems are the proximal operators:
+\begin{align*}
+	\beta_{\text{ridge}}	&= 	 \frac{1} {1+2 \lambda} X y \\
+	\beta_{\text{lasso}}	&= 	  \ml{S}_{\lambda}\brac{X y}\\
+\end{align*} 
+
+ \newpage
   \item (Proximal gradient method)   
  \begin{enumerate}
  \item The first-order approximation to a function $f:\R^{p}\rightarrow \R$ at $x \in \R^{p}$ equals
