@@ -72,7 +72,14 @@ The file \texttt{X.txt} contains a $50 \times 300$ matrix $X$,
     include more if you want),
     and make your values spaced evenly on the log axis (e.g.,
     \texttt{np.geomspace}).  You can solve the lasso problem using
-    whatever code/library you want.
+
+    whatever code/library you want.\\
+   	\begin{figure}[H]
+		\centering
+		\captionsetup{justification=centering}
+		\includegraphics[width=200pt]{code/lasso_vs_lo/lasso.pdf}
+	\end{figure}
+ 
   \item Determine the minimizer of
     $$\begin{array}{ll}
     \text{minimize} & \|\beta\|_0\\
@@ -162,8 +169,17 @@ y\,[i] - \op{sign}\brac{y\,[i]} \alpha  \qquad & \text{if $\abs{y\,[i]} \geq \al
 \end{align}
 The two expressions for the same function $f$ differs on the first term, so we want to show that
 $$
-\arg \min_{\beta} \frac{1}{2} \normTwo{ y - X^T\beta }^2  =  \arg \min_{\beta} \frac{1}{2} \normTwo{ Xy - \beta }^2
+\arg \min_{\beta} \normTwo{ y - X^T\beta }^2  =  \arg \min_{\beta} \normTwo{ Xy - \beta }^2
 $$
+$X$ having orthonormal rows: $X X^T = I$, and
+\begin{align*}
+	\normTwo{ y - X^T\beta }^2  	&= (y^T -\beta^T X) (y - X^T\beta) \\
+						  	&= y^T y - y^T X^T \beta - \beta^T X y + \beta^T X X^T \beta \\
+						  	&=   y^T y - y^T X^T \beta - \beta^T X y +  \beta^T \beta \\
+	 \normTwo{ Xy - \beta }^2 		&= (y^T X^T - \beta^T) (Xy - \beta) \\
+	 						&= y^T X^T X y - y^T X^T \beta - \beta^T X y +  \beta^T \beta \\
+	\normTwo{ y - X^T\beta }^2  	&= 	 \normTwo{ Xy - \beta }^2 \\					
+\end{align*}
 
 \item Use the answers to the previous questions to compare the ridge-regression and lasso estimators for a regression problem where the features are orthonormal.
   \end{enumerate}
@@ -178,12 +194,14 @@ which is equivalent from part c) to
  \argmin_\beta  \lambda \|\beta\|_2^2 + \frac{1}{2} \| \beta - X y \|_2^2 	& \text{~ Ridge regression} \\
  \argmin_\beta   \lambda \|\beta\|_1+    \frac{1}{2} \| \beta - X y \|_2^2 	& \text{~ Lasso regression}
 \end{align*} 
-And for part a) and b), the solutions of these two problems are the proximal operators:
+From part a) and b), the solutions of these two problems are the proximal operators:
 \begin{align*}
 	\beta_{\text{ridge}}	&= 	 \frac{1} {1+2 \lambda} X y \\
 	\beta_{\text{lasso}}	&= 	  \ml{S}_{\lambda}\brac{X y}\\
 \end{align*} 
-
+We see that the lasso solution shows sparsity: when the component wise least-square coefficients, $X y$, are not small they are shrunken towards $0$ by $\lambda$, and set to $0$ when they are small.
+In contrast the ridge regression estimates are never sparse, all scaled with a single factor inversely proportional to $\lambda$.
+ 
  \newpage
   \item (Proximal gradient method)   
  \begin{enumerate}
@@ -195,20 +213,54 @@ We want to minimize this first-order approximation locally. To this end we fix a
  \begin{align}
 f_{x}(y) :=f\brac{x} + \nabla f\brac{x}^T\brac{y-x} +  \frac{1}{2 \, \alpha }\normTwo{y-x}^2.
 \end{align}
- Prove that the minimum of $f_{x}$ is the gradient descent update $x- \alpha \nabla f\brac{x}$.
+ Prove that the minimum of $f_{x}$ is the gradient descent update $x- \alpha \nabla f\brac{x}$.\\
+ For $\alpha > 0$,
+ \begin{align*}
+ 	\nabla f_{x}(y) &= \nabla f\brac{x} +   \frac{1}{\alpha } (y - x) \\
+ \end{align*} 
+ Setting the gradient to $0$ gives
+ \begin{align*}
+ 	\alpha \nabla f\brac{x} + (y - x)  &= 0\\
+	y &= x - \alpha \nabla f\brac{x} \\
+ \end{align*} 
+ 
 \item 
 Inspired by the previous question, how would you modify gradient descent to minimize a function of the form
 \begin{align}
 h(x) = f_1(x) + f_2(x),
 \end{align}
-where $f_1$ is differentiable, and $f_2$ is nondifferentiable but has a proximal operator that is easy to compute?
+where $f_1$ is differentiable, and $f_2$ is nondifferentiable but has a proximal operator that is easy to compute?\\
+At iteration $x^{(k)}$, we want to stay close to the gradient update for $f_1(x^{(k)})$ and minimize $f_2(x^{(k)})$
+
+\begin{align*}
+   x^{(k+1)}  	&= 	\op{prox}_{f_2}\brac{x^{(k)} - \alpha \nabla f_1\brac{x^{(k)}}} \\
+			&=   \arg \min_{x}  f_2\brac{x^{(k)}} + f_1\brac{x^{(k)}} + \nabla f_1\brac{x^{(k)}}^T\brac{x-x^{(k)}} +  \frac{1}{2 \, \alpha }\normTwo{x-x^{(k)}}^2 \\
+%			&= 	\arg \min_{x} f_2\brac{x} + \frac{1}{2 \alpha} \normTwo{x - (x^{(k)} - \alpha \nabla f_1\brac{x^{(k)} })}^2 \\
+\end{align*}
+
 \item Show that a vector $x^{\ast}$ is a solution to
 \begin{align}
  \op{minimize} \quad & f_1\brac{x} + f_2\brac{x},
 \end{align}
-where $f_1$ is differentiable, and $f_2$ is nondifferentiable, if and only if it is a fixed point of the iteration you proposed in the previous question for any $\alpha > 0$.
+where $f_1$ is differentiable, and $f_2$ is nondifferentiable, if and only if it is a fixed point of the iteration you proposed in the previous question for any $\alpha > 0$.\\
+if $x^{\ast}$ minimizes $f_1\brac{x} + f_2\brac{x}$  then
+\begin{align*}
+	x^{\ast} &= \op{prox}_{f_2} (x^{(k)}  - \alpha \nabla f_1 (x^{(k)}) \\
+	& \Leftrightarrow \nabla_x \bigg( f_2\brac{x^{(k)}} + f_1\brac{x^{(k)}} + \nabla f_1\brac{x^{(k)}}^T\brac{x-x^{(k)}} +  \frac{1}{2 \, \alpha }\normTwo{x-x^{(k)}}^2 \bigg) = 0\\
+	& \Leftrightarrow \alpha  \nabla f_1\brac{x^{(k)}}^T + x - x^{(k)} = 0 \\
+	& \Leftrightarrow  x^{\ast} =  x^{(k)}  - \nabla f_1\brac{x^{(k)}}^T  \\
+\end{align*}
+
+%$x^{\ast}$ minimizes $f_1\brac{x} + f_2\brac{x}$ if and only if $0 \in \nabla  f_1\brac{x^{\ast}} + \partial f_2\brac{x^{\ast}}$.
+%\begin{align*}
+% 	x^{\ast} &= \op{prox}_{f_2} (x^{\ast}  - \alpha \nabla f_1(x^{\ast}))  \\
+% 	& \Leftrightarrow 0 \in \partial{f_2\brac{x^{\ast}}} +  (x^{\ast} - (x^{\ast}  - \alpha \nabla f_1(x^{\ast})) \\
+%	& \Leftrightarrow 0 \in  \nabla  f_1\brac{x^{\ast}} + \partial f_2\brac{x^{\ast}} \\
+%\end{align*}
+
   \end{enumerate}
   
+  \newpage
   \item (Iterative shrinkage-thresholding algorithm)   
  \begin{enumerate}
  \item What is the proximal gradient update corresponding to the lasso problem defined below? Your answer will involve a hyperparameter which we will call as $\alpha$. 
