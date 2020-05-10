@@ -88,8 +88,67 @@ The file \texttt{X.txt} contains a $50 \times 300$ matrix $X$,
     
     Assume that the minimizer has small $\ell_0$ norm, i.e $\ell_0 \leq 2$. Explain your strategy and justify that it finds the minimizer.  
     Report the nonzero coefficients of the minimizer, and
-    their values.  Remember that two floating point values may be different for numerical reasons even if they represent the same value.
+    their values.  Remember that two floating point values may be different for numerical reasons even if they represent the same value.\\
+    
+    We want to minimize the reconstruction loss $\argmin  \normTwo{X \beta - y}^2$ with  coefficient estimates $\beta$ having the minimum non-zeros elements.
+    If we have to select only one column of $X$, we would choose the column which results in the largest projection of $y$ onto that column. 
+    After selecting this column, we then solve the linear regression problem using that column with $y$ which gives us one coefficient estimate. We now compute the residual 
+    between $y$ and that projection which we use as our new $y$. Reiterating the previous test, we find the second biggest "contributor" column by computing the inner product
+    between the $residual$ and each of the columns of $X$. After identifying the new "best" column we now solve a linear regression problem, using the two selected columns so far, and $y$, which results in
+    two new coefficient estimates, which is the sparse representation of $y$ using two columns of $X$. We keep iterating until we have the minimum number of nonzero coefficients $\beta$, the residual is less than a threshold, or we reach a maximum number of iterations.
+    
+ \begin{minted}{python} 
+def orthogonal_mp(X:np.ndarray, 
+	y:np.ndarray, 
+	n_nonzero_coefs,  
+	eps_min: np.float64 = 1e-3,
+        iter_max: int = 1000):
+
+    def stopping_condition(coef, n_nonzero_coefs):
+        
+        for i in range(len(coef)):
+            if coef[i].shape[0] == n_nonzero_coefs:
+                return True
+        return False
+        
+    col_idx = list()
+    coefs = list()
+    residual = y   
+    
+    for _ in range(iter_max):
+        i = np.abs(np.dot(X.T, residual)).argmax()
+        if i not in col_idx:
+            col_idx.append(i)
+        
+        coefi, _, _, _ = np.linalg.lstsq(X[:, col_idx], y)
+        coefs.append(coefi)
+        residual = y - np.dot(X[:,col_idx], coefi)
+        
+        if stopping_condition(coefs, n_nonzero_coefs):
+            print(f"Found required number 
+            of non-zero coefficients:{n_nonzero_coefs}")
+            break
+            
+        #print(np.inner(residual, residual))
+        if np.linalg.norm(residual) <= eps_min:
+            print(f"Residual too small, less than {eps_min}")
+            break
+            
+    return coefs, col_idx
+\end{minted}
+Applying this algorithm for  $\ell_0 \leq 2$, we found
+    \begin{center}
+    		\begin{tabular}{ | c | c |  }
+    		\hline
+			\text{column} 117 & \text{column} 239 \\
+		\hline
+			0.33641899 & 0.51962402 \\ 
+		\hline
+    	\end{tabular}
+    \end{center}
+
     \item Will your strategy in (b) always find the optimal minimizer of any least-squares problem with $\ell_0$ regularization?
+    No, the strategy in (b) will return a minimizer but not necessarily the optimal one For example, due to numerical reasons if columns of the matrix $X$ are very coherent (inner product  between columns, very close to each other), then the algorithm might not select the right column.     
   \end{enumerate}
   
  \newpage
@@ -233,9 +292,15 @@ where $f_1$ is differentiable, and $f_2$ is nondifferentiable but has a proximal
 At iteration $x^{(k)}$, we want to stay close to the gradient update for $f_1(x^{(k)})$ and minimize $f_2(x^{(k)})$
 
 \begin{align*}
-   x^{(k+1)}  	&= 	\op{prox}_{f_2}\brac{x^{(k)} - \alpha \nabla f_1\brac{x^{(k)}}} \\
-			&=   \arg \min_{x}  f_2\brac{x^{(k)}} + f_1\brac{x^{(k)}} + \nabla f_1\brac{x^{(k)}}^T\brac{x-x^{(k)}} +  \frac{1}{2 \, \alpha }\normTwo{x-x^{(k)}}^2 \\
-%			&= 	\arg \min_{x} f_2\brac{x} + \frac{1}{2 \alpha} \normTwo{x - (x^{(k)} - \alpha \nabla f_1\brac{x^{(k)} })}^2 \\
+   x^{(k+1)}  	&=  \arg \min_{x}  f_2\brac{x^{(k)}} + f_1\brac{x^{(k)}} + \nabla f_1\brac{x^{(k)}}^T\brac{x-x^{(k)}} +  \frac{1}{2 \, \alpha } \normTwo{x-x^{(k)}}^2 \\
+			&=   \arg \min_{x}  f_2\brac{x^{(k)}} + 2 \alpha  f_1\brac{x^{(k)}} + \bigg( 2 \alpha \nabla f_1\brac{x^{(k)}}^T\brac{x-x^{(k)}} + \normTwo{x-x^{(k)}}^2  \\
+			&+  \normTwo{\alpha  \nabla f_1\brac{x^{(k)}}^T}^2 \bigg) -  \normTwo{\alpha  \nabla f_1\brac{x^{(k)}}^T}^2 \\
+			&=  \arg \min_{x}  f_2\brac{x^{(k)}} + 2 \alpha  f_1\brac{x^{(k)}} +  \normTwo{\alpha  \nabla f_1\brac{x^{(k)}}^T +  (x-x^{(k)}) }^2 -  \normTwo{\alpha  \nabla f_1\brac{x^{(k)}}^T}^2 \\
+			&=  \arg \min_{x}  f_2\brac{x^{(k)}} + f_1\brac{x^{(k)}} +  \frac{1}{2 \, \alpha }   \normTwo{\alpha  \nabla f_1\brac{x^{(k)}}^T +  (x-x^{(k)}) }^2 -  
+			\frac{1}{2 \, \alpha }    \normTwo{\alpha  \nabla f_1\brac{x^{(k)}}^T}^2 \\
+			&=   \arg \min_{x}  f_2\brac{x^{(k)}} +   \frac{1}{2 \, \alpha }   \normTwo{\alpha  \nabla f_1\brac{x^{(k)}}^T +  (x-x^{(k)}) }^2 \text{ ~ removing terms independant of } x\\
+			&=   \arg \min_{x}  f_2\brac{x^{(k)}} +   \frac{1}{2 \, \alpha }   \normTwo{x - (x^{(k)} - \alpha  \nabla f_1\brac{x^{(k)}}^T )} \\
+			 &= \op{prox}_{f_2}\brac{x^{(k)} - \alpha \nabla f_1\brac{x^{(k)}}} \\
 \end{align*}
 
 \item Show that a vector $x^{\ast}$ is a solution to
@@ -247,8 +312,8 @@ if $x^{\ast}$ minimizes $f_1\brac{x} + f_2\brac{x}$  then
 \begin{align*}
 	x^{\ast} &= \op{prox}_{f_2} (x^{(k)}  - \alpha \nabla f_1 (x^{(k)}) \\
 	& \Leftrightarrow \nabla_x \bigg( f_2\brac{x^{(k)}} + f_1\brac{x^{(k)}} + \nabla f_1\brac{x^{(k)}}^T\brac{x-x^{(k)}} +  \frac{1}{2 \, \alpha }\normTwo{x-x^{(k)}}^2 \bigg) = 0\\
-	& \Leftrightarrow \alpha  \nabla f_1\brac{x^{(k)}}^T + x - x^{(k)} = 0 \\
-	& \Leftrightarrow  x^{\ast} =  x^{(k)}  - \nabla f_1\brac{x^{(k)}}^T  \\
+	& \Leftrightarrow \alpha  \nabla_x f_1\brac{x^{(k)}}^T + x - x^{(k)} = 0 \\
+	& \Leftrightarrow  x^{\ast} =  x^{(k)}  - \alpha \nabla_x f_1\brac{x^{(k)}}^T  \\
 \end{align*}
 
 %$x^{\ast}$ minimizes $f_1\brac{x} + f_2\brac{x}$ if and only if $0 \in \nabla  f_1\brac{x^{\ast}} + \partial f_2\brac{x^{\ast}}$.
@@ -267,8 +332,42 @@ if $x^{\ast}$ minimizes $f_1\brac{x} + f_2\brac{x}$  then
  \begin{align*}
  \frac{1}{2} \normTwo{y - X\beta}^2 + \lambda |\beta|_1
  \end{align*}
+ 
+ From 2.(b), we have established:
+ \begin{align*}
+\op{prox}_{\alpha \, \normOne{ \cdot }}\brac{ x } & = \ml{S}_{\alpha}\brac{x} \\
+\ml{S}_{\alpha}\brac{x}[i] &=  \op{sign}{\brac{x\,[i]}} \max{ (|\brac{x\,[i]}| - \alpha , 0) } \\
+\end{align*}
+
+
+Combining it with 3.(b) gives for
+ \begin{align*}
+ 	g(x) &= f(x) + \lambda |x|_1 \, f \text{~ being differentiable} \\
+ x^{(k+1)} &= 	\op{prox}_{\alpha \lambda \, \normOne{ \cdot }}\brac{ x^{(k)}  - \alpha \nabla_x f\brac{x^{(k)}}^T } = \ml{S}_{\alpha \lambda}\brac{x^{(k)}  - \alpha \nabla_x f\brac{x^{(k)}}^T }
+\end{align*}
+Plugging it back leads to the proximal gradient update corresponding to the lasso problem 
+$$
+	 \beta^{(k+1)} =  \ml{S}_{\alpha \lambda} 	(\beta^{(k)} + \alpha X^T (y - X \beta^{(k)}))
+$$
+
  \item How would you check whether you have reached an optimum? How would you modify this to take into account possible numerical inaccuracies?
- \item Implement the method and apply it to the problem in \texttt{pgd\_lasso-question.ipynb}. You have to fill in blocks of code corresponds to the proximal gradient update step and termination condition. Report all the generated plots.
+ For each iteration we can compare the value of the objective function for the new estimates $\beta$ with the value obtained for the previous estimated coefficients and if the absolute difference is less
+ than a tolerance (very small  value) then we know we have  reached an optimum (we can also improve that logic and check that the difference did not decrease for the last $n$ iterations).
+ 
+ \item Implement the method and apply it to the problem in \texttt{pgd\_lasso-question.ipynb}. You have to fill in blocks of code corresponds to the proximal gradient update step and termination condition. Report all the generated plots.\\
+  
+    	\begin{figure}[H]
+		\centering
+		\captionsetup{justification=centering}
+		\includegraphics[width=200pt]{code/pgd/objective_error.pdf}
+	\end{figure}
+
+    	\begin{figure}[H]
+		\centering
+		\captionsetup{justification=centering}
+		\includegraphics[width=200pt]{code/pgd/compare_models.pdf}
+	\end{figure}
+
  \end{enumerate}
  
 
