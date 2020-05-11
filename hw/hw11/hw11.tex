@@ -259,7 +259,7 @@ From part a) and b), the solutions of these two problems are the proximal operat
 	\beta_{\text{lasso}}	&= 	  \ml{S}_{\lambda}\brac{X y}\\
 \end{align*} 
 We see that the lasso solution shows sparsity: when the component wise least-square coefficients, $X y$, are not small they are shrunken towards $0$ by $\lambda$, and set to $0$ when they are small.
-In contrast the ridge regression estimates are never sparse, all scaled with a single factor inversely proportional to $\lambda$.
+In contrast the ridge regression estimates are never sparse, all scaled with a single factor inversely proportional to $\lambda$. When $\lambda$ is $0$, ridge and lasso estimates are the OLS estimates.
  
  \newpage
   \item (Proximal gradient method)   
@@ -352,12 +352,12 @@ $$
 $$
 
  \item How would you check whether you have reached an optimum? How would you modify this to take into account possible numerical inaccuracies?
-% For each iteration we can compare the value of the objective function for the new estimates $\beta$ with the value obtained for the previous estimated coefficients and if the absolute difference is less
-% than a tolerance (very small  value) then we know we have  reached an optimum (we can also improve that logic and check that the difference did not decrease for the last $n$ iterations).
- If we did not move with the proximal value far enough from the previous objective value in the direction of the gradient then we stop iterating, using notations from question 3.c:
- $$
-  \op{prox}_{f_2} (x^{(k)}  - \alpha \nabla f_1 (x^{(k)}) - \bigg( f_2\brac{x^{(k)}} + f_1\brac{x^{(k)}} + \nabla f_1\brac{x^{(k)}}^T\brac{x-x^{(k)}} +  \frac{1}{2 \, \alpha }\normTwo{x-x^{(k)}}^2 \bigg) < \epsilon
- $$
+ For each iteration we can compare the value of the objective function for the new estimates $\beta$ with the value obtained for the previous estimated coefficients and if the absolute difference is less
+than a tolerance (very small  value) then we know we have  reached an optimum (we can also improve that logic and check that the difference did not decrease for the last $n$ iterations).
+% If we did not move with the proximal value far enough from the previous objective value in the direction of the gradient then we stop iterating, using notations from question 3.c:
+% $$
+%  |\op{prox}_{f_2} (x^{(k)}  - \alpha \nabla f_1 (x^{(k)}) - \bigg( f_2\brac{x^{(k)}} + f_1\brac{x^{(k)}} + \nabla f_1\brac{x^{(k)}}^T\brac{x-x^{(k)}} +  \frac{1}{2 \, \alpha }\normTwo{x-x^{(k)}}^2 \bigg)| < \epsilon
+ %$$
  
  \item Implement the method and apply it to the problem in \texttt{pgd\_lasso-question.ipynb}. You have to fill in blocks of code corresponds to the proximal gradient update step and termination condition. Report all the generated plots.\\
   
