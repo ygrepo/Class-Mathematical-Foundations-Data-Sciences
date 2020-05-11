@@ -148,7 +148,7 @@ Applying this algorithm for  $\ell_0 \leq 2$, we found
     \end{center}
 
     \item Will your strategy in (b) always find the optimal minimizer of any least-squares problem with $\ell_0$ regularization?
-    No, the strategy in (b) will return a minimizer but not necessarily the optimal one For example, due to numerical reasons if columns of the matrix $X$ are very coherent (inner product  between columns, very close to each other), then the algorithm might not select the right column.     
+    No, the strategy in (b) will return a minimizer but not necessarily the optimal one. For example, due to numerical reasons if columns of the matrix $X$ are very coherent (inner product  between columns, very close to each other), then the algorithm might not select the right column (it has been shown that if mutual incoherence property condition is satisfied, defined  as $\max_{(i,j), i \neq j} \PROD{X[:,i}{X[:,j]} < \frac{1}{2K-1}$ then K-sparse signal can be recovered).
   \end{enumerate}
   
  \newpage
@@ -237,7 +237,7 @@ $X$ having orthonormal rows: $X X^T = I$, and
 						  	&=   y^T y - y^T X^T \beta - \beta^T X y +  \beta^T \beta \\
 	 \normTwo{ Xy - \beta }^2 		&= (y^T X^T - \beta^T) (Xy - \beta) \\
 	 						&= y^T X^T X y - y^T X^T \beta - \beta^T X y +  \beta^T \beta \\
-	\normTwo{ y - X^T\beta }^2  	&= 	 \normTwo{ Xy - \beta }^2 \\					
+	\arg \min_{\beta} \normTwo{ y - X^T\beta }^2 &= \arg \min_{\beta}  \normTwo{ Xy - \beta }^2 \text{ eliminating terms independant of } \beta\\
 \end{align*}
 
 \item Use the answers to the previous questions to compare the ridge-regression and lasso estimators for a regression problem where the features are orthonormal.
@@ -307,11 +307,12 @@ At iteration $x^{(k)}$, we want to stay close to the gradient update for $f_1(x^
 \begin{align}
  \op{minimize} \quad & f_1\brac{x} + f_2\brac{x},
 \end{align}
-where $f_1$ is differentiable, and $f_2$ is nondifferentiable, if and only if it is a fixed point of the iteration you proposed in the previous question for any $\alpha > 0$.\\
+where $f_1$ is differentiable, and $f_2$ is nondifferentiable, and both functions are convex, if and only if it is a fixed point of the iteration you proposed in the previous question for any $\alpha > 0$.\\
 if $x^{\ast}$ minimizes $f_1\brac{x} + f_2\brac{x}$  then
 \begin{align*}
 	x^{\ast} &= \op{prox}_{f_2} (x^{(k)}  - \alpha \nabla f_1 (x^{(k)}) \\
-	& \Leftrightarrow \nabla_x \bigg( f_2\brac{x^{(k)}} + f_1\brac{x^{(k)}} + \nabla f_1\brac{x^{(k)}}^T\brac{x-x^{(k)}} +  \frac{1}{2 \, \alpha }\normTwo{x-x^{(k)}}^2 \bigg) = 0\\
+	& \text{ since both functions are convex } \\
+	& \Leftrightarrow 0 \in \partial_x \bigg( f_2\brac{x^{(k)}} + f_1\brac{x^{(k)}} + \nabla f_1\brac{x^{(k)}}^T\brac{x-x^{(k)}} +  \frac{1}{2 \, \alpha }\normTwo{x-x^{(k)}}^2 \bigg) \\
 	& \Leftrightarrow \alpha  \nabla_x f_1\brac{x^{(k)}}^T + x - x^{(k)} = 0 \\
 	& \Leftrightarrow  x^{\ast} =  x^{(k)}  - \alpha \nabla_x f_1\brac{x^{(k)}}^T  \\
 \end{align*}
@@ -351,8 +352,12 @@ $$
 $$
 
  \item How would you check whether you have reached an optimum? How would you modify this to take into account possible numerical inaccuracies?
- For each iteration we can compare the value of the objective function for the new estimates $\beta$ with the value obtained for the previous estimated coefficients and if the absolute difference is less
- than a tolerance (very small  value) then we know we have  reached an optimum (we can also improve that logic and check that the difference did not decrease for the last $n$ iterations).
+% For each iteration we can compare the value of the objective function for the new estimates $\beta$ with the value obtained for the previous estimated coefficients and if the absolute difference is less
+% than a tolerance (very small  value) then we know we have  reached an optimum (we can also improve that logic and check that the difference did not decrease for the last $n$ iterations).
+ If we did not move with the proximal value far enough from the previous objective value in the direction of the gradient then we stop iterating, using notations from question 3.c:
+ $$
+  \op{prox}_{f_2} (x^{(k)}  - \alpha \nabla f_1 (x^{(k)}) - \bigg( f_2\brac{x^{(k)}} + f_1\brac{x^{(k)}} + \nabla f_1\brac{x^{(k)}}^T\brac{x-x^{(k)}} +  \frac{1}{2 \, \alpha }\normTwo{x-x^{(k)}}^2 \bigg) < \epsilon
+ $$
  
  \item Implement the method and apply it to the problem in \texttt{pgd\_lasso-question.ipynb}. You have to fill in blocks of code corresponds to the proximal gradient update step and termination condition. Report all the generated plots.\\
   
